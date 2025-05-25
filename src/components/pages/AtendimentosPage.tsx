@@ -1,79 +1,98 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MetricCard } from '../dashboard/MetricCard';
-import { ServiceRanking } from '../dashboard/ServiceRanking';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { 
   Calendar, 
-  Users, 
   Clock, 
-  TrendingUp,
-  Download,
-  Filter,
-  TrendingDown
+  TrendingUp, 
+  Users, 
+  Scissors,
+  Crown,
+  Medal,
+  Award,
+  ArrowUp,
+  ArrowDown,
+  Minus
 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-
-// Mock data atualizado conforme as imagens
-const appointmentsData = {
-  daily: [
-    { name: '08:00', atendimentos: 2 },
-    { name: '10:00', atendimentos: 3 },
-    { name: '12:00', atendimentos: 1 },
-    { name: '14:00', atendimentos: 4 },
-    { name: '16:00', atendimentos: 2 },
-    { name: '18:00', atendimentos: 0 },
-    { name: '20:00', atendimentos: 0 },
-  ],
-  weekly: [
-    { name: 'Seg', atendimentos: 15 },
-    { name: 'Ter', atendimentos: 12 },
-    { name: 'Qua', atendimentos: 18 },
-    { name: 'Qui', atendimentos: 14 },
-    { name: 'Sex', atendimentos: 20 },
-    { name: 'Sáb', atendimentos: 25 },
-    { name: 'Dom', atendimentos: 8 },
-  ],
-  monthly: [
-    { name: 'Jan', atendimentos: 320 },
-    { name: 'Fev', atendimentos: 298 },
-    { name: 'Mar', atendimentos: 356 },
-    { name: 'Abr', atendimentos: 285 },
-    { name: 'Mai', atendimentos: 378 },
-    { name: 'Jun', atendimentos: 412 },
-  ]
-};
-
-const servicesData = [
-  { name: 'Corte + Barba', count: 142, percentage: 39.9, trend: 'up' as const },
-  { name: 'Corte Simples', count: 125, percentage: 35.1, trend: 'stable' as const },
-  { name: 'Barba', count: 89, percentage: 25.0, trend: 'up' as const },
-];
-
-const serviceDistribution = [
-  { name: 'Corte + Barba', value: 39.9, color: '#3B82F6', count: 142 },
-  { name: 'Corte Simples', value: 35.1, color: '#3B82F6', count: 125 },
-  { name: 'Barba', value: 25.0, color: '#3B82F6', count: 89 },
-];
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 
 export const AtendimentosPage: React.FC = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('monthly');
+  const [periodo, setPeriodo] = useState('mensal');
 
-  const getCurrentData = () => {
-    return appointmentsData[selectedPeriod as keyof typeof appointmentsData] || appointmentsData.monthly;
+  // Mock data para demonstração
+  const mockAtendimentosPorDia = [
+    { dia: '01/01', atendimentos: 12 },
+    { dia: '02/01', atendimentos: 8 },
+    { dia: '03/01', atendimentos: 15 },
+    { dia: '04/01', atendimentos: 10 },
+    { dia: '05/01', atendimentos: 18 },
+    { dia: '06/01', atendimentos: 22 },
+    { dia: '07/01', atendimentos: 20 },
+  ];
+
+  const mockTendenciaAtendimentos = [
+    { mes: 'Set', atendimentos: 245 },
+    { mes: 'Out', atendimentos: 289 },
+    { mes: 'Nov', atendimentos: 312 },
+    { mes: 'Dez', atendimentos: 298 },
+    { mes: 'Jan', atendimentos: 356 },
+  ];
+
+  const mockTopServicos = [
+    { 
+      posicao: 1, 
+      servico: 'Corte Masculino', 
+      quantidade: 156, 
+      percentual: 45.2, 
+      tendencia: 'up' as const,
+      variacao: '+12%'
+    },
+    { 
+      posicao: 2, 
+      servico: 'Barba', 
+      quantidade: 98, 
+      percentual: 28.4, 
+      tendencia: 'up' as const,
+      variacao: '+8%'
+    },
+    { 
+      posicao: 3, 
+      servico: 'Corte + Barba', 
+      quantidade: 67, 
+      percentual: 19.4, 
+      tendencia: 'stable' as const,
+      variacao: '0%'
+    },
+  ];
+
+  const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
+    switch (trend) {
+      case 'up':
+        return <ArrowUp className="h-4 w-4 text-green-500" />;
+      case 'down':
+        return <ArrowDown className="h-4 w-4 text-red-500" />;
+      case 'stable':
+        return <Minus className="h-4 w-4 text-gray-500" />;
+      default:
+        return <Minus className="h-4 w-4 text-gray-500" />;
+    }
   };
 
-  const getMetrics = () => {
-    const data = getCurrentData();
-    const totalAtendimentos = selectedPeriod === 'monthly' ? 356 : data.reduce((sum, item) => sum + item.atendimentos, 0);
-    const mediaAtendimentos = selectedPeriod === 'monthly' ? 11.5 : Math.round(totalAtendimentos / data.length);
-    
-    return { totalAtendimentos, mediaAtendimentos };
+  const getRankIcon = (posicao: number) => {
+    switch (posicao) {
+      case 1:
+        return <Crown className="h-5 w-5 text-yellow-500" />;
+      case 2:
+        return <Medal className="h-5 w-5 text-gray-400" />;
+      case 3:
+        return <Award className="h-5 w-5 text-orange-500" />;
+      default:
+        return null;
+    }
   };
-
-  const metrics = getMetrics();
 
   return (
     <div className="p-6 space-y-6 bg-gray-50/50 min-h-full">
@@ -81,158 +100,200 @@ export const AtendimentosPage: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Atendimentos</h1>
+          <p className="text-gray-600 mt-1">Análise de performance e serviços mais procurados</p>
         </div>
+        <Select value={periodo} onValueChange={setPeriodo}>
+          <SelectTrigger className="w-40">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="diario">Diário</SelectItem>
+            <SelectItem value="semanal">Semanal</SelectItem>
+            <SelectItem value="mensal">Mensal</SelectItem>
+            <SelectItem value="trimestral">Trimestral</SelectItem>
+            <SelectItem value="anual">Anual</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* Period Tabs */}
-      <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod}>
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="daily">Diário</TabsTrigger>
-          <TabsTrigger value="weekly">Semanal</TabsTrigger>
-          <TabsTrigger value="monthly" className="bg-trinks-orange text-white data-[state=active]:bg-trinks-orange data-[state=active]:text-white">Mensal</TabsTrigger>
-          <TabsTrigger value="quarterly">Trimestral</TabsTrigger>
-          <TabsTrigger value="yearly">Anual</TabsTrigger>
-        </TabsList>
+      {/* Cards de Métricas */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total de Atendimentos</CardTitle>
+            <Users className="h-4 w-4 text-trinks-orange" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">345</div>
+            <p className="text-xs text-green-600 flex items-center">
+              <TrendingUp className="h-3 w-3 mr-1" />
+              +15% em relação ao mês anterior
+            </p>
+          </CardContent>
+        </Card>
 
-        <TabsContent value={selectedPeriod} className="space-y-6">
-          {/* Performance do Mês */}
-          {selectedPeriod === 'monthly' && (
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Performance de Atendimentos do Mês</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Total de Atendimentos</p>
-                        <p className="text-3xl font-bold text-gray-900">356</p>
-                        <p className="text-sm text-gray-600">Em relação ao período anterior</p>
-                      </div>
-                      <div className="flex items-center text-green-600">
-                        <TrendingUp className="h-4 w-4 mr-1" />
-                        <span className="text-sm font-medium">15.2%</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Média Diária</CardTitle>
+            <Calendar className="h-4 w-4 text-trinks-orange" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">11.1</div>
+            <p className="text-xs text-gray-600">atendimentos por dia</p>
+          </CardContent>
+        </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Média por Dia</p>
-                      <p className="text-3xl font-bold text-gray-900">11.5</p>
-                      <p className="text-sm text-gray-600">Baseado no período selecionado</p>
-                    </div>
-                  </CardContent>
-                </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pico do Mês</CardTitle>
+            <Clock className="h-4 w-4 text-trinks-orange" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">22</div>
+            <p className="text-xs text-gray-600">atendimentos em 06/01</p>
+          </CardContent>
+        </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Serviço Mais Popular</p>
-                      <p className="text-2xl font-bold text-gray-900">Corte + Barba</p>
-                      <p className="text-sm text-gray-600">142 atendimentos (39.9%)</p>
-                    </div>
-                  </CardContent>
-                </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Taxa de Crescimento</CardTitle>
+            <TrendingUp className="h-4 w-4 text-trinks-orange" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">+15%</div>
+            <p className="text-xs text-gray-600">vs mês anterior</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Gráficos */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Gráfico de Atendimentos por Dia */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <BarChart className="h-5 w-5 text-trinks-orange" />
+              <span>Atendimentos por Dia</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={mockAtendimentosPorDia}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="dia" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="atendimentos" fill="#E85A00" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Tendência de Atendimentos */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <TrendingUp className="h-5 w-5 text-trinks-orange" />
+              <span>Tendência de Crescimento</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={mockTendenciaAtendimentos}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="mes" />
+                <YAxis />
+                <Tooltip />
+                <Line 
+                  type="monotone" 
+                  dataKey="atendimentos" 
+                  stroke="#E85A00" 
+                  strokeWidth={3}
+                  dot={{ fill: '#E85A00' }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Top 3 Serviços Mais Realizados */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Scissors className="h-5 w-5 text-trinks-orange" />
+            <span>Top 3 Serviços Mais Procurados</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {mockTopServicos.map((servico, index) => (
+              <div 
+                key={servico.posicao}
+                className={`flex items-center justify-between p-4 rounded-lg border-2 ${
+                  index === 0 ? 'border-yellow-200 bg-yellow-50' :
+                  index === 1 ? 'border-gray-200 bg-gray-50' :
+                  'border-orange-200 bg-orange-50'
+                }`}
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    {getRankIcon(servico.posicao)}
+                    <span className="text-2xl font-bold text-gray-700">#{servico.posicao}</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">{servico.servico}</h3>
+                    <p className="text-sm text-gray-600">
+                      {servico.quantidade} atendimentos • {servico.percentual}% do total
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Badge variant={servico.tendencia === 'up' ? 'default' : 'secondary'} className="flex items-center space-x-1">
+                    {getTrendIcon(servico.tendencia)}
+                    <span>{servico.variacao}</span>
+                  </Badge>
+                </div>
               </div>
-            </div>
-          )}
-
-          {/* Distribuição de Serviços e Top 3 */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Distribuição de Serviços */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Distribuição de Serviços</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {serviceDistribution.map((service, index) => (
-                  <div key={service.name} className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">{service.name}</span>
-                      <span className="font-bold">{service.value}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-blue-500 h-2 rounded-full" 
-                        style={{ width: `${service.value}%` }}
-                      ></div>
-                    </div>
-                    <p className="text-sm text-gray-600">{service.count} atendimentos</p>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Top 3 Serviços */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Top 3 Serviços Mais Realizados</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {servicesData.map((service, index) => (
-                  <div
-                    key={service.name}
-                    className="flex items-center justify-between p-3 rounded-lg border bg-gray-50/50"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
-                        index === 0 ? 'bg-yellow-500' : 
-                        index === 1 ? 'bg-gray-400' : 
-                        'bg-orange-500'
-                      }`}>
-                        {index + 1}
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{service.name}</p>
-                        <p className="text-sm text-gray-600">
-                          {service.count} atendimentos ({service.percentage}%)
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      {service.trend === 'up' ? (
-                        <TrendingUp className="h-4 w-4 text-green-600" />
-                      ) : service.trend === 'down' ? (
-                        <TrendingDown className="h-4 w-4 text-red-600" />
-                      ) : (
-                        <div className="h-4 w-4 bg-gray-400 rounded-full"></div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            ))}
           </div>
+        </CardContent>
+      </Card>
 
-          {/* Análise de Crescimento */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Análise de Crescimento</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">Taxa de Crescimento</span>
-                    <span className="text-lg font-bold text-green-600">+15.2%</span>
-                  </div>
-                  <p className="text-sm text-gray-600">Comparado ao período anterior</p>
-                </div>
-                
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-blue-700">Meta Diária</span>
-                    <span className="text-lg font-bold text-blue-700">12 atendimentos</span>
-                  </div>
-                  <p className="text-sm text-gray-600">Objetivo estabelecido</p>
-                </div>
+      {/* Distribuição por Horário */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Clock className="h-5 w-5 text-trinks-orange" />
+            <span>Distribuição por Horário</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+            {[
+              { hora: '08h', intensidade: 20 },
+              { hora: '09h', intensidade: 45 },
+              { hora: '10h', intensidade: 80 },
+              { hora: '11h', intensidade: 90 },
+              { hora: '14h', intensidade: 100 },
+              { hora: '15h', intensidade: 95 },
+              { hora: '16h', intensidade: 85 },
+              { hora: '17h', intensidade: 70 },
+            ].map((slot) => (
+              <div key={slot.hora} className="text-center">
+                <div 
+                  className="w-full h-16 rounded-md mb-2 transition-all"
+                  style={{
+                    backgroundColor: `rgba(232, 90, 0, ${slot.intensidade / 100})`,
+                  }}
+                />
+                <span className="text-xs font-medium">{slot.hora}</span>
+                <p className="text-xs text-gray-500">{slot.intensidade}%</p>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

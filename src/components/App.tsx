@@ -6,11 +6,12 @@ import { Sidebar } from './layout/Sidebar';
 import { Dashboard } from './dashboard/Dashboard';
 import { FinanceiroPage } from './pages/FinanceiroPage';
 import { AtendimentosPage } from './pages/AtendimentosPage';
+import { ClientesPage } from './pages/ClientesPage';
 import { ConfiguracoesPage } from './pages/ConfiguracoesPage';
 import { useToast } from '@/hooks/use-toast';
 
 type AuthState = 'login' | 'forgot-password' | 'authenticated';
-type PageState = 'dashboard' | 'financeiro' | 'atendimentos' | 'relatorios' | 'clientes' | 'configuracoes';
+type PageState = 'dashboard' | 'financeiro' | 'atendimentos' | 'clientes' | 'configuracoes';
 
 export const App: React.FC = () => {
   const [authState, setAuthState] = useState<AuthState>('login');
@@ -45,26 +46,10 @@ export const App: React.FC = () => {
         return <FinanceiroPage />;
       case 'atendimentos':
         return <AtendimentosPage />;
+      case 'clientes':
+        return <ClientesPage />;
       case 'configuracoes':
         return <ConfiguracoesPage />;
-      case 'relatorios':
-        return (
-          <div className="p-6 bg-gray-50/50 min-h-full">
-            <div className="text-center py-20">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Relatórios</h2>
-              <p className="text-gray-600">Esta funcionalidade estará disponível em breve.</p>
-            </div>
-          </div>
-        );
-      case 'clientes':
-        return (
-          <div className="p-6 bg-gray-50/50 min-h-full">
-            <div className="text-center py-20">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Clientes</h2>
-              <p className="text-gray-600">Esta funcionalidade estará disponível em breve.</p>
-            </div>
-          </div>
-        );
       default:
         return <Dashboard />;
     }

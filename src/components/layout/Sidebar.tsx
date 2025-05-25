@@ -6,7 +6,6 @@ import {
   Home, 
   DollarSign, 
   Calendar, 
-  BarChart3, 
   Settings, 
   LogOut, 
   Scissors,
@@ -35,7 +34,6 @@ const menuItems: MenuItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: Home },
   { id: 'financeiro', label: 'Financeiro', icon: DollarSign },
   { id: 'atendimentos', label: 'Atendimentos', icon: Calendar },
-  { id: 'relatorios', label: 'Relatórios', icon: BarChart3 },
   { id: 'clientes', label: 'Clientes', icon: Users },
   { id: 'configuracoes', label: 'Configurações', icon: Settings },
 ];
