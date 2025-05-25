@@ -43,7 +43,7 @@ const appointmentsData = [
 ];
 
 export const Dashboard: React.FC = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('daily');
+  const [selectedPeriod, setSelectedPeriod] = useState('semanal');
 
   return (
     <div className="p-6 space-y-6 bg-gray-50/50 min-h-full">
@@ -56,98 +56,95 @@ export const Dashboard: React.FC = () => {
 
       {/* Period Tabs */}
       <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod}>
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="daily" className="bg-trinks-orange text-white data-[state=active]:bg-trinks-orange data-[state=active]:text-white">Diário</TabsTrigger>
-          <TabsTrigger value="weekly">Semanal</TabsTrigger>
-          <TabsTrigger value="monthly">Mensal</TabsTrigger>
-          <TabsTrigger value="quarterly">Trimestral</TabsTrigger>
-          <TabsTrigger value="yearly">Anual</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="semanal" className="bg-trinks-orange text-white data-[state=active]:bg-trinks-orange data-[state=active]:text-white">Semanal</TabsTrigger>
+          <TabsTrigger value="mensal">Mensal</TabsTrigger>
+          <TabsTrigger value="trimestral">Trimestral</TabsTrigger>
+          <TabsTrigger value="anual">Anual</TabsTrigger>
         </TabsList>
 
         <TabsContent value={selectedPeriod} className="space-y-6">
           {/* Métricas Financeiras */}
-          {selectedPeriod === 'daily' && (
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Métricas Financeiras</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Faturamento</p>
-                        <p className="text-3xl font-bold text-gray-900">R$ 850</p>
-                        <p className="text-sm text-gray-600">Em relação ao período anterior</p>
-                      </div>
-                      <div className="flex items-center text-green-600">
-                        <TrendingUp className="h-4 w-4 mr-1" />
-                        <span className="text-sm font-medium">18.1%</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="pt-6">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Métricas Financeiras</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">Despesas</p>
-                      <p className="text-3xl font-bold text-gray-900">R$ 120</p>
-                      <p className="text-sm text-gray-600">Total do período</p>
+                      <p className="text-sm font-medium text-gray-600">Faturamento</p>
+                      <p className="text-3xl font-bold text-gray-900">R$ {selectedPeriod === 'semanal' ? '4.500' : selectedPeriod === 'mensal' ? '18.500' : selectedPeriod === 'trimestral' ? '55.600' : '220.000'}</p>
+                      <p className="text-sm text-gray-600">Em relação ao período anterior</p>
                     </div>
-                  </CardContent>
-                </Card>
+                    <div className="flex items-center text-green-600">
+                      <TrendingUp className="h-4 w-4 mr-1" />
+                      <span className="text-sm font-medium">18.1%</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Lucro Líquido</p>
-                      <p className="text-3xl font-bold text-gray-900">R$ 730</p>
-                      <p className="text-sm text-gray-600">Receita - Despesas</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              <Card>
+                <CardContent className="pt-6">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Despesas</p>
+                    <p className="text-3xl font-bold text-gray-900">R$ {selectedPeriod === 'semanal' ? '800' : selectedPeriod === 'mensal' ? '3.200' : selectedPeriod === 'trimestral' ? '9.600' : '38.400'}</p>
+                    <p className="text-sm text-gray-600">Total do período</p>
+                  </div>
+                </CardContent>
+              </Card>
 
-              {/* Atendimentos */}
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Atendimentos</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Total de Atendimentos</p>
-                        <p className="text-3xl font-bold text-gray-900">12</p>
-                        <p className="text-sm text-gray-600">Em relação ao período anterior</p>
-                      </div>
-                      <div className="flex items-center text-red-600">
-                        <TrendingDown className="h-4 w-4 mr-1" />
-                        <span className="text-sm font-medium">14.3%</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="pt-6">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Média por Dia</p>
-                      <p className="text-3xl font-bold text-gray-900">14.0</p>
-                      <p className="text-sm text-gray-600">Baseado no período selecionado</p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="pt-6">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Serviço Mais Popular</p>
-                      <p className="text-2xl font-bold text-gray-900">Corte + Barba</p>
-                      <p className="text-sm text-gray-600">5 atendimentos</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              <Card>
+                <CardContent className="pt-6">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Lucro Líquido</p>
+                    <p className="text-3xl font-bold text-gray-900">R$ {selectedPeriod === 'semanal' ? '3.700' : selectedPeriod === 'mensal' ? '15.300' : selectedPeriod === 'trimestral' ? '46.000' : '181.600'}</p>
+                    <p className="text-sm text-gray-600">Receita - Despesas</p>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          )}
+
+            {/* Atendimentos */}
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Atendimentos</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Total de Atendimentos</p>
+                      <p className="text-3xl font-bold text-gray-900">{selectedPeriod === 'semanal' ? '68' : selectedPeriod === 'mensal' ? '280' : selectedPeriod === 'trimestral' ? '840' : '3.200'}</p>
+                      <p className="text-sm text-gray-600">Em relação ao período anterior</p>
+                    </div>
+                    <div className="flex items-center text-red-600">
+                      <TrendingDown className="h-4 w-4 mr-1" />
+                      <span className="text-sm font-medium">14.3%</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="pt-6">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Média por Dia</p>
+                    <p className="text-3xl font-bold text-gray-900">{selectedPeriod === 'semanal' ? '9.7' : selectedPeriod === 'mensal' ? '9.3' : selectedPeriod === 'trimestral' ? '9.3' : '8.8'}</p>
+                    <p className="text-sm text-gray-600">Baseado no período selecionado</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="pt-6">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Serviço Mais Popular</p>
+                    <p className="text-2xl font-bold text-gray-900">Corte + Barba</p>
+                    <p className="text-sm text-gray-600">{selectedPeriod === 'semanal' ? '28' : selectedPeriod === 'mensal' ? '115' : selectedPeriod === 'trimestral' ? '350' : '1.330'} atendimentos</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
 
           {/* Top 3 Serviços Mais Realizados */}
           <Card>
