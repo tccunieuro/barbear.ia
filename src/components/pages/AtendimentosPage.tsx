@@ -20,25 +20,54 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 
 export const AtendimentosPage: React.FC = () => {
-  const [periodo, setPeriodo] = useState('mensal');
+  const [periodo, setPeriodo] = useState('diario');
 
-  // Mock data para demonstração
-  const mockAtendimentosPorDia = [
-    { dia: '01/01', atendimentos: 12 },
-    { dia: '02/01', atendimentos: 8 },
-    { dia: '03/01', atendimentos: 15 },
-    { dia: '04/01', atendimentos: 10 },
-    { dia: '05/01', atendimentos: 18 },
-    { dia: '06/01', atendimentos: 22 },
-    { dia: '07/01', atendimentos: 20 },
-  ];
+  // Mock data para todos os períodos
+  const mockAtendimentosPorPeriodo = {
+    diario: [
+      { nome: '08h', atendimentos: 3 },
+      { nome: '09h', atendimentos: 5 },
+      { nome: '10h', atendimentos: 8 },
+      { nome: '11h', atendimentos: 6 },
+      { nome: '14h', atendimentos: 10 },
+      { nome: '15h', atendimentos: 7 },
+      { nome: '16h', atendimentos: 9 },
+      { nome: '17h', atendimentos: 4 },
+    ],
+    semanal: [
+      { nome: 'Seg', atendimentos: 12 },
+      { nome: 'Ter', atendimentos: 8 },
+      { nome: 'Qua', atendimentos: 15 },
+      { nome: 'Qui', atendimentos: 10 },
+      { nome: 'Sex', atendimentos: 18 },
+      { nome: 'Sáb', atendimentos: 22 },
+      { nome: 'Dom', atendimentos: 20 },
+    ],
+    mensal: [
+      { nome: 'Sem 1', atendimentos: 85 },
+      { nome: 'Sem 2', atendimentos: 92 },
+      { nome: 'Sem 3', atendimentos: 78 },
+      { nome: 'Sem 4', atendimentos: 105 },
+    ],
+    trimestral: [
+      { nome: 'Jan', atendimentos: 320 },
+      { nome: 'Fev', atendimentos: 280 },
+      { nome: 'Mar', atendimentos: 350 },
+    ],
+    anual: [
+      { nome: '2021', atendimentos: 3200 },
+      { nome: '2022', atendimentos: 3600 },
+      { nome: '2023', atendimentos: 3900 },
+      { nome: '2024', atendimentos: 4200 },
+    ]
+  };
 
   const mockTendenciaAtendimentos = [
-    { mes: 'Set', atendimentos: 245 },
-    { mes: 'Out', atendimentos: 289 },
-    { mes: 'Nov', atendimentos: 312 },
-    { mes: 'Dez', atendimentos: 298 },
-    { mes: 'Jan', atendimentos: 356 },
+    { periodo: 'Per 1', atendimentos: 245 },
+    { periodo: 'Per 2', atendimentos: 289 },
+    { periodo: 'Per 3', atendimentos: 312 },
+    { periodo: 'Per 4', atendimentos: 298 },
+    { periodo: 'Per 5', atendimentos: 356 },
   ];
 
   const mockTopServicos = [
@@ -67,6 +96,59 @@ export const AtendimentosPage: React.FC = () => {
       variacao: '0%'
     },
   ];
+
+  const getMetricsByPeriod = (period: string) => {
+    switch (period) {
+      case 'diario':
+        return {
+          total: 52,
+          media: 6.5,
+          pico: 10,
+          crescimento: '+15%'
+        };
+      case 'semanal':
+        return {
+          total: 105,
+          media: 15.0,
+          pico: 22,
+          crescimento: '+12%'
+        };
+      case 'mensal':
+        return {
+          total: 360,
+          media: 11.6,
+          pico: 105,
+          crescimento: '+8%'
+        };
+      case 'trimestral':
+        return {
+          total: 950,
+          media: 10.6,
+          pico: 350,
+          crescimento: '+18%'
+        };
+      case 'anual':
+        return {
+          total: 4200,
+          media: 11.5,
+          pico: 4200,
+          crescimento: '+7%'
+        };
+      default:
+        return {
+          total: 52,
+          media: 6.5,
+          pico: 10,
+          crescimento: '+15%'
+        };
+    }
+  };
+
+  const getCurrentData = () => {
+    return mockAtendimentosPorPeriodo[periodo as keyof typeof mockAtendimentosPorPeriodo] || mockAtendimentosPorPeriodo.diario;
+  };
+
+  const metrics = getMetricsByPeriod(periodo);
 
   const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
     switch (trend) {
@@ -124,33 +206,33 @@ export const AtendimentosPage: React.FC = () => {
             <Users className="h-4 w-4 text-trinks-orange" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">345</div>
+            <div className="text-2xl font-bold">{metrics.total}</div>
             <p className="text-xs text-green-600 flex items-center">
               <TrendingUp className="h-3 w-3 mr-1" />
-              +15% em relação ao mês anterior
+              {metrics.crescimento} em relação ao período anterior
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Média Diária</CardTitle>
+            <CardTitle className="text-sm font-medium">Média por {periodo === 'diario' ? 'Hora' : periodo === 'semanal' ? 'Dia' : periodo === 'mensal' ? 'Semana' : periodo === 'trimestral' ? 'Mês' : 'Ano'}</CardTitle>
             <Calendar className="h-4 w-4 text-trinks-orange" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">11.1</div>
-            <p className="text-xs text-gray-600">atendimentos por dia</p>
+            <div className="text-2xl font-bold">{metrics.media}</div>
+            <p className="text-xs text-gray-600">atendimentos por período</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pico do Mês</CardTitle>
+            <CardTitle className="text-sm font-medium">Pico do Período</CardTitle>
             <Clock className="h-4 w-4 text-trinks-orange" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">22</div>
-            <p className="text-xs text-gray-600">atendimentos em 06/01</p>
+            <div className="text-2xl font-bold">{metrics.pico}</div>
+            <p className="text-xs text-gray-600">maior registro do período</p>
           </CardContent>
         </Card>
 
@@ -160,27 +242,27 @@ export const AtendimentosPage: React.FC = () => {
             <TrendingUp className="h-4 w-4 text-trinks-orange" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">+15%</div>
-            <p className="text-xs text-gray-600">vs mês anterior</p>
+            <div className="text-2xl font-bold text-green-600">{metrics.crescimento}</div>
+            <p className="text-xs text-gray-600">vs período anterior</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico de Atendimentos por Dia */}
+        {/* Gráfico de Atendimentos por Período */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <BarChart className="h-5 w-5 text-trinks-orange" />
-              <span>Atendimentos por Dia</span>
+              <span>Atendimentos por {periodo === 'diario' ? 'Hora' : periodo === 'semanal' ? 'Dia' : periodo === 'mensal' ? 'Semana' : periodo === 'trimestral' ? 'Mês' : 'Ano'}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={mockAtendimentosPorDia}>
+              <BarChart data={getCurrentData()}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="dia" />
+                <XAxis dataKey="nome" />
                 <YAxis />
                 <Tooltip />
                 <Bar dataKey="atendimentos" fill="#E85A00" />
@@ -201,7 +283,7 @@ export const AtendimentosPage: React.FC = () => {
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={mockTendenciaAtendimentos}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="mes" />
+                <XAxis dataKey="periodo" />
                 <YAxis />
                 <Tooltip />
                 <Line 

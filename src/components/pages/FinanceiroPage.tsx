@@ -114,10 +114,10 @@ const getPeriodLabel = (period: string) => {
 };
 
 export const FinanceiroPage: React.FC = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('monthly');
+  const [selectedPeriod, setSelectedPeriod] = useState('weekly');
 
   const getCurrentData = () => {
-    return mockData[selectedPeriod as keyof typeof mockData] || mockData.monthly;
+    return mockData[selectedPeriod as keyof typeof mockData] || mockData.weekly;
   };
 
   const metrics = getMetricsByPeriod(selectedPeriod);
@@ -135,10 +135,9 @@ export const FinanceiroPage: React.FC = () => {
 
       {/* Period Tabs */}
       <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod}>
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="daily">Diário</TabsTrigger>
-          <TabsTrigger value="weekly">Semanal</TabsTrigger>
-          <TabsTrigger value="monthly" className="bg-trinks-orange text-white data-[state=active]:bg-trinks-orange data-[state=active]:text-white">Mensal</TabsTrigger>
+          <TabsTrigger value="weekly" className="bg-trinks-orange text-white data-[state=active]:bg-trinks-orange data-[state=active]:text-white">Semanal</TabsTrigger>
           <TabsTrigger value="quarterly">Trimestral</TabsTrigger>
           <TabsTrigger value="yearly">Anual</TabsTrigger>
         </TabsList>

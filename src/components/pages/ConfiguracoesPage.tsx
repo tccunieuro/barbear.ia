@@ -86,16 +86,6 @@ export const ConfiguracoesPage: React.FC = () => {
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div>
-                <h3 className="font-medium">Autenticação de Dois Fatores</h3>
-                <p className="text-sm text-gray-600">Adicione uma camada extra de segurança</p>
-              </div>
-              <Button className="bg-trinks-orange hover:bg-trinks-orange-dark">
-                Configurar
-              </Button>
-            </div>
-
-            <div className="flex items-center justify-between p-4 border rounded-lg">
-              <div>
                 <h3 className="font-medium">Alterar Senha</h3>
                 <p className="text-sm text-gray-600">Atualize sua senha regularmente</p>
               </div>
@@ -131,16 +121,6 @@ export const ConfiguracoesPage: React.FC = () => {
                 <p className="text-sm text-gray-600 mt-1">
                   Escolha entre tema claro, escuro ou automático (segue a preferência do sistema)
                 </p>
-              </div>
-
-              {/* Preview do tema */}
-              <div className="p-4 border rounded-lg bg-white dark:bg-gray-800 transition-colors">
-                <h4 className="font-medium mb-2 text-gray-900 dark:text-white">Preview do Tema</h4>
-                <div className="space-y-2">
-                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                  <div className="h-2 bg-trinks-orange rounded w-3/4"></div>
-                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-                </div>
               </div>
             </div>
           </CardContent>
