@@ -14,39 +14,48 @@ import {
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
-// Mock data for different periods
+// Mock data atualizado conforme as imagens
 const mockData = {
   daily: [
-    { name: 'Hoje', receita: 1247, despesa: 320, lucro: 927 },
-    { name: 'Ontem', receita: 1180, despesa: 280, lucro: 900 },
+    { name: 'Hoje', receita: 850, despesa: 120, lucro: 730 },
+    { name: 'Ontem', receita: 720, despesa: 100, lucro: 620 },
   ],
   weekly: [
-    { name: 'Seg', receita: 450, despesa: 120, lucro: 330 },
-    { name: 'Ter', receita: 320, despesa: 80, lucro: 240 },
-    { name: 'Qua', receita: 580, despesa: 150, lucro: 430 },
-    { name: 'Qui', receita: 420, despesa: 100, lucro: 320 },
-    { name: 'Sex', receita: 680, despesa: 180, lucro: 500 },
-    { name: 'Sáb', receita: 890, despesa: 200, lucro: 690 },
-    { name: 'Dom', receita: 340, despesa: 90, lucro: 250 },
+    { name: 'Seg', receita: 650, despesa: 180, lucro: 470 },
+    { name: 'Ter', receita: 480, despesa: 120, lucro: 360 },
+    { name: 'Qua', receita: 780, despesa: 200, lucro: 580 },
+    { name: 'Qui', receita: 620, despesa: 140, lucro: 480 },
+    { name: 'Sex', receita: 890, despesa: 220, lucro: 670 },
+    { name: 'Sáb', receita: 1200, despesa: 280, lucro: 920 },
+    { name: 'Dom', receita: 520, despesa: 130, lucro: 390 },
   ],
   monthly: [
-    { name: 'Jan', receita: 28450, despesa: 8200, lucro: 20250 },
-    { name: 'Fev', receita: 31200, despesa: 9100, lucro: 22100 },
-    { name: 'Mar', receita: 29800, despesa: 8800, lucro: 21000 },
-    { name: 'Abr', receita: 33500, despesa: 9500, lucro: 24000 },
-    { name: 'Mai', receita: 35200, despesa: 10200, lucro: 25000 },
-    { name: 'Jun', receita: 38900, despesa: 11100, lucro: 27800 },
+    { name: 'Jan', receita: 16800, despesa: 3200, lucro: 13600 },
+    { name: 'Fev', receita: 17200, despesa: 3100, lucro: 14100 },
+    { name: 'Mar', receita: 18500, despesa: 3200, lucro: 15300 },
+    { name: 'Abr', receita: 17800, despesa: 3000, lucro: 14800 },
+    { name: 'Mai', receita: 19200, despesa: 3400, lucro: 15800 },
+    { name: 'Jun', receita: 18500, despesa: 3200, lucro: 15300 },
   ]
 };
 
 export const FinanceiroPage: React.FC = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('weekly');
+  const [selectedPeriod, setSelectedPeriod] = useState('monthly');
 
   const getCurrentData = () => {
-    return mockData[selectedPeriod as keyof typeof mockData] || mockData.weekly;
+    return mockData[selectedPeriod as keyof typeof mockData] || mockData.monthly;
   };
 
   const getMetrics = () => {
+    if (selectedPeriod === 'monthly') {
+      return {
+        totalReceita: 18500,
+        totalDespesa: 3200,
+        totalLucro: 15300,
+        margemLucro: '82.7'
+      };
+    }
+    
     const data = getCurrentData();
     const totalReceita = data.reduce((sum, item) => sum + item.receita, 0);
     const totalDespesa = data.reduce((sum, item) => sum + item.despesa, 0);
@@ -63,18 +72,7 @@ export const FinanceiroPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Financeiro</h1>
-          <p className="text-gray-600 mt-1">Controle de receitas e despesas</p>
-        </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" />
-            Filtros
-          </Button>
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Exportar
-          </Button>
+          <h1 className="text-3xl font-bold text-gray-900">Faturamento e Despesas</h1>
         </div>
       </div>
 
@@ -83,49 +81,118 @@ export const FinanceiroPage: React.FC = () => {
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="daily">Diário</TabsTrigger>
           <TabsTrigger value="weekly">Semanal</TabsTrigger>
-          <TabsTrigger value="monthly">Mensal</TabsTrigger>
+          <TabsTrigger value="monthly" className="bg-trinks-orange text-white data-[state=active]:bg-trinks-orange data-[state=active]:text-white">Mensal</TabsTrigger>
           <TabsTrigger value="quarterly">Trimestral</TabsTrigger>
           <TabsTrigger value="yearly">Anual</TabsTrigger>
         </TabsList>
 
         <TabsContent value={selectedPeriod} className="space-y-6">
-          {/* Metrics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <MetricCard
-              title="Receita Total"
-              value={`R$ ${metrics.totalReceita.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-              change="+15% vs período anterior"
-              changeType="positive"
-              icon={DollarSign}
-              iconColor="text-green-600"
-            />
-            <MetricCard
-              title="Despesas Total"
-              value={`R$ ${metrics.totalDespesa.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-              change="+8% vs período anterior"
-              changeType="negative"
-              icon={TrendingDown}
-              iconColor="text-red-600"
-            />
-            <MetricCard
-              title="Lucro Líquido"
-              value={`R$ ${metrics.totalLucro.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-              change="+22% vs período anterior"
-              changeType="positive"
-              icon={TrendingUp}
-              iconColor="text-trinks-orange"
-            />
-            <MetricCard
-              title="Margem de Lucro"
-              value={`${metrics.margemLucro}%`}
-              change="+2.3% vs período anterior"
-              changeType="positive"
-              icon={Calendar}
-              iconColor="text-blue-600"
-            />
-          </div>
+          {/* Resumo Financeiro do Mês */}
+          {selectedPeriod === 'monthly' && (
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Resumo Financeiro do Mês</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Faturamento</p>
+                        <p className="text-3xl font-bold text-gray-900">R$ 18.500</p>
+                        <p className="text-sm text-gray-600">Em relação ao período anterior</p>
+                      </div>
+                      <div className="flex items-center text-green-600">
+                        <TrendingUp className="h-4 w-4 mr-1" />
+                        <span className="text-sm font-medium">10.1%</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
 
-          {/* Charts */}
+                <Card>
+                  <CardContent className="pt-6">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Despesas</p>
+                      <p className="text-3xl font-bold text-gray-900">R$ 3.200</p>
+                      <p className="text-sm text-gray-600">Total do período</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Lucro Líquido</p>
+                        <p className="text-3xl font-bold text-gray-900">R$ 15.300</p>
+                        <p className="text-sm text-gray-600">Receita - Despesas</p>
+                      </div>
+                      <div className="flex items-center text-green-600">
+                        <TrendingUp className="h-4 w-4 mr-1" />
+                        <span className="text-sm font-medium">10.1%</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
+
+          {/* Projeção do Mês e Análise Comparativa */}
+          {selectedPeriod === 'monthly' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Projeção do Mês */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Projeção do Mês</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Faturamento Atual</span>
+                    <span className="text-xl font-bold">R$ 18.500</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Projeção para o Mês</span>
+                    <span className="text-xl font-bold text-green-600">R$ 19.200</span>
+                  </div>
+
+                  <div className="pt-4 border-t">
+                    <p className="text-sm text-gray-600 mb-2">
+                      Baseado na performance atual, estimamos um faturamento total de <strong>R$ 19.200</strong> até o final do mês.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Análise Comparativa */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Análise Comparativa</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-600">Período Atual</p>
+                      <p className="text-lg font-bold">R$ 18.500</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Período Anterior</p>
+                      <p className="text-lg font-bold">R$ 16.800</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Crescimento</span>
+                      <span className="text-lg font-bold text-green-600">+10.1%</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Revenue vs Expenses Chart */}
             <Card>
@@ -186,53 +253,6 @@ export const FinanceiroPage: React.FC = () => {
                     />
                   </AreaChart>
                 </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Detailed Breakdown */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Principais Receitas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                    <span className="font-medium">Cortes Masculinos</span>
-                    <span className="font-bold text-green-700">R$ 4.350,00</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                    <span className="font-medium">Serviços de Barba</span>
-                    <span className="font-bold text-green-700">R$ 2.890,00</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                    <span className="font-medium">Tratamentos</span>
-                    <span className="font-bold text-green-700">R$ 1.450,00</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Principais Despesas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
-                    <span className="font-medium">Produtos/Materiais</span>
-                    <span className="font-bold text-red-700">R$ 850,00</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
-                    <span className="font-medium">Salários</span>
-                    <span className="font-bold text-red-700">R$ 1.200,00</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
-                    <span className="font-medium">Aluguel/Utilities</span>
-                    <span className="font-bold text-red-700">R$ 650,00</span>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>

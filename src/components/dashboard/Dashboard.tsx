@@ -1,15 +1,17 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { MetricCard } from './MetricCard';
 import { ServiceRanking } from './ServiceRanking';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   DollarSign, 
   Calendar, 
   TrendingUp, 
   Users,
   Scissors,
-  Clock
+  Clock,
+  TrendingDown
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
@@ -25,174 +27,169 @@ const revenueData = [
 ];
 
 const servicesData = [
-  { name: 'Corte Masculino', count: 145, percentage: 35, trend: 'up' as const },
-  { name: 'Barba + Bigode', count: 98, percentage: 24, trend: 'stable' as const },
-  { name: 'Corte + Barba', count: 76, percentage: 18, trend: 'up' as const },
-  { name: 'Sobrancelha', count: 45, percentage: 11, trend: 'down' as const },
-  { name: 'Relaxamento', count: 32, percentage: 8, trend: 'stable' as const },
+  { name: 'Corte + Barba', count: 5, percentage: 41.7, trend: 'up' as const },
+  { name: 'Corte Simples', count: 4, percentage: 33.3, trend: 'stable' as const },
+  { name: 'Barba', count: 3, percentage: 25.0, trend: 'down' as const },
 ];
 
 const appointmentsData = [
-  { name: '08:00', valor: 3 },
-  { name: '10:00', valor: 5 },
-  { name: '12:00', valor: 8 },
-  { name: '14:00', valor: 12 },
-  { name: '16:00', valor: 15 },
-  { name: '18:00', valor: 18 },
-  { name: '20:00', valor: 8 },
+  { name: '08:00', valor: 1 },
+  { name: '10:00', valor: 2 },
+  { name: '12:00', valor: 3 },
+  { name: '14:00', valor: 4 },
+  { name: '16:00', valor: 2 },
+  { name: '18:00', valor: 0 },
+  { name: '20:00', valor: 0 },
 ];
 
 export const Dashboard: React.FC = () => {
+  const [selectedPeriod, setSelectedPeriod] = useState('daily');
+
   return (
     <div className="p-6 space-y-6 bg-gray-50/50 min-h-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-1">Visão geral da sua barbearia</p>
-        </div>
-        <div className="text-right">
-          <p className="text-sm text-gray-600">Período: Última semana</p>
-          <p className="text-lg font-semibold text-gray-900">
-            {new Date().toLocaleDateString('pt-BR', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </p>
         </div>
       </div>
 
-      {/* Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard
-          title="Faturamento Hoje"
-          value="R$ 1.247,50"
-          change="+12% vs ontem"
-          changeType="positive"
-          icon={DollarSign}
-        />
-        <MetricCard
-          title="Atendimentos Hoje"
-          value="23"
-          change="+3 vs ontem"
-          changeType="positive"
-          icon={Calendar}
-        />
-        <MetricCard
-          title="Receita Semanal"
-          value="R$ 6.890,00"
-          change="+18% vs sem. passada"
-          changeType="positive"
-          icon={TrendingUp}
-        />
-        <MetricCard
-          title="Clientes Ativos"
-          value="342"
-          change="+25 este mês"
-          changeType="positive"
-          icon={Users}
-        />
-      </div>
+      {/* Period Tabs */}
+      <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod}>
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="daily" className="bg-trinks-orange text-white data-[state=active]:bg-trinks-orange data-[state=active]:text-white">Diário</TabsTrigger>
+          <TabsTrigger value="weekly">Semanal</TabsTrigger>
+          <TabsTrigger value="monthly">Mensal</TabsTrigger>
+          <TabsTrigger value="quarterly">Trimestral</TabsTrigger>
+          <TabsTrigger value="yearly">Anual</TabsTrigger>
+        </TabsList>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Revenue Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <DollarSign className="h-5 w-5 text-trinks-orange" />
-              <span>Faturamento Semanal</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={revenueData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip 
-                  formatter={(value) => [`R$ ${value}`, 'Faturamento']}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="valor" 
-                  stroke="#E85A00" 
-                  strokeWidth={3}
-                  dot={{ fill: '#E85A00', strokeWidth: 2, r: 5 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        <TabsContent value={selectedPeriod} className="space-y-6">
+          {/* Métricas Financeiras */}
+          {selectedPeriod === 'daily' && (
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Métricas Financeiras</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Faturamento</p>
+                        <p className="text-3xl font-bold text-gray-900">R$ 850</p>
+                        <p className="text-sm text-gray-600">Em relação ao período anterior</p>
+                      </div>
+                      <div className="flex items-center text-green-600">
+                        <TrendingUp className="h-4 w-4 mr-1" />
+                        <span className="text-sm font-medium">18.1%</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
 
-        {/* Appointments Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Clock className="h-5 w-5 text-trinks-orange" />
-              <span>Atendimentos por Horário</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={appointmentsData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip 
-                  formatter={(value) => [`${value}`, 'Atendimentos']}
-                />
-                <Bar dataKey="valor" fill="#E85A00" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+                <Card>
+                  <CardContent className="pt-6">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Despesas</p>
+                      <p className="text-3xl font-bold text-gray-900">R$ 120</p>
+                      <p className="text-sm text-gray-600">Total do período</p>
+                    </div>
+                  </CardContent>
+                </Card>
 
-      {/* Bottom Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Service Ranking */}
-        <div className="lg:col-span-2">
-          <ServiceRanking services={servicesData} />
-        </div>
-
-        {/* Quick Stats */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Scissors className="h-5 w-5 text-trinks-orange" />
-              <span>Estatísticas Rápidas</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-              <div>
-                <p className="text-sm text-green-700 font-medium">Agendamentos Hoje</p>
-                <p className="text-2xl font-bold text-green-800">28</p>
+                <Card>
+                  <CardContent className="pt-6">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Lucro Líquido</p>
+                      <p className="text-3xl font-bold text-gray-900">R$ 730</p>
+                      <p className="text-sm text-gray-600">Receita - Despesas</p>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-              <Calendar className="h-8 w-8 text-green-600" />
-            </div>
-            
-            <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-              <div>
-                <p className="text-sm text-blue-700 font-medium">Tempo Médio</p>
-                <p className="text-2xl font-bold text-blue-800">45min</p>
+
+              {/* Atendimentos */}
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Atendimentos</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Total de Atendimentos</p>
+                        <p className="text-3xl font-bold text-gray-900">12</p>
+                        <p className="text-sm text-gray-600">Em relação ao período anterior</p>
+                      </div>
+                      <div className="flex items-center text-red-600">
+                        <TrendingDown className="h-4 w-4 mr-1" />
+                        <span className="text-sm font-medium">14.3%</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="pt-6">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Média por Dia</p>
+                      <p className="text-3xl font-bold text-gray-900">14.0</p>
+                      <p className="text-sm text-gray-600">Baseado no período selecionado</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="pt-6">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Serviço Mais Popular</p>
+                      <p className="text-2xl font-bold text-gray-900">Corte + Barba</p>
+                      <p className="text-sm text-gray-600">5 atendimentos</p>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-              <Clock className="h-8 w-8 text-blue-600" />
             </div>
-            
-            <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
-              <div>
-                <p className="text-sm text-yellow-700 font-medium">Taxa Ocupação</p>
-                <p className="text-2xl font-bold text-yellow-800">87%</p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-yellow-600" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          )}
+
+          {/* Top 3 Serviços Mais Realizados */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Top 3 Serviços Mais Realizados</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {servicesData.map((service, index) => (
+                <div
+                  key={service.name}
+                  className="flex items-center justify-between p-3 rounded-lg border bg-gray-50/50"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
+                      index === 0 ? 'bg-yellow-500' : 
+                      index === 1 ? 'bg-gray-400' : 
+                      'bg-orange-500'
+                    }`}>
+                      {index + 1}
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{service.name}</p>
+                      <p className="text-sm text-gray-600">
+                        {service.count} atendimentos ({service.percentage}%)
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {service.trend === 'up' ? (
+                      <TrendingUp className="h-4 w-4 text-green-600" />
+                    ) : service.trend === 'down' ? (
+                      <TrendingDown className="h-4 w-4 text-red-600" />
+                    ) : (
+                      <div className="h-4 w-4 bg-gray-400 rounded-full"></div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

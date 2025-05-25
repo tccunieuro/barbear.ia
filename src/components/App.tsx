@@ -6,6 +6,7 @@ import { Sidebar } from './layout/Sidebar';
 import { Dashboard } from './dashboard/Dashboard';
 import { FinanceiroPage } from './pages/FinanceiroPage';
 import { AtendimentosPage } from './pages/AtendimentosPage';
+import { ConfiguracoesPage } from './pages/ConfiguracoesPage';
 import { useToast } from '@/hooks/use-toast';
 
 type AuthState = 'login' | 'forgot-password' | 'authenticated';
@@ -44,6 +45,8 @@ export const App: React.FC = () => {
         return <FinanceiroPage />;
       case 'atendimentos':
         return <AtendimentosPage />;
+      case 'configuracoes':
+        return <ConfiguracoesPage />;
       case 'relatorios':
         return (
           <div className="p-6 bg-gray-50/50 min-h-full">
@@ -58,15 +61,6 @@ export const App: React.FC = () => {
           <div className="p-6 bg-gray-50/50 min-h-full">
             <div className="text-center py-20">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Clientes</h2>
-              <p className="text-gray-600">Esta funcionalidade estará disponível em breve.</p>
-            </div>
-          </div>
-        );
-      case 'configuracoes':
-        return (
-          <div className="p-6 bg-gray-50/50 min-h-full">
-            <div className="text-center py-20">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Configurações</h2>
               <p className="text-gray-600">Esta funcionalidade estará disponível em breve.</p>
             </div>
           </div>
