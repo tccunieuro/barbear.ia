@@ -47,20 +47,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   return (
     <div className={cn(
-      "bg-blue-900 h-screen flex flex-col transition-all duration-300 border-r border-blue-800",
+      "bg-slate-900 h-screen flex flex-col transition-all duration-300 border-r border-slate-800",
       isCollapsed ? "w-16" : "w-64"
     )}>
       {/* Header */}
-      <div className="p-4 border-b border-blue-800">
+      <div className="p-4 border-b border-slate-800">
         <div className="flex items-center justify-between">
           {!isCollapsed && (
             <div className="flex items-center space-x-2">
-              <div className="bg-white p-2 rounded-lg">
-                <Scissors className="h-6 w-6 text-blue-900" />
+              <div className="bg-blue-600 p-2 rounded-lg">
+                <Scissors className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h1 className="text-white font-bold text-lg">BarberManager</h1>
-                <p className="text-blue-200 text-xs">Gestão Completa</p>
+                <p className="text-slate-400 text-xs">Gestão Completa</p>
               </div>
             </div>
           )}
@@ -69,7 +69,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             variant="ghost"
             size="sm"
             onClick={onToggleCollapse}
-            className="text-white hover:bg-blue-800"
+            className="text-white hover:bg-slate-800"
           >
             {isCollapsed ? (
               <ChevronRight className="h-4 w-4" />
@@ -93,8 +93,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 variant="ghost"
                 onClick={() => onPageChange(item.id)}
                 className={cn(
-                  "w-full justify-start text-white hover:bg-blue-800 transition-colors",
-                  isActive && "bg-blue-700 text-white",
+                  "w-full justify-start text-white hover:bg-slate-800 transition-colors",
+                  isActive && "bg-blue-600 text-white hover:bg-blue-700",
                   isCollapsed ? "px-2" : "px-3"
                 )}
               >
@@ -114,7 +114,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </ScrollArea>
 
       {/* Footer */}
-      <div className="p-3 border-t border-blue-800">
+      <div className="p-3 border-t border-slate-800">
         <Button
           variant="ghost"
           onClick={onLogout}

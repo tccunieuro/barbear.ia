@@ -63,7 +63,6 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Paleta azul escuro principal
 				slate: {
 					50: '#f8fafc',
 					100: '#f1f5f9',
