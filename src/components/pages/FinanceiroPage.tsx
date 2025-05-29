@@ -2,17 +2,19 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MetricCard } from '../dashboard/MetricCard';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 import { 
   DollarSign, 
   TrendingUp, 
-  TrendingDown, 
-  Calendar,
-  Download,
-  Filter
+  Plus,
+  Edit,
+  Trash2
 } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 // Mock data atualizado para todos os períodos
 const mockData = {
@@ -42,6 +44,14 @@ const mockData = {
     { name: '2024', receita: 219000, despesa: 40000, lucro: 179000 },
   ]
 };
+
+interface Despesa {
+  id: number;
+  nome: string;
+  valor: number;
+  data: string;
+  categoria: string;
+}
 
 const getMetricsByPeriod = (period: string) => {
   switch (period) {
@@ -88,21 +98,6 @@ const getMetricsByPeriod = (period: string) => {
   }
 };
 
-const getProjectionByPeriod = (period: string) => {
-  switch (period) {
-    case 'daily':
-      return { atual: 850, projecao: 920 };
-    case 'weekly':
-      return { atual: 5140, projecao: 5600 };
-    case 'quarterly':
-      return { atual: 55600, projecao: 58200 };
-    case 'yearly':
-      return { atual: 219000, projecao: 225000 };
-    default:
-      return { atual: 18500, projecao: 19200 };
-  }
-};
-
 const getPeriodLabel = (period: string) => {
   switch (period) {
     case 'daily': return 'Dia';
@@ -114,15 +109,61 @@ const getPeriodLabel = (period: string) => {
 };
 
 export const FinanceiroPage: React.FC = () => {
+  const { toast } = useToast();
   const [selectedPeriod, setSelectedPeriod] = useState('weekly');
+  const [despesas, setDespesas] = useState<Despesa[]>([
+    { id: 1, nome: 'Aluguel', valor: 1500, data: '2024-01-01', categoria: 'Fixo' },
+    { id: 2, nome: 'Material', valor: 300, data: '2024-01-05', categoria: 'Variável' },
+  ]);
+  const [novaDespesa, setNovaDespesa] = useState({
+    nome: '',
+    valor: '',
+    data: '',
+    categoria: ''
+  });
+  const [editandoDespesa, setEditandoDespesa] = useState<number | null>(null);
 
   const getCurrentData = () => {
     return mockData[selectedPeriod as keyof typeof mockData] || mockData.weekly;
   };
 
   const metrics = getMetricsByPeriod(selectedPeriod);
-  const projection = getProjectionByPeriod(selectedPeriod);
   const periodLabel = getPeriodLabel(selectedPeriod);
+
+  const adicionarDespesa = () => {
+    if (!novaDespesa.nome || !novaDespesa.valor || !novaDespesa.data || !novaDespesa.categoria) {
+      toast({
+        title: "Erro",
+        description: "Preencha todos os campos",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const despesa: Despesa = {
+      id: Date.now(),
+      nome: novaDespesa.nome,
+      valor: parseFloat(novaDespesa.valor),
+      data: novaDespesa.data,
+      categoria: novaDespesa.categoria
+    };
+
+    setDespesas([...despesas, despesa]);
+    setNovaDespesa({ nome: '', valor: '', data: '', categoria: '' });
+    
+    toast({
+      title: "Sucesso",
+      description: "Despesa adicionada com sucesso"
+    });
+  };
+
+  const excluirDespesa = (id: number) => {
+    setDespesas(despesas.filter(d => d.id !== id));
+    toast({
+      title: "Sucesso",
+      description: "Despesa excluída com sucesso"
+    });
+  };
 
   return (
     <div className="p-6 space-y-6 bg-gray-50/50 min-h-full">
@@ -133,183 +174,209 @@ export const FinanceiroPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Period Tabs */}
-      <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="daily">Diário</TabsTrigger>
-          <TabsTrigger value="weekly" className="bg-trinks-orange text-white data-[state=active]:bg-trinks-orange data-[state=active]:text-white">Semanal</TabsTrigger>
-          <TabsTrigger value="quarterly">Trimestral</TabsTrigger>
-          <TabsTrigger value="yearly">Anual</TabsTrigger>
-        </TabsList>
+      {/* Period Buttons */}
+      <div className="flex space-x-2">
+        {['daily', 'weekly', 'quarterly', 'yearly'].map((period) => (
+          <Button
+            key={period}
+            onClick={() => setSelectedPeriod(period)}
+            className={`${
+              selectedPeriod === period 
+                ? 'bg-blue-800 text-white' 
+                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+            }`}
+          >
+            {period === 'daily' ? 'Diário' : 
+             period === 'weekly' ? 'Semanal' : 
+             period === 'quarterly' ? 'Trimestral' : 'Anual'}
+          </Button>
+        ))}
+      </div>
 
-        <TabsContent value={selectedPeriod} className="space-y-6">
-          {/* Resumo Financeiro */}
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Resumo Financeiro do {periodLabel}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Faturamento</p>
-                      <p className="text-3xl font-bold text-gray-900">R$ {metrics.totalReceita.toLocaleString('pt-BR')}</p>
-                      <p className="text-sm text-gray-600">Em relação ao período anterior</p>
-                    </div>
-                    <div className="flex items-center text-green-600">
-                      <TrendingUp className="h-4 w-4 mr-1" />
-                      <span className="text-sm font-medium">{metrics.crescimento}%</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+      {/* Resumo Financeiro */}
+      <div>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Resumo Financeiro do {periodLabel}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Faturamento</p>
+                  <p className="text-3xl font-bold text-gray-900">R$ {metrics.totalReceita.toLocaleString('pt-BR')}</p>
+                  <p className="text-sm text-gray-600">Em relação ao período anterior</p>
+                </div>
+                <div className="flex items-center text-green-600">
+                  <TrendingUp className="h-4 w-4 mr-1" />
+                  <span className="text-sm font-medium">{metrics.crescimento}%</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-              <Card>
-                <CardContent className="pt-6">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Despesas</p>
-                    <p className="text-3xl font-bold text-gray-900">R$ {metrics.totalDespesa.toLocaleString('pt-BR')}</p>
-                    <p className="text-sm text-gray-600">Total do período</p>
-                  </div>
-                </CardContent>
-              </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Despesas</p>
+                <p className="text-3xl font-bold text-gray-900">R$ {metrics.totalDespesa.toLocaleString('pt-BR')}</p>
+                <p className="text-sm text-gray-600">Total do período</p>
+              </div>
+            </CardContent>
+          </Card>
 
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Lucro Líquido</p>
-                      <p className="text-3xl font-bold text-gray-900">R$ {metrics.totalLucro.toLocaleString('pt-BR')}</p>
-                      <p className="text-sm text-gray-600">Receita - Despesas</p>
-                    </div>
-                    <div className="flex items-center text-green-600">
-                      <TrendingUp className="h-4 w-4 mr-1" />
-                      <span className="text-sm font-medium">{metrics.crescimento}%</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Lucro Líquido</p>
+                  <p className="text-3xl font-bold text-gray-900">R$ {metrics.totalLucro.toLocaleString('pt-BR')}</p>
+                  <p className="text-sm text-gray-600">Receita - Despesas</p>
+                </div>
+                <div className="flex items-center text-green-600">
+                  <TrendingUp className="h-4 w-4 mr-1" />
+                  <span className="text-sm font-medium">{metrics.crescimento}%</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Revenue Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Receita vs Despesas</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={getCurrentData()}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip 
+                formatter={(value, name) => [
+                  `R$ ${Number(value).toLocaleString('pt-BR')}`, 
+                  name === 'receita' ? 'Receita' : 'Despesa'
+                ]}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="receita" 
+                stroke="#22c55e" 
+                strokeWidth={3}
+                name="receita"
+              />
+              <Line 
+                type="monotone" 
+                dataKey="despesa" 
+                stroke="#ef4444" 
+                strokeWidth={3}
+                name="despesa"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      {/* Controle de Despesas */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span>Controle de Despesas</span>
+            <Button 
+              onClick={adicionarDespesa}
+              className="bg-blue-800 hover:bg-blue-900"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Adicionar Despesa
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Formulário de Nova Despesa */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border rounded-lg bg-gray-50">
+            <div>
+              <Label htmlFor="nome">Nome da Despesa</Label>
+              <Input
+                id="nome"
+                value={novaDespesa.nome}
+                onChange={(e) => setNovaDespesa({...novaDespesa, nome: e.target.value})}
+                placeholder="Ex: Aluguel"
+              />
+            </div>
+            <div>
+              <Label htmlFor="valor">Valor</Label>
+              <Input
+                id="valor"
+                type="number"
+                value={novaDespesa.valor}
+                onChange={(e) => setNovaDespesa({...novaDespesa, valor: e.target.value})}
+                placeholder="0,00"
+              />
+            </div>
+            <div>
+              <Label htmlFor="data">Data</Label>
+              <Input
+                id="data"
+                type="date"
+                value={novaDespesa.data}
+                onChange={(e) => setNovaDespesa({...novaDespesa, data: e.target.value})}
+              />
+            </div>
+            <div>
+              <Label htmlFor="categoria">Categoria</Label>
+              <Select value={novaDespesa.categoria} onValueChange={(value) => setNovaDespesa({...novaDespesa, categoria: value})}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Fixo">Fixo</SelectItem>
+                  <SelectItem value="Variável">Variável</SelectItem>
+                  <SelectItem value="Eventual">Eventual</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          {/* Projeção e Análise Comparativa */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Projeção */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Projeção do {periodLabel}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Faturamento Atual</span>
-                  <span className="text-xl font-bold">R$ {projection.atual.toLocaleString('pt-BR')}</span>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Projeção para o {periodLabel}</span>
-                  <span className="text-xl font-bold text-green-600">R$ {projection.projecao.toLocaleString('pt-BR')}</span>
-                </div>
-
-                <div className="pt-4 border-t">
-                  <p className="text-sm text-gray-600 mb-2">
-                    Baseado na performance atual, estimamos um faturamento total de <strong>R$ {projection.projecao.toLocaleString('pt-BR')}</strong> até o final do {periodLabel.toLowerCase()}.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Análise Comparativa */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Análise Comparativa</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+          {/* Lista de Despesas */}
+          <div className="space-y-2">
+            <h3 className="font-semibold">Despesas Cadastradas</h3>
+            {despesas.map((despesa) => (
+              <div key={despesa.id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex-1 grid grid-cols-4 gap-4">
                   <div>
-                    <p className="text-sm text-gray-600">Período Atual</p>
-                    <p className="text-lg font-bold">R$ {metrics.totalReceita.toLocaleString('pt-BR')}</p>
+                    <p className="font-medium">{despesa.nome}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Período Anterior</p>
-                    <p className="text-lg font-bold">R$ {Math.round(metrics.totalReceita * 0.9).toLocaleString('pt-BR')}</p>
+                    <p>R$ {despesa.valor.toLocaleString('pt-BR')}</p>
+                  </div>
+                  <div>
+                    <p>{new Date(despesa.data).toLocaleDateString('pt-BR')}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">{despesa.categoria}</p>
                   </div>
                 </div>
-
-                <div className="pt-4 border-t">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Crescimento</span>
-                    <span className="text-lg font-bold text-green-600">+{metrics.crescimento}%</span>
-                  </div>
+                <div className="flex space-x-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => setEditandoDespesa(despesa.id)}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="destructive"
+                    onClick={() => excluirDespesa(despesa.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            ))}
           </div>
-
-          {/* Charts Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Revenue vs Expenses Chart */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Receita vs Despesas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={getCurrentData()}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip 
-                      formatter={(value, name) => [
-                        `R$ ${Number(value).toLocaleString('pt-BR')}`, 
-                        name === 'receita' ? 'Receita' : 'Despesa'
-                      ]}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="receita" 
-                      stroke="#22c55e" 
-                      strokeWidth={3}
-                      name="receita"
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="despesa" 
-                      stroke="#ef4444" 
-                      strokeWidth={3}
-                      name="despesa"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* Profit Area Chart */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Evolução do Lucro</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={getCurrentData()}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip 
-                      formatter={(value) => [`R$ ${Number(value).toLocaleString('pt-BR')}`, 'Lucro']}
-                    />
-                    <Area 
-                      type="monotone" 
-                      dataKey="lucro" 
-                      stroke="#E85A00" 
-                      fill="#E85A00"
-                      fillOpacity={0.3}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-      </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 };

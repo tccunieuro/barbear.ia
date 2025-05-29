@@ -2,12 +2,8 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Calendar, 
-  Clock, 
-  TrendingUp, 
   Users, 
   Scissors,
   Crown,
@@ -15,12 +11,13 @@ import {
   Award,
   ArrowUp,
   ArrowDown,
-  Minus
+  Minus,
+  Clock
 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const AtendimentosPage: React.FC = () => {
-  const [periodo, setPeriodo] = useState('diario');
+  const [periodo, setPeriodo] = useState('semanal');
 
   // Mock data para todos os períodos
   const mockAtendimentosPorPeriodo = {
@@ -62,14 +59,6 @@ export const AtendimentosPage: React.FC = () => {
     ]
   };
 
-  const mockTendenciaAtendimentos = [
-    { periodo: 'Per 1', atendimentos: 245 },
-    { periodo: 'Per 2', atendimentos: 289 },
-    { periodo: 'Per 3', atendimentos: 312 },
-    { periodo: 'Per 4', atendimentos: 298 },
-    { periodo: 'Per 5', atendimentos: 356 },
-  ];
-
   const mockTopServicos = [
     { 
       posicao: 1, 
@@ -102,50 +91,38 @@ export const AtendimentosPage: React.FC = () => {
       case 'diario':
         return {
           total: 52,
-          media: 6.5,
-          pico: 10,
           crescimento: '+15%'
         };
       case 'semanal':
         return {
           total: 105,
-          media: 15.0,
-          pico: 22,
           crescimento: '+12%'
         };
       case 'mensal':
         return {
           total: 360,
-          media: 11.6,
-          pico: 105,
           crescimento: '+8%'
         };
       case 'trimestral':
         return {
           total: 950,
-          media: 10.6,
-          pico: 350,
           crescimento: '+18%'
         };
       case 'anual':
         return {
           total: 4200,
-          media: 11.5,
-          pico: 4200,
           crescimento: '+7%'
         };
       default:
         return {
           total: 52,
-          media: 6.5,
-          pico: 10,
           crescimento: '+15%'
         };
     }
   };
 
   const getCurrentData = () => {
-    return mockAtendimentosPorPeriodo[periodo as keyof typeof mockAtendimentosPorPeriodo] || mockAtendimentosPorPeriodo.diario;
+    return mockAtendimentosPorPeriodo[periodo as keyof typeof mockAtendimentosPorPeriodo] || mockAtendimentosPorPeriodo.semanal;
   };
 
   const metrics = getMetricsByPeriod(periodo);
@@ -184,126 +161,67 @@ export const AtendimentosPage: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900">Atendimentos</h1>
           <p className="text-gray-600 mt-1">Análise de performance e serviços mais procurados</p>
         </div>
-        <Select value={periodo} onValueChange={setPeriodo}>
-          <SelectTrigger className="w-40">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="diario">Diário</SelectItem>
-            <SelectItem value="semanal">Semanal</SelectItem>
-            <SelectItem value="mensal">Mensal</SelectItem>
-            <SelectItem value="trimestral">Trimestral</SelectItem>
-            <SelectItem value="anual">Anual</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
-      {/* Cards de Métricas */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Atendimentos</CardTitle>
-            <Users className="h-4 w-4 text-trinks-orange" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metrics.total}</div>
-            <p className="text-xs text-green-600 flex items-center">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              {metrics.crescimento} em relação ao período anterior
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Média por {periodo === 'diario' ? 'Hora' : periodo === 'semanal' ? 'Dia' : periodo === 'mensal' ? 'Semana' : periodo === 'trimestral' ? 'Mês' : 'Ano'}</CardTitle>
-            <Calendar className="h-4 w-4 text-trinks-orange" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metrics.media}</div>
-            <p className="text-xs text-gray-600">atendimentos por período</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pico do Período</CardTitle>
-            <Clock className="h-4 w-4 text-trinks-orange" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metrics.pico}</div>
-            <p className="text-xs text-gray-600">maior registro do período</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Taxa de Crescimento</CardTitle>
-            <TrendingUp className="h-4 w-4 text-trinks-orange" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{metrics.crescimento}</div>
-            <p className="text-xs text-gray-600">vs período anterior</p>
-          </CardContent>
-        </Card>
+      {/* Period Buttons */}
+      <div className="flex space-x-2">
+        {['diario', 'semanal', 'mensal', 'trimestral', 'anual'].map((period) => (
+          <Button
+            key={period}
+            onClick={() => setPeriodo(period)}
+            className={`${
+              periodo === period 
+                ? 'bg-blue-800 text-white' 
+                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+            }`}
+          >
+            {period === 'diario' ? 'Diário' : 
+             period === 'semanal' ? 'Semanal' : 
+             period === 'mensal' ? 'Mensal' :
+             period === 'trimestral' ? 'Trimestral' : 'Anual'}
+          </Button>
+        ))}
       </div>
 
-      {/* Gráficos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico de Atendimentos por Período */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <BarChart className="h-5 w-5 text-trinks-orange" />
-              <span>Atendimentos por {periodo === 'diario' ? 'Hora' : periodo === 'semanal' ? 'Dia' : periodo === 'mensal' ? 'Semana' : periodo === 'trimestral' ? 'Mês' : 'Ano'}</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={getCurrentData()}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="nome" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="atendimentos" fill="#E85A00" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+      {/* Card de Métrica */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total de Atendimentos</CardTitle>
+          <Users className="h-4 w-4 text-blue-800" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{metrics.total}</div>
+          <p className="text-xs text-green-600">
+            {metrics.crescimento} em relação ao período anterior
+          </p>
+        </CardContent>
+      </Card>
 
-        {/* Tendência de Atendimentos */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <TrendingUp className="h-5 w-5 text-trinks-orange" />
-              <span>Tendência de Crescimento</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={mockTendenciaAtendimentos}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="periodo" />
-                <YAxis />
-                <Tooltip />
-                <Line 
-                  type="monotone" 
-                  dataKey="atendimentos" 
-                  stroke="#E85A00" 
-                  strokeWidth={3}
-                  dot={{ fill: '#E85A00' }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Gráfico de Atendimentos por Período */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <span>Atendimentos por {periodo === 'diario' ? 'Hora' : periodo === 'semanal' ? 'Dia' : periodo === 'mensal' ? 'Semana' : periodo === 'trimestral' ? 'Mês' : 'Ano'}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={getCurrentData()}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="nome" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="atendimentos" fill="#1e40af" />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
 
       {/* Top 3 Serviços Mais Realizados */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Scissors className="h-5 w-5 text-trinks-orange" />
+            <Scissors className="h-5 w-5 text-blue-800" />
             <span>Top 3 Serviços Mais Procurados</span>
           </CardTitle>
         </CardHeader>
@@ -346,7 +264,7 @@ export const AtendimentosPage: React.FC = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Clock className="h-5 w-5 text-trinks-orange" />
+            <Clock className="h-5 w-5 text-blue-800" />
             <span>Distribuição por Horário</span>
           </CardTitle>
         </CardHeader>
@@ -366,7 +284,7 @@ export const AtendimentosPage: React.FC = () => {
                 <div 
                   className="w-full h-16 rounded-md mb-2 transition-all"
                   style={{
-                    backgroundColor: `rgba(232, 90, 0, ${slot.intensidade / 100})`,
+                    backgroundColor: `rgba(30, 64, 175, ${slot.intensidade / 100})`,
                   }}
                 />
                 <span className="text-xs font-medium">{slot.hora}</span>

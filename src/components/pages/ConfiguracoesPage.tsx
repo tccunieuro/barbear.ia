@@ -4,11 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Shield, 
-  Palette, 
   User, 
   Save
 } from 'lucide-react';
@@ -22,42 +20,14 @@ export const ConfiguracoesPage: React.FC = () => {
     nomeBarbearia: 'Barbearia Moderna'
   });
 
-  const [tema, setTema] = useState('claro');
-
   const handleSave = () => {
     // Simula salvamento das configurações
-    console.log('Salvando configurações:', { profileData, tema });
-    
-    // Aplica o tema se for escuro
-    if (tema === 'escuro') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    console.log('Salvando configurações:', { profileData });
     
     toast({
       title: "Configurações salvas",
       description: "Suas preferências foram atualizadas com sucesso.",
     });
-  };
-
-  const applyTheme = (selectedTheme: string) => {
-    setTema(selectedTheme);
-    
-    // Aplica o tema imediatamente para preview
-    if (selectedTheme === 'escuro') {
-      document.documentElement.classList.add('dark');
-    } else if (selectedTheme === 'claro') {
-      document.documentElement.classList.remove('dark');
-    } else if (selectedTheme === 'automatico') {
-      // Detecta preferência do sistema
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (prefersDark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    }
   };
 
   return (
@@ -68,7 +38,7 @@ export const ConfiguracoesPage: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900">Configurações</h1>
           <p className="text-gray-600 mt-1">Gerencie suas preferências e configurações da conta</p>
         </div>
-        <Button onClick={handleSave} className="bg-trinks-orange hover:bg-trinks-orange-dark">
+        <Button onClick={handleSave} className="bg-blue-800 hover:bg-blue-900">
           <Save className="h-4 w-4 mr-2" />
           Salvar Alterações
         </Button>
@@ -79,7 +49,7 @@ export const ConfiguracoesPage: React.FC = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
-              <Shield className="h-5 w-5 text-trinks-orange" />
+              <Shield className="h-5 w-5 text-blue-800" />
               <span>Segurança</span>
             </CardTitle>
           </CardHeader>
@@ -96,41 +66,11 @@ export const ConfiguracoesPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Aparência */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Palette className="h-5 w-5 text-trinks-orange" />
-              <span>Aparência</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="tema">Tema do Sistema</Label>
-                <Select value={tema} onValueChange={applyTheme}>
-                  <SelectTrigger className="w-full mt-2">
-                    <SelectValue placeholder="Escolha entre tema claro ou escuro" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="claro">Claro</SelectItem>
-                    <SelectItem value="escuro">Escuro</SelectItem>
-                    <SelectItem value="automatico">Automático</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-sm text-gray-600 mt-1">
-                  Escolha entre tema claro, escuro ou automático (segue a preferência do sistema)
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Perfil */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
-              <User className="h-5 w-5 text-trinks-orange" />
+              <User className="h-5 w-5 text-blue-800" />
               <span>Perfil</span>
             </CardTitle>
           </CardHeader>
