@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { 
   Search, 
   Users, 
@@ -58,19 +57,6 @@ export const ClientesPage: React.FC = () => {
     return matchBusca;
   });
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'ativo':
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Ativo</Badge>;
-      case 'inativo':
-        return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200">Inativo</Badge>;
-      case 'vip':
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">VIP</Badge>;
-      default:
-        return <Badge className="bg-gray-100 text-gray-800">{status}</Badge>;
-    }
-  };
-
   return (
     <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-white min-h-full">
       {/* Header */}
@@ -111,7 +97,7 @@ export const ClientesPage: React.FC = () => {
               placeholder="Buscar por nome ou telefone..."
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              className="pl-10 border-2 border-gray-200 focus:border-gray-400 rounded-lg h-12"
+              className="pl-10 border-2 border-gray-300 focus:border-gray-600 bg-white rounded-lg h-12"
             />
           </div>
         </CardContent>
@@ -156,10 +142,6 @@ export const ClientesPage: React.FC = () => {
                         <p className="font-medium text-gray-900">{cliente.totalAtendimentos} atendimentos</p>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="flex flex-col md:items-end space-y-2">
-                    {getStatusBadge(cliente.status)}
                   </div>
                 </div>
               </div>

@@ -11,15 +11,21 @@ import {
   Plus,
   ArrowUpRight,
   ArrowDownRight,
-  Calendar
+  Calendar,
+  Edit,
+  Trash2
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { AdicionarDespesaModal } from './AdicionarDespesaModal';
+import { useToast } from '@/hooks/use-toast';
 
 export const FinanceiroPage: React.FC = () => {
   const [periodo, setPeriodo] = useState('mensal');
+  const [modalOpen, setModalOpen] = useState(false);
+  const { toast } = useToast();
 
   // Mock data para demonstração
-  const mockTransacoes = [
+  const [transacoes, setTransacoes] = useState([
     {
       id: 1,
       tipo: 'receita',
@@ -52,7 +58,7 @@ export const FinanceiroPage: React.FC = () => {
       data: '13/01/2024',
       categoria: 'Utilidades'
     }
-  ];
+  ]);
 
   const mockDadosGrafico = [
     { nome: 'Jan', receitas: 4500, despesas: 1200 },
@@ -63,6 +69,18 @@ export const FinanceiroPage: React.FC = () => {
     { nome: 'Jun', receitas: 6200, despesas: 1380 },
   ];
 
+  const handleAddDespesa = (novaDespesa: any) => {
+    setTransacoes(prev => [novaDespesa, ...prev]);
+  };
+
+  const handleDeleteTransacao = (id: number) => {
+    setTransacoes(prev => prev.filter(t => t.id !== id));
+    toast({
+      title: "Sucesso",
+      description: "Transação excluída com sucesso!",
+    });
+  };
+
   return (
     <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-white min-h-full">
       {/* Header */}
@@ -71,9 +89,12 @@ export const FinanceiroPage: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900">Financeiro</h1>
           <p className="text-gray-600 mt-1">Controle completo das suas finanças</p>
         </div>
-        <Button className="bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white shadow-md hover:shadow-lg transition-all rounded-lg">
+        <Button 
+          onClick={() => setModalOpen(true)}
+          className="bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white shadow-md hover:shadow-lg transition-all rounded-lg"
+        >
           <Plus className="h-4 w-4 mr-2" />
-          Nova Transação
+          Adicionar Despesa
         </Button>
       </div>
 
@@ -173,7 +194,7 @@ export const FinanceiroPage: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {mockTransacoes.map((transacao) => (
+            {transacoes.map((transacao) => (
               <div key={transacao.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
                 <div className="flex items-center space-x-4">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -194,16 +215,43 @@ export const FinanceiroPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className={`text-lg font-semibold ${
-                  transacao.tipo === 'receita' ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  {transacao.tipo === 'receita' ? '+' : '-'}R$ {transacao.valor.toFixed(2)}
+                <div className="flex items-center space-x-3">
+                  <div className={`text-lg font-semibold ${
+                    transacao.tipo === 'receita' ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {transacao.tipo === 'receita' ? '+' : '-'}R$ {transacao.valor.toFixed(2)}
+                  </div>
+                  {transacao.tipo === 'despesa' && (
+                    <div className="flex space-x-1">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-gray-600 hover:text-gray-800 hover:bg-gray-100 p-2"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDeleteTransacao(transacao.id)}
+                        className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
+
+      <AdicionarDespesaModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onAddDespesa={handleAddDespesa}
+      />
     </div>
   );
 };

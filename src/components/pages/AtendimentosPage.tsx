@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -163,41 +162,45 @@ export const AtendimentosPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Period Buttons */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <div className="flex space-x-2">
-          {['diario', 'semanal', 'mensal', 'trimestral', 'anual'].map((period) => (
-            <Button
-              key={period}
-              onClick={() => setPeriodo(period)}
-              className={`${
-                periodo === period 
-                  ? 'bg-gradient-to-r from-gray-800 to-black text-white shadow-md' 
-                  : 'bg-white text-gray-700 border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 shadow-sm'
-              } transition-all rounded-lg`}
-            >
-              {period === 'diario' ? 'Diário' : 
-               period === 'semanal' ? 'Semanal' : 
-               period === 'mensal' ? 'Mensal' :
-               period === 'trimestral' ? 'Trimestral' : 'Anual'}
-            </Button>
-          ))}
-        </div>
-      </div>
-
       {/* Card de Métrica */}
       <Card className="bg-white shadow-sm border border-gray-100 hover:shadow-md transition-shadow rounded-xl">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-600">Total de Atendimentos</CardTitle>
-          <div className="bg-blue-50 p-2 rounded-lg">
-            <Users className="h-4 w-4 text-blue-600" />
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-medium text-gray-600">Total de Atendimentos</CardTitle>
+            <div className="bg-blue-50 p-2 rounded-lg">
+              <Users className="h-4 w-4 text-blue-600" />
+            </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-gray-900">{metrics.total}</div>
-          <p className="text-xs text-green-600">
+        <CardContent className="pt-0">
+          <div className="text-2xl font-bold text-gray-900 mb-2">{metrics.total}</div>
+          <p className="text-xs text-green-600 mb-4">
             {metrics.crescimento} em relação ao período anterior
           </p>
+          
+          {/* Filtros de período */}
+          <div className="flex flex-wrap gap-2">
+            {[
+              { key: 'diario', label: 'Hoje' },
+              { key: 'semanal', label: 'Semanal' },
+              { key: 'mensal', label: 'Mensal' },
+              { key: 'trimestral', label: 'Trimestral' },
+              { key: 'anual', label: 'Anual' }
+            ].map((filter) => (
+              <Button
+                key={filter.key}
+                onClick={() => setPeriodo(filter.key)}
+                size="sm"
+                className={`transition-all rounded-lg ${
+                  periodo === filter.key
+                    ? 'bg-gradient-to-r from-gray-800 to-black text-white shadow-md'
+                    : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 hover:border-gray-300 shadow-sm'
+                }`}
+              >
+                {filter.label}
+              </Button>
+            ))}
+          </div>
         </CardContent>
       </Card>
 
