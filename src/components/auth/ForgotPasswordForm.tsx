@@ -53,87 +53,94 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
 
   if (emailSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white p-4">
-        <Card className="w-full max-w-md bg-white border-2 border-black">
-          <CardHeader className="text-center">
-            <div className="flex justify-center items-center mb-4">
-              <div className="bg-black p-3 rounded-full">
-                <Mail className="h-8 w-8 text-white" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
+        <div className="relative z-10">
+          <Card className="w-full max-w-md bg-white/95 backdrop-blur-sm border border-gray-200/50 shadow-2xl shadow-gray-900/10">
+            <CardHeader className="text-center pb-6">
+              <div className="flex justify-center items-center mb-6">
+                <div className="bg-gradient-to-br from-gray-600 to-gray-800 p-4 rounded-2xl shadow-lg">
+                  <Mail className="h-8 w-8 text-white" />
+                </div>
               </div>
-            </div>
-            <CardTitle className="text-2xl font-bold text-black">
-              Email Enviado!
-            </CardTitle>
-            <p className="text-gray-600">
-              Verifique sua caixa de entrada e clique no link para redefinir sua senha.
-            </p>
-          </CardHeader>
-          <CardContent>
-            <Button
-              onClick={onBack}
-              variant="outline"
-              className="w-full border-2 border-black text-black hover:bg-gray-100"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar ao login
-            </Button>
-          </CardContent>
-        </Card>
+              <CardTitle className="text-2xl font-light text-gray-900 mb-2">
+                Email Enviado!
+              </CardTitle>
+              <p className="text-gray-500 font-light leading-relaxed">
+                Verifique sua caixa de entrada e clique no link para redefinir sua senha.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <Button
+                onClick={onBack}
+                variant="outline"
+                className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 py-3 font-medium"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Voltar ao login
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-4">
-      <Card className="w-full max-w-md bg-white border-2 border-black">
-        <CardHeader className="text-center">
-          <div className="flex justify-center items-center mb-4">
-            <div className="bg-black p-3 rounded-full">
-              <Scissors className="h-8 w-8 text-white" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
+      <div className="relative z-10">
+        <Card className="w-full max-w-md bg-white/95 backdrop-blur-sm border border-gray-200/50 shadow-2xl shadow-gray-900/10">
+          <CardHeader className="text-center pb-6">
+            <div className="flex justify-center items-center mb-6">
+              <div className="bg-gradient-to-br from-gray-800 to-black p-4 rounded-2xl shadow-lg">
+                <Scissors className="h-8 w-8 text-white" />
+              </div>
             </div>
-          </div>
-          <CardTitle className="text-2xl font-bold text-black">
-            Recuperar Senha
-          </CardTitle>
-          <p className="text-gray-600">
-            Digite seu email para receber um link de recuperação
-          </p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-black">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="border-2 border-black focus:border-black focus:ring-0"
-              />
-            </div>
-            
-            <Button
-              type="submit"
-              className="w-full bg-black hover:bg-gray-800 text-white border-2 border-black"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Enviando...' : 'Enviar link de recuperação'}
-            </Button>
-            
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onBack}
-              className="w-full border-2 border-black text-black hover:bg-gray-100"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar ao login
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+            <CardTitle className="text-2xl font-light text-gray-900 mb-2">
+              Recuperar Senha
+            </CardTitle>
+            <p className="text-gray-500 font-light">
+              Digite seu email para receber um link de recuperação
+            </p>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-gray-400 focus:ring-0 transition-all duration-200 text-gray-900 placeholder:text-gray-400"
+                />
+              </div>
+              
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-medium py-3 transition-all duration-200 shadow-lg hover:shadow-xl"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Enviando...' : 'Enviar link de recuperação'}
+              </Button>
+              
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onBack}
+                className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 py-3 font-medium"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Voltar ao login
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

@@ -56,95 +56,99 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-4">
-      <Card className="w-full max-w-md bg-white border-2 border-black">
-        <CardHeader className="text-center">
-          <div className="flex justify-center items-center mb-4">
-            <div className="bg-black p-3 rounded-full">
-              <Scissors className="h-8 w-8 text-white" />
-            </div>
-          </div>
-          <CardTitle className="text-2xl font-bold text-black">
-            BarberManager
-          </CardTitle>
-          <p className="text-gray-600">Gestão completa para sua barbearia</p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-black">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="border-2 border-black focus:border-black focus:ring-0"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-black">Senha</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Sua senha"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="border-2 border-black focus:border-black focus:ring-0"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-100 text-black"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </Button>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
+      <div className="relative z-10">
+        <Card className="w-full max-w-md bg-white/95 backdrop-blur-sm border border-gray-200/50 shadow-2xl shadow-gray-900/10">
+          <CardHeader className="text-center pb-6">
+            <div className="flex justify-center items-center mb-6">
+              <div className="bg-gradient-to-br from-gray-800 to-black p-4 rounded-2xl shadow-lg">
+                <Scissors className="h-8 w-8 text-white" />
               </div>
             </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="remember"
-                  checked={remember}
-                  onCheckedChange={(checked) => setRemember(checked as boolean)}
-                  className="border-2 border-black data-[state=checked]:bg-black"
+            <CardTitle className="text-3xl font-light text-gray-900 mb-2">
+              BarberManager
+            </CardTitle>
+            <p className="text-gray-500 font-light">Gestão completa para sua barbearia</p>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-gray-400 focus:ring-0 transition-all duration-200 text-gray-900 placeholder:text-gray-400"
                 />
-                <Label htmlFor="remember" className="text-sm text-black">
-                  Lembrar-me
-                </Label>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-gray-700 font-medium">Senha</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Sua senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-gray-400 focus:ring-0 transition-all duration-200 text-gray-900 placeholder:text-gray-400 pr-12"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-100/50 text-gray-500 hover:text-gray-700 transition-colors"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="remember"
+                    checked={remember}
+                    onCheckedChange={(checked) => setRemember(checked as boolean)}
+                    className="border-gray-300 data-[state=checked]:bg-gray-800 data-[state=checked]:border-gray-800"
+                  />
+                  <Label htmlFor="remember" className="text-sm text-gray-600 font-normal">
+                    Lembrar-me
+                  </Label>
+                </div>
+                
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={onForgotPassword}
+                  className="text-gray-600 hover:text-gray-800 p-0 h-auto font-normal text-sm transition-colors"
+                >
+                  Esqueci minha senha
+                </Button>
               </div>
               
               <Button
-                type="button"
-                variant="link"
-                onClick={onForgotPassword}
-                className="text-black hover:text-gray-600 p-0 underline"
+                type="submit"
+                className="w-full bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-medium py-3 transition-all duration-200 shadow-lg hover:shadow-xl"
+                disabled={isLoading}
               >
-                Esqueci minha senha
+                {isLoading ? 'Entrando...' : 'Entrar'}
               </Button>
-            </div>
-            
-            <Button
-              type="submit"
-              className="w-full bg-black hover:bg-gray-800 text-white border-2 border-black"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Entrando...' : 'Entrar'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
