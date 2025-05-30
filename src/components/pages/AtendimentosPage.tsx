@@ -154,9 +154,9 @@ export const AtendimentosPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50/50 min-h-full">
+    <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-white min-h-full">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between bg-white rounded-xl p-6 shadow-sm border border-gray-100">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Atendimentos</h1>
           <p className="text-gray-600 mt-1">Análise de performance e serviços mais procurados</p>
@@ -164,33 +164,37 @@ export const AtendimentosPage: React.FC = () => {
       </div>
 
       {/* Period Buttons */}
-      <div className="flex space-x-2">
-        {['diario', 'semanal', 'mensal', 'trimestral', 'anual'].map((period) => (
-          <Button
-            key={period}
-            onClick={() => setPeriodo(period)}
-            className={`${
-              periodo === period 
-                ? 'bg-blue-800 text-white' 
-                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-            }`}
-          >
-            {period === 'diario' ? 'Diário' : 
-             period === 'semanal' ? 'Semanal' : 
-             period === 'mensal' ? 'Mensal' :
-             period === 'trimestral' ? 'Trimestral' : 'Anual'}
-          </Button>
-        ))}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="flex space-x-2">
+          {['diario', 'semanal', 'mensal', 'trimestral', 'anual'].map((period) => (
+            <Button
+              key={period}
+              onClick={() => setPeriodo(period)}
+              className={`${
+                periodo === period 
+                  ? 'bg-gradient-to-r from-gray-800 to-black text-white shadow-md' 
+                  : 'bg-white text-gray-700 border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 shadow-sm'
+              } transition-all rounded-lg`}
+            >
+              {period === 'diario' ? 'Diário' : 
+               period === 'semanal' ? 'Semanal' : 
+               period === 'mensal' ? 'Mensal' :
+               period === 'trimestral' ? 'Trimestral' : 'Anual'}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {/* Card de Métrica */}
-      <Card>
+      <Card className="bg-white shadow-sm border border-gray-100 hover:shadow-md transition-shadow rounded-xl">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total de Atendimentos</CardTitle>
-          <Users className="h-4 w-4 text-blue-800" />
+          <CardTitle className="text-sm font-medium text-gray-600">Total de Atendimentos</CardTitle>
+          <div className="bg-blue-50 p-2 rounded-lg">
+            <Users className="h-4 w-4 text-blue-600" />
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{metrics.total}</div>
+          <div className="text-2xl font-bold text-gray-900">{metrics.total}</div>
           <p className="text-xs text-green-600">
             {metrics.crescimento} em relação ao período anterior
           </p>
@@ -198,30 +202,36 @@ export const AtendimentosPage: React.FC = () => {
       </Card>
 
       {/* Gráfico de Atendimentos por Período */}
-      <Card>
+      <Card className="bg-white shadow-sm border border-gray-100 rounded-xl">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
+          <CardTitle className="flex items-center space-x-2 text-gray-900">
             <span>Atendimentos por {periodo === 'diario' ? 'Hora' : periodo === 'semanal' ? 'Dia' : periodo === 'mensal' ? 'Semana' : periodo === 'trimestral' ? 'Mês' : 'Ano'}</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getCurrentData()}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="nome" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="atendimentos" fill="#1e40af" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis dataKey="nome" stroke="#666" />
+              <YAxis stroke="#666" />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'white', 
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px'
+                }}
+              />
+              <Bar dataKey="atendimentos" fill="#374151" />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
       </Card>
 
       {/* Top 3 Serviços Mais Realizados */}
-      <Card>
+      <Card className="bg-white shadow-sm border border-gray-100 rounded-xl">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Scissors className="h-5 w-5 text-blue-800" />
+          <CardTitle className="flex items-center space-x-2 text-gray-900">
+            <Scissors className="h-5 w-5 text-gray-700" />
             <span>Top 3 Serviços Mais Procurados</span>
           </CardTitle>
         </CardHeader>
@@ -230,10 +240,10 @@ export const AtendimentosPage: React.FC = () => {
             {mockTopServicos.map((servico, index) => (
               <div 
                 key={servico.posicao}
-                className={`flex items-center justify-between p-4 rounded-lg border-2 ${
-                  index === 0 ? 'border-yellow-200 bg-yellow-50' :
-                  index === 1 ? 'border-gray-200 bg-gray-50' :
-                  'border-orange-200 bg-orange-50'
+                className={`flex items-center justify-between p-4 rounded-lg border-2 transition-colors ${
+                  index === 0 ? 'border-yellow-200 bg-yellow-50 hover:bg-yellow-100' :
+                  index === 1 ? 'border-gray-200 bg-gray-50 hover:bg-gray-100' :
+                  'border-orange-200 bg-orange-50 hover:bg-orange-100'
                 }`}
               >
                 <div className="flex items-center space-x-4">
@@ -242,14 +252,14 @@ export const AtendimentosPage: React.FC = () => {
                     <span className="text-2xl font-bold text-gray-700">#{servico.posicao}</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">{servico.servico}</h3>
+                    <h3 className="font-semibold text-lg text-gray-900">{servico.servico}</h3>
                     <p className="text-sm text-gray-600">
                       {servico.quantidade} atendimentos • {servico.percentual}% do total
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Badge variant={servico.tendencia === 'up' ? 'default' : 'secondary'} className="flex items-center space-x-1">
+                  <Badge variant={servico.tendencia === 'up' ? 'default' : 'secondary'} className="flex items-center space-x-1 bg-white border border-gray-200">
                     {getTrendIcon(servico.tendencia)}
                     <span>{servico.variacao}</span>
                   </Badge>
@@ -261,10 +271,10 @@ export const AtendimentosPage: React.FC = () => {
       </Card>
 
       {/* Distribuição por Horário */}
-      <Card>
+      <Card className="bg-white shadow-sm border border-gray-100 rounded-xl">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Clock className="h-5 w-5 text-blue-800" />
+          <CardTitle className="flex items-center space-x-2 text-gray-900">
+            <Clock className="h-5 w-5 text-gray-700" />
             <span>Distribuição por Horário</span>
           </CardTitle>
         </CardHeader>
@@ -284,10 +294,10 @@ export const AtendimentosPage: React.FC = () => {
                 <div 
                   className="w-full h-16 rounded-md mb-2 transition-all"
                   style={{
-                    backgroundColor: `rgba(30, 64, 175, ${slot.intensidade / 100})`,
+                    backgroundColor: `rgba(55, 65, 81, ${slot.intensidade / 100})`,
                   }}
                 />
-                <span className="text-xs font-medium">{slot.hora}</span>
+                <span className="text-xs font-medium text-gray-700">{slot.hora}</span>
                 <p className="text-xs text-gray-500">{slot.intensidade}%</p>
               </div>
             ))}

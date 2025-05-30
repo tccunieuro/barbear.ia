@@ -53,15 +53,15 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
 
   if (emailSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4">
+        <div className="absolute inset-0 bg-gray-900"></div>
         <div className="relative z-10">
-          <Card className="w-full max-w-md bg-white shadow-2xl border-0 rounded-2xl overflow-hidden">
+          <Card className="w-full max-w-md bg-white shadow-2xl border border-gray-200 rounded-xl overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-50"></div>
             <div className="relative z-10">
-              <CardHeader className="text-center pb-6 pt-8">
+              <CardHeader className="text-center pb-6 pt-8 bg-white">
                 <div className="flex justify-center items-center mb-6">
-                  <div className="bg-gradient-to-br from-gray-600 to-gray-800 p-4 rounded-2xl shadow-lg">
+                  <div className="bg-gradient-to-br from-gray-600 to-gray-800 p-4 rounded-xl shadow-lg">
                     <Mail className="h-8 w-8 text-white" />
                   </div>
                 </div>
@@ -72,10 +72,10 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
                   Verifique sua caixa de entrada e clique no link para redefinir sua senha.
                 </p>
               </CardHeader>
-              <CardContent className="px-8 pb-8">
+              <CardContent className="px-8 pb-8 bg-white">
                 <Button
                   onClick={onBack}
-                  className="w-full bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-medium py-3 h-12 transition-all duration-200 shadow-lg hover:shadow-xl rounded-lg"
+                  className="w-full bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-medium py-3 h-12 transition-all duration-200 shadow-lg hover:shadow-xl rounded-lg border-0"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Voltar ao login
@@ -89,15 +89,15 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4">
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4">
+      <div className="absolute inset-0 bg-gray-900"></div>
       <div className="relative z-10">
-        <Card className="w-full max-w-md bg-white shadow-2xl border-0 rounded-2xl overflow-hidden">
+        <Card className="w-full max-w-md bg-white shadow-2xl border border-gray-200 rounded-xl overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-50"></div>
           <div className="relative z-10">
-            <CardHeader className="text-center pb-6 pt-8">
+            <CardHeader className="text-center pb-6 pt-8 bg-white">
               <div className="flex justify-center items-center mb-6">
-                <div className="bg-gradient-to-br from-gray-800 to-black p-4 rounded-2xl shadow-lg">
+                <div className="bg-gradient-to-br from-gray-800 to-black p-4 rounded-xl shadow-lg">
                   <Scissors className="h-8 w-8 text-white" />
                 </div>
               </div>
@@ -109,7 +109,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
               </p>
             </CardHeader>
             
-            <CardContent className="space-y-6 px-8 pb-8">
+            <CardContent className="space-y-6 px-8 pb-8 bg-white">
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
@@ -120,14 +120,14 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-gray-400 focus:ring-0 transition-all duration-200 text-gray-900 placeholder:text-gray-400 rounded-lg h-12"
+                    className="border-2 border-gray-200 bg-gray-50 focus:bg-white focus:border-gray-400 focus:ring-0 transition-all duration-200 text-gray-900 placeholder:text-gray-400 rounded-lg h-12"
                   />
                 </div>
                 
-                <div className="space-y-3 pt-2">
+                <div className="space-y-3 pt-4">
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-medium py-3 h-12 transition-all duration-200 shadow-lg hover:shadow-xl rounded-lg"
+                    className="w-full bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-medium py-3 h-12 transition-all duration-200 shadow-lg hover:shadow-xl rounded-lg border-0"
                     disabled={isLoading}
                   >
                     {isLoading ? 'Enviando...' : 'Enviar link de recuperação'}
@@ -136,8 +136,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
                   <Button
                     type="button"
                     onClick={onBack}
-                    variant="outline"
-                    className="w-full border-2 border-gray-300 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 font-medium py-3 h-12 transition-all duration-200 rounded-lg hover:border-gray-400"
+                    className="w-full bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 font-medium py-3 h-12 transition-all duration-200 rounded-lg border-2 border-gray-300 hover:border-gray-400 shadow-sm hover:shadow-md"
                   >
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Voltar ao login
