@@ -53,33 +53,35 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
 
   if (emailSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
         <div className="relative z-10">
-          <Card className="w-full max-w-md bg-white/95 backdrop-blur-sm border border-gray-200/50 shadow-2xl shadow-gray-900/10">
-            <CardHeader className="text-center pb-6">
-              <div className="flex justify-center items-center mb-6">
-                <div className="bg-gradient-to-br from-gray-600 to-gray-800 p-4 rounded-2xl shadow-lg">
-                  <Mail className="h-8 w-8 text-white" />
+          <Card className="w-full max-w-md bg-white shadow-2xl border-0 rounded-2xl overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-50"></div>
+            <div className="relative z-10">
+              <CardHeader className="text-center pb-6 pt-8">
+                <div className="flex justify-center items-center mb-6">
+                  <div className="bg-gradient-to-br from-gray-600 to-gray-800 p-4 rounded-2xl shadow-lg">
+                    <Mail className="h-8 w-8 text-white" />
+                  </div>
                 </div>
-              </div>
-              <CardTitle className="text-2xl font-light text-gray-900 mb-2">
-                Email Enviado!
-              </CardTitle>
-              <p className="text-gray-500 font-light leading-relaxed">
-                Verifique sua caixa de entrada e clique no link para redefinir sua senha.
-              </p>
-            </CardHeader>
-            <CardContent>
-              <Button
-                onClick={onBack}
-                variant="outline"
-                className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 py-3 font-medium"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Voltar ao login
-              </Button>
-            </CardContent>
+                <CardTitle className="text-2xl font-light text-gray-900 mb-2">
+                  Email Enviado!
+                </CardTitle>
+                <p className="text-gray-600 font-light leading-relaxed">
+                  Verifique sua caixa de entrada e clique no link para redefinir sua senha.
+                </p>
+              </CardHeader>
+              <CardContent className="px-8 pb-8">
+                <Button
+                  onClick={onBack}
+                  className="w-full bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-medium py-3 h-12 transition-all duration-200 shadow-lg hover:shadow-xl rounded-lg"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Voltar ao login
+                </Button>
+              </CardContent>
+            </div>
           </Card>
         </div>
       </div>
@@ -87,58 +89,63 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4">
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
       <div className="relative z-10">
-        <Card className="w-full max-w-md bg-white/95 backdrop-blur-sm border border-gray-200/50 shadow-2xl shadow-gray-900/10">
-          <CardHeader className="text-center pb-6">
-            <div className="flex justify-center items-center mb-6">
-              <div className="bg-gradient-to-br from-gray-800 to-black p-4 rounded-2xl shadow-lg">
-                <Scissors className="h-8 w-8 text-white" />
+        <Card className="w-full max-w-md bg-white shadow-2xl border-0 rounded-2xl overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-50"></div>
+          <div className="relative z-10">
+            <CardHeader className="text-center pb-6 pt-8">
+              <div className="flex justify-center items-center mb-6">
+                <div className="bg-gradient-to-br from-gray-800 to-black p-4 rounded-2xl shadow-lg">
+                  <Scissors className="h-8 w-8 text-white" />
+                </div>
               </div>
-            </div>
-            <CardTitle className="text-2xl font-light text-gray-900 mb-2">
-              Recuperar Senha
-            </CardTitle>
-            <p className="text-gray-500 font-light">
-              Digite seu email para receber um link de recuperação
-            </p>
-          </CardHeader>
-          
-          <CardContent className="space-y-6">
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-gray-400 focus:ring-0 transition-all duration-200 text-gray-900 placeholder:text-gray-400"
-                />
-              </div>
-              
-              <Button
-                type="submit"
-                className="w-full bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-medium py-3 transition-all duration-200 shadow-lg hover:shadow-xl"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Enviando...' : 'Enviar link de recuperação'}
-              </Button>
-              
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onBack}
-                className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 py-3 font-medium"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Voltar ao login
-              </Button>
-            </form>
-          </CardContent>
+              <CardTitle className="text-2xl font-light text-gray-900 mb-2">
+                Recuperar Senha
+              </CardTitle>
+              <p className="text-gray-600 font-light">
+                Digite seu email para receber um link de recuperação
+              </p>
+            </CardHeader>
+            
+            <CardContent className="space-y-6 px-8 pb-8">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-gray-400 focus:ring-0 transition-all duration-200 text-gray-900 placeholder:text-gray-400 rounded-lg h-12"
+                  />
+                </div>
+                
+                <div className="space-y-3 pt-2">
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-medium py-3 h-12 transition-all duration-200 shadow-lg hover:shadow-xl rounded-lg"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Enviando...' : 'Enviar link de recuperação'}
+                  </Button>
+                  
+                  <Button
+                    type="button"
+                    onClick={onBack}
+                    variant="outline"
+                    className="w-full border-2 border-gray-300 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 font-medium py-3 h-12 transition-all duration-200 rounded-lg hover:border-gray-400"
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Voltar ao login
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </div>
         </Card>
       </div>
     </div>
