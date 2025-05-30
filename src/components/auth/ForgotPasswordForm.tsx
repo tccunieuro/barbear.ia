@@ -53,15 +53,15 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
 
   if (emailSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-trinks-orange/10 to-trinks-orange/5 p-4">
-        <Card className="w-full max-w-md">
+      <div className="min-h-screen flex items-center justify-center bg-white p-4">
+        <Card className="w-full max-w-md bg-white border-2 border-black">
           <CardHeader className="text-center">
             <div className="flex justify-center items-center mb-4">
-              <div className="bg-green-500 p-3 rounded-full">
+              <div className="bg-black p-3 rounded-full">
                 <Mail className="h-8 w-8 text-white" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold text-gray-800">
+            <CardTitle className="text-2xl font-bold text-black">
               Email Enviado!
             </CardTitle>
             <p className="text-gray-600">
@@ -72,7 +72,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
             <Button
               onClick={onBack}
               variant="outline"
-              className="w-full"
+              className="w-full border-2 border-black text-black hover:bg-gray-100"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar ao login
@@ -84,15 +84,15 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-trinks-orange/10 to-trinks-orange/5 p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-white p-4">
+      <Card className="w-full max-w-md bg-white border-2 border-black">
         <CardHeader className="text-center">
           <div className="flex justify-center items-center mb-4">
-            <div className="bg-trinks-orange p-3 rounded-full">
+            <div className="bg-black p-3 rounded-full">
               <Scissors className="h-8 w-8 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-gray-800">
+          <CardTitle className="text-2xl font-bold text-black">
             Recuperar Senha
           </CardTitle>
           <p className="text-gray-600">
@@ -102,7 +102,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-black">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -110,12 +110,13 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="border-2 border-black focus:border-black focus:ring-0"
               />
             </div>
             
             <Button
               type="submit"
-              className="w-full bg-trinks-orange hover:bg-trinks-orange-dark"
+              className="w-full bg-black hover:bg-gray-800 text-white border-2 border-black"
               disabled={isLoading}
             >
               {isLoading ? 'Enviando...' : 'Enviar link de recuperação'}
@@ -125,7 +126,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
               type="button"
               variant="outline"
               onClick={onBack}
-              className="w-full"
+              className="w-full border-2 border-black text-black hover:bg-gray-100"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar ao login

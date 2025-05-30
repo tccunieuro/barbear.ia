@@ -56,15 +56,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-trinks-orange/10 to-trinks-orange/5 p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-white p-4">
+      <Card className="w-full max-w-md bg-white border-2 border-black">
         <CardHeader className="text-center">
           <div className="flex justify-center items-center mb-4">
-            <div className="bg-trinks-orange p-3 rounded-full">
+            <div className="bg-black p-3 rounded-full">
               <Scissors className="h-8 w-8 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-gray-800">
+          <CardTitle className="text-2xl font-bold text-black">
             BarberManager
           </CardTitle>
           <p className="text-gray-600">Gestão completa para sua barbearia</p>
@@ -72,7 +72,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-black">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -80,11 +80,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="border-2 border-black focus:border-black focus:ring-0"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
+              <Label htmlFor="password" className="text-black">Senha</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -93,12 +94,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  className="border-2 border-black focus:border-black focus:ring-0"
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-100 text-black"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
@@ -116,8 +118,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
                   id="remember"
                   checked={remember}
                   onCheckedChange={(checked) => setRemember(checked as boolean)}
+                  className="border-2 border-black data-[state=checked]:bg-black"
                 />
-                <Label htmlFor="remember" className="text-sm">
+                <Label htmlFor="remember" className="text-sm text-black">
                   Lembrar-me
                 </Label>
               </div>
@@ -126,7 +129,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
                 type="button"
                 variant="link"
                 onClick={onForgotPassword}
-                className="text-trinks-orange hover:text-trinks-orange-dark p-0"
+                className="text-black hover:text-gray-600 p-0 underline"
               >
                 Esqueci minha senha
               </Button>
@@ -134,7 +137,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
             
             <Button
               type="submit"
-              className="w-full bg-trinks-orange hover:bg-trinks-orange-dark"
+              className="w-full bg-black hover:bg-gray-800 text-white border-2 border-black"
               disabled={isLoading}
             >
               {isLoading ? 'Entrando...' : 'Entrar'}
