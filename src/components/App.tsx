@@ -73,7 +73,7 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-slate-700">
       <Sidebar
         currentPage={currentPage}
         onPageChange={handlePageChange}

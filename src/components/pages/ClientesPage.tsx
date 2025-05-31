@@ -52,8 +52,8 @@ export const ClientesPage: React.FC = () => {
   });
 
   return (
-    <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-white min-h-full">
-      {/* Header - sem botão "Novo Cliente" */}
+    <div className="p-6 space-y-6 bg-slate-700 min-h-full">
+      {/* Header */}
       <div className="flex items-center justify-between bg-white rounded-xl p-6 shadow-sm border border-gray-100">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Clientes</h1>

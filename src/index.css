@@ -5,14 +5,14 @@
 
 @layer base {
   :root {
-    --background: 15 23 42;
+    --background: 30 41 59;
     --foreground: 248 250 252;
 
-    --card: 30 41 59;
-    --card-foreground: 248 250 252;
+    --card: 255 255 255;
+    --card-foreground: 15 23 42;
 
-    --popover: 30 41 59;
-    --popover-foreground: 248 250 252;
+    --popover: 255 255 255;
+    --popover-foreground: 15 23 42;
 
     --primary: 248 250 252;
     --primary-foreground: 15 23 42;
@@ -30,7 +30,7 @@
     --destructive-foreground: 248 250 252;
 
     --border: 71 85 105;
-    --input: 51 65 85;
+    --input: 255 255 255;
     --ring: 59 130 246;
 
     --radius: 0.5rem;
@@ -46,14 +46,14 @@
   }
 
   .dark {
-    --background: 15 23 42;
+    --background: 30 41 59;
     --foreground: 248 250 252;
 
-    --card: 30 41 59;
-    --card-foreground: 248 250 252;
+    --card: 255 255 255;
+    --card-foreground: 15 23 42;
 
-    --popover: 30 41 59;
-    --popover-foreground: 248 250 252;
+    --popover: 255 255 255;
+    --popover-foreground: 15 23 42;
 
     --primary: 248 250 252;
     --primary-foreground: 15 23 42;
@@ -71,7 +71,7 @@
     --destructive-foreground: 248 250 252;
 
     --border: 71 85 105;
-    --input: 51 65 85;
+    --input: 255 255 255;
     --ring: 147 197 253;
     
     --sidebar-background: 0 0 0;
@@ -91,6 +91,6 @@
   }
 
   body {
-    @apply bg-slate-800 text-white;
+    @apply bg-slate-700 text-slate-900;
   }
 }
