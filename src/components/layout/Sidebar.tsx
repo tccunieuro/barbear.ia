@@ -8,7 +8,6 @@ import {
   Calendar, 
   Settings, 
   LogOut, 
-  Scissors,
   ChevronLeft,
   ChevronRight,
   Users
@@ -54,12 +53,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-4 border-b border-gray-700">
         <div className="flex items-center justify-between">
           {!isCollapsed && (
-            <div className="flex items-center space-x-2">
-              <div className="bg-white p-2 rounded-lg">
-                <Scissors className="h-6 w-6 text-black" />
+            <div className="flex items-center space-x-3">
+              <div className="bg-white p-1 rounded-lg flex-shrink-0">
+                <img 
+                  src="/lovable-uploads/58795d95-2279-416e-af72-51ce51787bde.png" 
+                  alt="Barber.ia Logo" 
+                  className="h-8 w-8 object-contain"
+                />
               </div>
               <div>
-                <h1 className="text-white font-bold text-lg">BarberManager</h1>
+                <h1 className="text-white font-bold text-lg">Barber.ia</h1>
                 <p className="text-gray-400 text-xs">Gestão Completa</p>
               </div>
             </div>
