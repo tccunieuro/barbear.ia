@@ -89,7 +89,7 @@ export const ConfiguracoesPage: React.FC = () => {
                   id="nomeCompleto"
                   value={profileData.nomeCompleto}
                   onChange={(e) => setProfileData(prev => ({ ...prev, nomeCompleto: e.target.value }))}
-                  className="mt-1 border-2 border-gray-300 focus:border-gray-600 bg-white rounded-lg h-12"
+                  className="mt-1 border-2 border-gray-300 focus:border-gray-600 bg-white text-gray-900 rounded-lg h-12"
                 />
               </div>
 
@@ -100,7 +100,7 @@ export const ConfiguracoesPage: React.FC = () => {
                   type="email"
                   value={profileData.email}
                   onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
-                  className="mt-1 border-2 border-gray-300 focus:border-gray-600 bg-white rounded-lg h-12"
+                  className="mt-1 border-2 border-gray-300 focus:border-gray-600 bg-white text-gray-900 rounded-lg h-12"
                 />
               </div>
             </div>
@@ -111,12 +111,12 @@ export const ConfiguracoesPage: React.FC = () => {
                 id="nomeBarbearia"
                 value={profileData.nomeBarbearia}
                 onChange={(e) => setProfileData(prev => ({ ...prev, nomeBarbearia: e.target.value }))}
-                className="mt-1 border-2 border-gray-300 focus:border-gray-600 bg-white rounded-lg h-12"
+                className="mt-1 border-2 border-gray-300 focus:border-gray-600 bg-white text-gray-900 rounded-lg h-12"
               />
             </div>
 
-            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-sm text-yellow-800">
+            <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+              <p className="text-sm text-gray-700">
                 <strong>Versão Demo:</strong> As configurações de perfil estão funcionais nesta demonstração. 
                 Use o botão "Salvar Alterações" para aplicar as mudanças.
               </p>

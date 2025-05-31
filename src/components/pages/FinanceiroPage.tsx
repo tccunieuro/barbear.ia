@@ -6,8 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { 
   TrendingUp, 
   TrendingDown, 
-  DollarSign, 
-  CreditCard,
+  DollarSign,
   Plus,
   ArrowUpRight,
   ArrowDownRight,
@@ -15,13 +14,13 @@ import {
   Edit,
   Trash2
 } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { AdicionarDespesaModal } from './AdicionarDespesaModal';
 import { useToast } from '@/hooks/use-toast';
 
 export const FinanceiroPage: React.FC = () => {
-  const [periodo, setPeriodo] = useState('mensal');
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingDespesa, setEditingDespesa] = useState(null);
   const { toast } = useToast();
 
   // Mock data para demonstração
@@ -73,12 +72,27 @@ export const FinanceiroPage: React.FC = () => {
     setTransacoes(prev => [novaDespesa, ...prev]);
   };
 
+  const handleEditDespesa = (despesaEditada: any) => {
+    setTransacoes(prev => prev.map(t => t.id === despesaEditada.id ? despesaEditada : t));
+    setEditingDespesa(null);
+  };
+
   const handleDeleteTransacao = (id: number) => {
     setTransacoes(prev => prev.filter(t => t.id !== id));
     toast({
       title: "Sucesso",
       description: "Transação excluída com sucesso!",
     });
+  };
+
+  const openEditModal = (despesa: any) => {
+    setEditingDespesa(despesa);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setEditingDespesa(null);
   };
 
   return (
@@ -98,8 +112,8 @@ export const FinanceiroPage: React.FC = () => {
         </Button>
       </div>
 
-      {/* Cards de Resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {/* Cards de Resumo - sem o card Margem */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-white shadow-sm border border-gray-100 hover:shadow-md transition-shadow rounded-xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">Receitas</CardTitle>
@@ -145,19 +159,6 @@ export const FinanceiroPage: React.FC = () => {
               <TrendingUp className="h-3 w-3 mr-1" />
               +18% este mês
             </p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white shadow-sm border border-gray-100 hover:shadow-md transition-shadow rounded-xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Margem</CardTitle>
-            <div className="bg-purple-50 p-2 rounded-lg">
-              <CreditCard className="h-4 w-4 text-purple-600" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">76.8%</div>
-            <p className="text-xs text-gray-600">Margem de lucro</p>
           </CardContent>
         </Card>
       </div>
@@ -226,6 +227,7 @@ export const FinanceiroPage: React.FC = () => {
                       <Button
                         size="sm"
                         variant="ghost"
+                        onClick={() => openEditModal(transacao)}
                         className="text-gray-600 hover:text-gray-800 hover:bg-gray-100 p-2"
                       >
                         <Edit className="h-4 w-4" />
@@ -249,8 +251,10 @@ export const FinanceiroPage: React.FC = () => {
 
       <AdicionarDespesaModal
         isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={closeModal}
         onAddDespesa={handleAddDespesa}
+        onEditDespesa={handleEditDespesa}
+        editingDespesa={editingDespesa}
       />
     </div>
   );

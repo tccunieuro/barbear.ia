@@ -1,12 +1,10 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
   Search, 
   Users, 
-  UserPlus, 
   Calendar,
   Phone,
   TrendingUp
@@ -22,32 +20,28 @@ export const ClientesPage: React.FC = () => {
       nome: 'João Silva',
       telefone: '(11) 99999-9999',
       ultimoAtendimento: '15/01/2024',
-      totalAtendimentos: 24,
-      status: 'ativo'
+      totalAtendimentos: 24
     },
     {
       id: 2,
       nome: 'Pedro Santos',
       telefone: '(11) 88888-8888',
       ultimoAtendimento: '10/01/2024',
-      totalAtendimentos: 15,
-      status: 'ativo'
+      totalAtendimentos: 15
     },
     {
       id: 3,
       nome: 'Carlos Oliveira',
       telefone: '(11) 77777-7777',
       ultimoAtendimento: '28/12/2023',
-      totalAtendimentos: 8,
-      status: 'inativo'
+      totalAtendimentos: 8
     },
     {
       id: 4,
       nome: 'Rafael Costa',
       telefone: '(11) 66666-6666',
       ultimoAtendimento: '14/01/2024',
-      totalAtendimentos: 32,
-      status: 'vip'
+      totalAtendimentos: 32
     }
   ];
 
@@ -59,16 +53,12 @@ export const ClientesPage: React.FC = () => {
 
   return (
     <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-white min-h-full">
-      {/* Header */}
+      {/* Header - sem botão "Novo Cliente" */}
       <div className="flex items-center justify-between bg-white rounded-xl p-6 shadow-sm border border-gray-100">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Clientes</h1>
           <p className="text-gray-600 mt-1">Gerencie sua base de clientes e histórico de atendimentos</p>
         </div>
-        <Button className="bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white shadow-md hover:shadow-lg transition-all rounded-lg">
-          <UserPlus className="h-4 w-4 mr-2" />
-          Novo Cliente
-        </Button>
       </div>
 
       {/* Card de Métrica */}
@@ -88,7 +78,7 @@ export const ClientesPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Busca */}
+      {/* Busca - com cor ajustada */}
       <Card className="bg-white shadow-sm border border-gray-100 rounded-xl">
         <CardContent className="pt-6">
           <div className="relative">
@@ -97,13 +87,13 @@ export const ClientesPage: React.FC = () => {
               placeholder="Buscar por nome ou telefone..."
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              className="pl-10 border-2 border-gray-300 focus:border-gray-600 bg-white rounded-lg h-12"
+              className="pl-10 border-2 border-gray-300 focus:border-gray-600 bg-white text-gray-900 rounded-lg h-12"
             />
           </div>
         </CardContent>
       </Card>
 
-      {/* Lista de Clientes */}
+      {/* Lista de Clientes - sem rótulos de status */}
       <Card className="bg-white shadow-sm border border-gray-100 rounded-xl">
         <CardHeader>
           <CardTitle className="text-gray-900">Lista de Clientes ({clientesFiltrados.length})</CardTitle>

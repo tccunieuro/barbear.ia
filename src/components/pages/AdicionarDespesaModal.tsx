@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,17 +11,33 @@ interface AdicionarDespesaModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddDespesa: (despesa: any) => void;
+  onEditDespesa?: (despesa: any) => void;
+  editingDespesa?: any;
 }
 
 export const AdicionarDespesaModal: React.FC<AdicionarDespesaModalProps> = ({ 
   isOpen, 
   onClose, 
-  onAddDespesa 
+  onAddDespesa,
+  onEditDespesa,
+  editingDespesa
 }) => {
   const [descricao, setDescricao] = useState('');
   const [valor, setValor] = useState('');
   const [categoria, setCategoria] = useState('');
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (editingDespesa) {
+      setDescricao(editingDespesa.descricao);
+      setValor(editingDespesa.valor.toString());
+      setCategoria(editingDespesa.categoria);
+    } else {
+      setDescricao('');
+      setValor('');
+      setCategoria('');
+    }
+  }, [editingDespesa]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,34 +51,44 @@ export const AdicionarDespesaModal: React.FC<AdicionarDespesaModalProps> = ({
       return;
     }
 
-    const novaDespesa = {
-      id: Date.now(),
+    const despesaData = {
+      id: editingDespesa ? editingDespesa.id : Date.now(),
       tipo: 'despesa',
       descricao,
       valor: parseFloat(valor),
-      data: new Date().toLocaleDateString('pt-BR'),
+      data: editingDespesa ? editingDespesa.data : new Date().toLocaleDateString('pt-BR'),
       categoria
     };
 
-    onAddDespesa(novaDespesa);
+    if (editingDespesa && onEditDespesa) {
+      onEditDespesa(despesaData);
+      toast({
+        title: "Sucesso",
+        description: "Despesa editada com sucesso!",
+      });
+    } else {
+      onAddDespesa(despesaData);
+      toast({
+        title: "Sucesso",
+        description: "Despesa adicionada com sucesso!",
+      });
+    }
+
     setDescricao('');
     setValor('');
     setCategoria('');
     onClose();
-    
-    toast({
-      title: "Sucesso",
-      description: "Despesa adicionada com sucesso!",
-    });
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-md bg-white shadow-2xl border border-gray-200 rounded-xl">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-xl font-semibold text-gray-900">Adicionar Despesa</CardTitle>
+          <CardTitle className="text-xl font-semibold text-gray-900">
+            {editingDespesa ? 'Editar Despesa' : 'Adicionar Despesa'}
+          </CardTitle>
           <Button
             onClick={onClose}
             variant="ghost"
@@ -82,7 +108,7 @@ export const AdicionarDespesaModal: React.FC<AdicionarDespesaModalProps> = ({
                 value={descricao}
                 onChange={(e) => setDescricao(e.target.value)}
                 placeholder="Ex: Energia elétrica"
-                className="border-2 border-gray-300 focus:border-gray-600 rounded-lg h-12"
+                className="border-2 border-gray-300 focus:border-gray-600 bg-white text-gray-900 rounded-lg h-12"
                 required
               />
             </div>
@@ -96,7 +122,7 @@ export const AdicionarDespesaModal: React.FC<AdicionarDespesaModalProps> = ({
                 value={valor}
                 onChange={(e) => setValor(e.target.value)}
                 placeholder="0,00"
-                className="border-2 border-gray-300 focus:border-gray-600 rounded-lg h-12"
+                className="border-2 border-gray-300 focus:border-gray-600 bg-white text-gray-900 rounded-lg h-12"
                 required
               />
             </div>
@@ -132,7 +158,7 @@ export const AdicionarDespesaModal: React.FC<AdicionarDespesaModalProps> = ({
                 type="submit"
                 className="flex-1 bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white rounded-lg"
               >
-                Adicionar
+                {editingDespesa ? 'Salvar' : 'Adicionar'}
               </Button>
             </div>
           </form>

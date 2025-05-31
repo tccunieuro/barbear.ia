@@ -53,7 +53,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
 
   if (emailSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-800 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
         <Card className="w-full max-w-md bg-white shadow-2xl border border-gray-200 rounded-xl overflow-hidden">
           <CardHeader className="text-center pb-6 pt-8 bg-white">
             <div className="flex justify-center items-center mb-6">
@@ -83,7 +83,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-800 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
       <Card className="w-full max-w-md bg-white shadow-2xl border border-gray-200 rounded-xl overflow-hidden">
         <CardHeader className="text-center pb-6 pt-8 bg-white">
           <div className="flex justify-center items-center mb-6">
