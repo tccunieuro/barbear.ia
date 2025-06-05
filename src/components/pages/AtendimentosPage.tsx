@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,8 +10,7 @@ import {
   Award,
   ArrowUp,
   ArrowDown,
-  Minus,
-  Clock
+  Minus
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -273,41 +271,6 @@ export const AtendimentosPage: React.FC = () => {
                     <span>{servico.variacao}</span>
                   </Badge>
                 </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Distribuição por Horário */}
-      <Card className="bg-white shadow-sm border border-gray-100 rounded-xl">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-gray-900">
-            <Clock className="h-5 w-5 text-gray-700" />
-            <span>Distribuição por Horário</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
-            {[
-              { hora: '08h', intensidade: 20 },
-              { hora: '09h', intensidade: 45 },
-              { hora: '10h', intensidade: 80 },
-              { hora: '11h', intensidade: 90 },
-              { hora: '14h', intensidade: 100 },
-              { hora: '15h', intensidade: 95 },
-              { hora: '16h', intensidade: 85 },
-              { hora: '17h', intensidade: 70 },
-            ].map((slot) => (
-              <div key={slot.hora} className="text-center">
-                <div 
-                  className="w-full h-16 rounded-md mb-2 transition-all"
-                  style={{
-                    backgroundColor: `rgba(55, 65, 81, ${slot.intensidade / 100})`,
-                  }}
-                />
-                <span className="text-xs font-medium text-gray-700">{slot.hora}</span>
-                <p className="text-xs text-gray-500">{slot.intensidade}%</p>
               </div>
             ))}
           </div>
