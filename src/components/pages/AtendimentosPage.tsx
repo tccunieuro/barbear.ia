@@ -132,9 +132,9 @@ export const AtendimentosPage: React.FC = () => {
       case 'down':
         return <ArrowDown className="h-4 w-4 text-red-500" />;
       case 'stable':
-        return <Minus className="h-4 w-4 text-gray-500" />;
+        return <Minus className="h-4 w-4 text-orange-400" />;
       default:
-        return <Minus className="h-4 w-4 text-gray-500" />;
+        return <Minus className="h-4 w-4 text-orange-400" />;
     }
   };
 
@@ -143,7 +143,7 @@ export const AtendimentosPage: React.FC = () => {
       case 1:
         return <Crown className="h-5 w-5 text-yellow-500" />;
       case 2:
-        return <Medal className="h-5 w-5 text-gray-400" />;
+        return <Medal className="h-5 w-5 text-orange-300" />;
       case 3:
         return <Award className="h-5 w-5 text-orange-500" />;
       default:
@@ -152,35 +152,35 @@ export const AtendimentosPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-slate-700 min-h-full">
+    <div className="p-6 space-y-6 bg-orange-50 min-h-full">
       {/* Header */}
-      <div className="flex items-center justify-between bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <div className="flex items-center justify-between bg-white rounded-xl p-6 shadow-sm border border-orange-100">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Atendimentos</h1>
-          <p className="text-gray-600 mt-1">Análise de performance e serviços mais procurados</p>
+          <h1 className="text-3xl font-bold text-orange-900">Atendimentos</h1>
+          <p className="text-orange-600 mt-1">Análise de performance e serviços mais procurados</p>
         </div>
       </div>
 
-      {/* Card de Métrica com Filtros - seguindo o padrão do Dashboard */}
+      {/* Card de Métrica com Filtros */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="bg-white shadow-sm border border-gray-100 hover:shadow-md transition-shadow rounded-xl">
+        <Card className="bg-white shadow-sm border border-orange-100 hover:shadow-md transition-shadow rounded-xl">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium text-gray-600">Total de Atendimentos</CardTitle>
-              <div className="bg-blue-50 p-2 rounded-lg">
-                <Users className="h-4 w-4 text-blue-600" />
+              <CardTitle className="text-sm font-medium text-orange-600">Total de Atendimentos</CardTitle>
+              <div className="bg-orange-100 p-2 rounded-lg">
+                <Users className="h-4 w-4 text-orange-600" />
               </div>
             </div>
           </CardHeader>
           <CardContent className="pt-0">
-            <div className="text-2xl font-bold text-gray-900 mb-2">{metrics.total}</div>
+            <div className="text-2xl font-bold text-orange-900 mb-2">{metrics.total}</div>
             <p className="text-xs text-green-600">
               {metrics.crescimento} em relação ao período anterior
             </p>
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2 bg-white shadow-sm border border-gray-100 hover:shadow-md transition-shadow rounded-xl">
+        <Card className="lg:col-span-2 bg-white shadow-sm border border-orange-100 hover:shadow-md transition-shadow rounded-xl">
           <CardContent className="pt-6">
             <div className="flex flex-wrap gap-2">
               {[
@@ -196,8 +196,8 @@ export const AtendimentosPage: React.FC = () => {
                   size="sm"
                   className={`transition-all rounded-lg ${
                     periodo === filter.key
-                      ? 'bg-gradient-to-r from-gray-800 to-black text-white shadow-md'
-                      : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 hover:border-gray-300 shadow-sm'
+                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
+                      : 'bg-white hover:bg-orange-50 text-orange-700 border border-orange-200 hover:border-orange-300 shadow-sm'
                   }`}
                 >
                   {filter.label}
@@ -209,36 +209,36 @@ export const AtendimentosPage: React.FC = () => {
       </div>
 
       {/* Gráfico de Atendimentos por Período */}
-      <Card className="bg-white shadow-sm border border-gray-100 rounded-xl">
+      <Card className="bg-white shadow-sm border border-orange-100 rounded-xl">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-gray-900">
+          <CardTitle className="flex items-center space-x-2 text-orange-900">
             <span>Atendimentos por {periodo === 'diario' ? 'Hora' : periodo === 'semanal' ? 'Dia' : periodo === 'mensal' ? 'Semana' : periodo === 'trimestral' ? 'Mês' : 'Ano'}</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getCurrentData()}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="nome" stroke="#666" />
-              <YAxis stroke="#666" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#fed7aa" />
+              <XAxis dataKey="nome" stroke="#ea580c" />
+              <YAxis stroke="#ea580c" />
               <Tooltip 
                 contentStyle={{ 
                   backgroundColor: 'white', 
-                  border: '1px solid #e5e7eb',
+                  border: '1px solid #fed7aa',
                   borderRadius: '8px'
                 }}
               />
-              <Bar dataKey="atendimentos" fill="#374151" />
+              <Bar dataKey="atendimentos" fill="#ea580c" />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
       </Card>
 
       {/* Top 3 Serviços Mais Realizados */}
-      <Card className="bg-white shadow-sm border border-gray-100 rounded-xl">
+      <Card className="bg-white shadow-sm border border-orange-100 rounded-xl">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-gray-900">
-            <Scissors className="h-5 w-5 text-gray-700" />
+          <CardTitle className="flex items-center space-x-2 text-orange-900">
+            <Scissors className="h-5 w-5 text-orange-600" />
             <span>Top 3 Serviços Mais Procurados</span>
           </CardTitle>
         </CardHeader>
@@ -249,24 +249,24 @@ export const AtendimentosPage: React.FC = () => {
                 key={servico.posicao}
                 className={`flex items-center justify-between p-4 rounded-lg border-2 transition-colors ${
                   index === 0 ? 'border-yellow-200 bg-yellow-50 hover:bg-yellow-100' :
-                  index === 1 ? 'border-gray-200 bg-gray-50 hover:bg-gray-100' :
-                  'border-orange-200 bg-orange-50 hover:bg-orange-100'
+                  index === 1 ? 'border-orange-200 bg-orange-50 hover:bg-orange-100' :
+                  'border-orange-300 bg-orange-100 hover:bg-orange-150'
                 }`}
               >
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     {getRankIcon(servico.posicao)}
-                    <span className="text-2xl font-bold text-gray-700">#{servico.posicao}</span>
+                    <span className="text-2xl font-bold text-orange-700">#{servico.posicao}</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg text-gray-900">{servico.servico}</h3>
-                    <p className="text-sm text-gray-600">
+                    <h3 className="font-semibold text-lg text-orange-900">{servico.servico}</h3>
+                    <p className="text-sm text-orange-600">
                       {servico.quantidade} atendimentos • {servico.percentual}% do total
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Badge variant={servico.tendencia === 'up' ? 'default' : 'secondary'} className="flex items-center space-x-1 bg-white border border-gray-200">
+                  <Badge variant={servico.tendencia === 'up' ? 'default' : 'secondary'} className="flex items-center space-x-1 bg-white border border-orange-200">
                     {getTrendIcon(servico.tendencia)}
                     <span>{servico.variacao}</span>
                   </Badge>
