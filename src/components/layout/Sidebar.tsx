@@ -46,11 +46,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   return (
     <div className={cn(
-      "bg-orange-800 h-screen flex flex-col transition-all duration-300 border-r border-orange-700",
+      "bg-orange-700 h-screen flex flex-col transition-all duration-300 border-r border-orange-600",
       isCollapsed ? "w-16" : "w-64"
     )}>
       {/* Header */}
-      <div className="p-4 border-b border-orange-700">
+      <div className="p-4 border-b border-orange-600">
         <div className="flex items-center justify-between">
           {!isCollapsed && (
             <div className="flex items-center space-x-3">
@@ -63,7 +63,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
               <div>
                 <h1 className="text-white font-bold text-lg">Barber.ia</h1>
-                <p className="text-orange-200 text-xs">Gestão Completa</p>
+                <p className="text-orange-100 text-xs">Gestão Completa</p>
               </div>
             </div>
           )}
@@ -72,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             variant="ghost"
             size="sm"
             onClick={onToggleCollapse}
-            className="text-white hover:bg-orange-700"
+            className="text-white hover:bg-orange-600 hover:text-white"
           >
             {isCollapsed ? (
               <ChevronRight className="h-4 w-4" />
@@ -96,8 +96,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 variant="ghost"
                 onClick={() => onPageChange(item.id)}
                 className={cn(
-                  "w-full justify-start text-white hover:bg-orange-700 transition-colors",
-                  isActive && "bg-white text-orange-800 hover:bg-orange-100",
+                  "w-full justify-start text-white hover:bg-orange-600 hover:text-white transition-colors",
+                  isActive && "bg-white text-orange-700 hover:bg-orange-50 hover:text-orange-800",
                   isCollapsed ? "px-2" : "px-3"
                 )}
               >
@@ -106,7 +106,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <span className="text-sm font-medium">{item.label}</span>
                 )}
                 {!isCollapsed && item.badge && (
-                  <span className="ml-auto bg-white text-orange-800 text-xs px-2 py-1 rounded-full">
+                  <span className="ml-auto bg-white text-orange-700 text-xs px-2 py-1 rounded-full">
                     {item.badge}
                   </span>
                 )}
@@ -117,12 +117,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </ScrollArea>
 
       {/* Footer */}
-      <div className="p-3 border-t border-orange-700">
+      <div className="p-3 border-t border-orange-600">
         <Button
           variant="ghost"
           onClick={onLogout}
           className={cn(
-            "w-full justify-start text-white hover:bg-red-600 transition-colors",
+            "w-full justify-start text-white hover:bg-red-600 hover:text-white transition-colors",
             isCollapsed ? "px-2" : "px-3"
           )}
         >
