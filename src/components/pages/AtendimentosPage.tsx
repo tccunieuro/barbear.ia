@@ -128,13 +128,13 @@ export const AtendimentosPage: React.FC = () => {
   const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
     switch (trend) {
       case 'up':
-        return <ArrowUp className="h-4 w-4 text-green-500" />;
+        return <ArrowUp className="h-4 w-4 text-green-600" />;
       case 'down':
         return <ArrowDown className="h-4 w-4 text-red-500" />;
       case 'stable':
-        return <Minus className="h-4 w-4 text-orange-400" />;
+        return <Minus className="h-4 w-4 text-orange-500" />;
       default:
-        return <Minus className="h-4 w-4 text-orange-400" />;
+        return <Minus className="h-4 w-4 text-orange-500" />;
     }
   };
 
@@ -143,9 +143,9 @@ export const AtendimentosPage: React.FC = () => {
       case 1:
         return <Crown className="h-5 w-5 text-yellow-500" />;
       case 2:
-        return <Medal className="h-5 w-5 text-orange-300" />;
+        return <Medal className="h-5 w-5 text-orange-400" />;
       case 3:
-        return <Award className="h-5 w-5 text-orange-500" />;
+        return <Award className="h-5 w-5 text-orange-600" />;
       default:
         return null;
     }
@@ -157,16 +157,16 @@ export const AtendimentosPage: React.FC = () => {
       <div className="flex items-center justify-between bg-white rounded-xl p-6 shadow-sm border border-orange-100">
         <div>
           <h1 className="text-3xl font-bold text-orange-900">Atendimentos</h1>
-          <p className="text-orange-600 mt-1">Análise de performance e serviços mais procurados</p>
+          <p className="text-orange-700 mt-1">Análise de performance e serviços mais procurados</p>
         </div>
       </div>
 
       {/* Card de Métrica com Filtros */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="bg-white shadow-sm border border-orange-100 hover:shadow-md transition-shadow rounded-xl">
+        <Card className="bg-white shadow-sm border border-orange-200 hover:shadow-md transition-shadow rounded-xl">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium text-orange-600">Total de Atendimentos</CardTitle>
+              <CardTitle className="text-sm font-medium text-orange-700">Total de Atendimentos</CardTitle>
               <div className="bg-orange-100 p-2 rounded-lg">
                 <Users className="h-4 w-4 text-orange-600" />
               </div>
@@ -180,7 +180,7 @@ export const AtendimentosPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2 bg-white shadow-sm border border-orange-100 hover:shadow-md transition-shadow rounded-xl">
+        <Card className="lg:col-span-2 bg-white shadow-sm border border-orange-200 hover:shadow-md transition-shadow rounded-xl">
           <CardContent className="pt-6">
             <div className="flex flex-wrap gap-2">
               {[
@@ -209,7 +209,7 @@ export const AtendimentosPage: React.FC = () => {
       </div>
 
       {/* Gráfico de Atendimentos por Período */}
-      <Card className="bg-white shadow-sm border border-orange-100 rounded-xl">
+      <Card className="bg-white shadow-sm border border-orange-200 rounded-xl">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-orange-900">
             <span>Atendimentos por {periodo === 'diario' ? 'Hora' : periodo === 'semanal' ? 'Dia' : periodo === 'mensal' ? 'Semana' : periodo === 'trimestral' ? 'Mês' : 'Ano'}</span>
@@ -235,7 +235,7 @@ export const AtendimentosPage: React.FC = () => {
       </Card>
 
       {/* Top 3 Serviços Mais Realizados */}
-      <Card className="bg-white shadow-sm border border-orange-100 rounded-xl">
+      <Card className="bg-white shadow-sm border border-orange-200 rounded-xl">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-orange-900">
             <Scissors className="h-5 w-5 text-orange-600" />
@@ -256,11 +256,11 @@ export const AtendimentosPage: React.FC = () => {
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     {getRankIcon(servico.posicao)}
-                    <span className="text-2xl font-bold text-orange-700">#{servico.posicao}</span>
+                    <span className="text-2xl font-bold text-orange-800">#{servico.posicao}</span>
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg text-orange-900">{servico.servico}</h3>
-                    <p className="text-sm text-orange-600">
+                    <p className="text-sm text-orange-700">
                       {servico.quantidade} atendimentos • {servico.percentual}% do total
                     </p>
                   </div>
