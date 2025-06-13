@@ -12,88 +12,115 @@ import {
   ArrowDownRight,
   Calendar,
   Edit,
-  Trash2
+  Trash2,
+  Loader2
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { AdicionarDespesaModal } from './AdicionarDespesaModal';
-import { useToast } from '@/hooks/use-toast';
+import { useTransacoes, useCreateTransacao, useDeleteTransacao } from '@/hooks/useTransacoes';
 
 export const FinanceiroPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingDespesa, setEditingDespesa] = useState(null);
-  const { toast } = useToast();
+  
+  const { data: transacoes = [], isLoading, error } = useTransacoes();
+  const createTransacaoMutation = useCreateTransacao();
+  const deleteTransacaoMutation = useDeleteTransacao();
 
-  // Mock data para demonstração
-  const [transacoes, setTransacoes] = useState([
-    {
-      id: 1,
-      tipo: 'receita',
-      descricao: 'Corte + Barba',
-      valor: 85.00,
-      data: '15/01/2024',
-      categoria: 'Serviços'
-    },
-    {
-      id: 2,
-      tipo: 'despesa',
-      descricao: 'Produtos de limpeza',
-      valor: 45.00,
-      data: '14/01/2024',
-      categoria: 'Limpeza'
-    },
-    {
-      id: 3,
-      tipo: 'receita',
-      descricao: 'Corte Simples',
-      valor: 50.00,
-      data: '14/01/2024',
-      categoria: 'Serviços'
-    },
-    {
-      id: 4,
-      tipo: 'despesa',
-      descricao: 'Energia Elétrica',
-      valor: 280.00,
-      data: '13/01/2024',
-      categoria: 'Utilidades'
+  // Calcular totais
+  const totalReceitas = transacoes
+    .filter(t => t.tipo === 'receita')
+    .reduce((sum, t) => sum + Number(t.valor), 0);
+  
+  const totalDespesas = transacoes
+    .filter(t => t.tipo === 'despesa')
+    .reduce((sum, t) => sum + Number(t.valor), 0);
+  
+  const lucroLiquido = totalReceitas - totalDespesas;
+
+  // Processar dados para o gráfico (últimos 6 meses)
+  const processarDadosGrafico = () => {
+    const dados: { [key: string]: { receitas: number; despesas: number } } = {};
+    const hoje = new Date();
+    
+    // Inicializar últimos 6 meses
+    for (let i = 5; i >= 0; i--) {
+      const mes = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+      const nomeMes = mes.toLocaleDateString('pt-BR', { month: 'short' });
+      dados[nomeMes] = { receitas: 0, despesas: 0 };
     }
-  ]);
 
-  const mockDadosGrafico = [
-    { nome: 'Jan', receitas: 4500, despesas: 1200 },
-    { nome: 'Fev', receitas: 3800, despesas: 1100 },
-    { nome: 'Mar', receitas: 5200, despesas: 1350 },
-    { nome: 'Abr', receitas: 4800, despesas: 1280 },
-    { nome: 'Mai', receitas: 5800, despesas: 1450 },
-    { nome: 'Jun', receitas: 6200, despesas: 1380 },
-  ];
+    // Agrupar transações por mês
+    transacoes.forEach(transacao => {
+      const dataTransacao = new Date(transacao.data_transacao);
+      const nomeMes = dataTransacao.toLocaleDateString('pt-BR', { month: 'short' });
+      
+      if (dados[nomeMes]) {
+        if (transacao.tipo === 'receita') {
+          dados[nomeMes].receitas += Number(transacao.valor);
+        } else {
+          dados[nomeMes].despesas += Number(transacao.valor);
+        }
+      }
+    });
+
+    return Object.entries(dados).map(([nome, valores]) => ({
+      nome,
+      receitas: valores.receitas,
+      despesas: valores.despesas
+    }));
+  };
+
+  const dadosGrafico = processarDadosGrafico();
 
   const handleAddDespesa = (novaDespesa: any) => {
-    setTransacoes(prev => [novaDespesa, ...prev]);
+    const transacaoData = {
+      tipo: 'despesa' as const,
+      categoria: novaDespesa.categoria,
+      descricao: novaDespesa.descricao,
+      valor: Number(novaDespesa.valor),
+      data_transacao: novaDespesa.data || new Date().toISOString().split('T')[0]
+    };
+    
+    createTransacaoMutation.mutate(transacaoData);
   };
 
-  const handleEditDespesa = (despesaEditada: any) => {
-    setTransacoes(prev => prev.map(t => t.id === despesaEditada.id ? despesaEditada : t));
-    setEditingDespesa(null);
+  const handleDeleteTransacao = (id: string) => {
+    deleteTransacaoMutation.mutate(id);
   };
 
-  const handleDeleteTransacao = (id: number) => {
-    setTransacoes(prev => prev.filter(t => t.id !== id));
-    toast({
-      title: "Sucesso",
-      description: "Transação excluída com sucesso!",
-    });
+  const formatarData = (dataString: string) => {
+    return new Date(dataString).toLocaleDateString('pt-BR');
   };
 
-  const openEditModal = (despesa: any) => {
-    setEditingDespesa(despesa);
-    setModalOpen(true);
+  const formatarMoeda = (valor: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(valor);
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
-    setEditingDespesa(null);
-  };
+  if (isLoading) {
+    return (
+      <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
+          <span className="text-orange-700">Carregando dados financeiros...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-2">Erro ao carregar dados financeiros</p>
+          <p className="text-sm text-orange-700">Por favor, faça login para acessar seus dados</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full max-w-full overflow-x-hidden">
@@ -122,10 +149,10 @@ export const FinanceiroPage: React.FC = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-900">R$ 18.450</div>
+            <div className="text-2xl font-bold text-orange-900">{formatarMoeda(totalReceitas)}</div>
             <p className="text-xs text-green-600 flex items-center mt-1">
               <TrendingUp className="h-3 w-3 mr-1" />
-              +12% este mês
+              Total acumulado
             </p>
           </CardContent>
         </Card>
@@ -138,10 +165,10 @@ export const FinanceiroPage: React.FC = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-900">R$ 4.280</div>
+            <div className="text-2xl font-bold text-orange-900">{formatarMoeda(totalDespesas)}</div>
             <p className="text-xs text-red-600 flex items-center mt-1">
               <TrendingDown className="h-3 w-3 mr-1" />
-              -5% este mês
+              Total acumulado
             </p>
           </CardContent>
         </Card>
@@ -154,10 +181,16 @@ export const FinanceiroPage: React.FC = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-900">R$ 14.170</div>
-            <p className="text-xs text-green-600 flex items-center mt-1">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              +18% este mês
+            <div className={`text-2xl font-bold ${lucroLiquido >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {formatarMoeda(lucroLiquido)}
+            </div>
+            <p className="text-xs text-orange-600 flex items-center mt-1">
+              {lucroLiquido >= 0 ? (
+                <TrendingUp className="h-3 w-3 mr-1" />
+              ) : (
+                <TrendingDown className="h-3 w-3 mr-1" />
+              )}
+              Receitas - Despesas
             </p>
           </CardContent>
         </Card>
@@ -169,22 +202,29 @@ export const FinanceiroPage: React.FC = () => {
           <CardTitle className="text-orange-900">Receitas vs Despesas</CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={mockDadosGrafico}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#fed7aa" />
-              <XAxis dataKey="nome" stroke="#ea580c" />
-              <YAxis stroke="#ea580c" />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'white', 
-                  border: '1px solid #fed7aa',
-                  borderRadius: '8px'
-                }}
-              />
-              <Bar dataKey="receitas" fill="#10b981" name="Receitas" />
-              <Bar dataKey="despesas" fill="#ef4444" name="Despesas" />
-            </BarChart>
-          </ResponsiveContainer>
+          {dadosGrafico.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={dadosGrafico}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#fed7aa" />
+                <XAxis dataKey="nome" stroke="#ea580c" />
+                <YAxis stroke="#ea580c" />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'white', 
+                    border: '1px solid #fed7aa',
+                    borderRadius: '8px'
+                  }}
+                  formatter={(value: number) => formatarMoeda(value)}
+                />
+                <Bar dataKey="receitas" fill="#10b981" name="Receitas" />
+                <Bar dataKey="despesas" fill="#ef4444" name="Despesas" />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-300 flex items-center justify-center text-orange-600">
+              Nenhuma transação encontrada para gerar o gráfico
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -194,68 +234,73 @@ export const FinanceiroPage: React.FC = () => {
           <CardTitle className="text-orange-900">Transações Recentes</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {transacoes.map((transacao) => (
-              <div key={transacao.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-orange-100 rounded-lg hover:bg-orange-50 transition-colors space-y-3 sm:space-y-0">
-                <div className="flex items-center space-x-4">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    transacao.tipo === 'receita' ? 'bg-green-50' : 'bg-red-50'
-                  }`}>
-                    {transacao.tipo === 'receita' ? (
-                      <ArrowUpRight className="h-5 w-5 text-green-600" />
-                    ) : (
-                      <ArrowDownRight className="h-5 w-5 text-red-600" />
+          {transacoes.length === 0 ? (
+            <div className="text-center py-8">
+              <DollarSign className="h-12 w-12 text-orange-300 mx-auto mb-4" />
+              <p className="text-orange-600 text-lg">Nenhuma transação registrada</p>
+              <p className="text-orange-500 text-sm mt-2">
+                Comece adicionando suas primeiras receitas e despesas
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {transacoes.slice(0, 10).map((transacao) => (
+                <div key={transacao.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-orange-100 rounded-lg hover:bg-orange-50 transition-colors space-y-3 sm:space-y-0">
+                  <div className="flex items-center space-x-4">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      transacao.tipo === 'receita' ? 'bg-green-50' : 'bg-red-50'
+                    }`}>
+                      {transacao.tipo === 'receita' ? (
+                        <ArrowUpRight className="h-5 w-5 text-green-600" />
+                      ) : (
+                        <ArrowDownRight className="h-5 w-5 text-red-600" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-orange-900 truncate">{transacao.descricao}</p>
+                      <div className="flex flex-wrap items-center gap-2 text-sm text-orange-700">
+                        <div className="flex items-center space-x-1">
+                          <Calendar className="h-3 w-3" />
+                          <span>{formatarData(transacao.data_transacao)}</span>
+                        </div>
+                        <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-800">
+                          {transacao.categoria}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between sm:justify-end space-x-3">
+                    <div className={`text-lg font-semibold ${
+                      transacao.tipo === 'receita' ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {transacao.tipo === 'receita' ? '+' : '-'}{formatarMoeda(Number(transacao.valor))}
+                    </div>
+                    {transacao.tipo === 'despesa' && (
+                      <div className="flex space-x-1">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleDeleteTransacao(transacao.id)}
+                          className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2"
+                          disabled={deleteTransacaoMutation.isPending}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     )}
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-medium text-orange-900 truncate">{transacao.descricao}</p>
-                    <div className="flex flex-wrap items-center gap-2 text-sm text-orange-700">
-                      <div className="flex items-center space-x-1">
-                        <Calendar className="h-3 w-3" />
-                        <span>{transacao.data}</span>
-                      </div>
-                      <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-800">{transacao.categoria}</Badge>
-                    </div>
-                  </div>
                 </div>
-                <div className="flex items-center justify-between sm:justify-end space-x-3">
-                  <div className={`text-lg font-semibold ${
-                    transacao.tipo === 'receita' ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {transacao.tipo === 'receita' ? '+' : '-'}R$ {transacao.valor.toFixed(2)}
-                  </div>
-                  {transacao.tipo === 'despesa' && (
-                    <div className="flex space-x-1">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => openEditModal(transacao)}
-                        className="text-orange-600 hover:text-orange-800 hover:bg-orange-100 p-2"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleDeleteTransacao(transacao.id)}
-                        className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
       <AdicionarDespesaModal
         isOpen={modalOpen}
-        onClose={closeModal}
+        onClose={() => setModalOpen(false)}
         onAddDespesa={handleAddDespesa}
-        onEditDespesa={handleEditDespesa}
+        onEditDespesa={() => {}}
         editingDespesa={editingDespesa}
       />
     </div>

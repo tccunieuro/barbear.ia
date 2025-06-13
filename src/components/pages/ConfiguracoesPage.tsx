@@ -1,33 +1,62 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
 import { 
   Shield, 
   User, 
-  Save
+  Save,
+  Loader2
 } from 'lucide-react';
+import { useProfile, useUpdateProfile } from '@/hooks/useProfiles';
 
 export const ConfiguracoesPage: React.FC = () => {
-  const { toast } = useToast();
+  const { data: profile, isLoading, error } = useProfile();
+  const updateProfileMutation = useUpdateProfile();
   
   const [profileData, setProfileData] = useState({
-    nomeCompleto: 'João Silva',
-    email: 'admin@barbear.ia',
-    nomeBarbearia: 'Barbearia Moderna'
+    nome_completo: '',
+    email: '',
+    nome_barbearia: ''
   });
 
+  useEffect(() => {
+    if (profile) {
+      setProfileData({
+        nome_completo: profile.nome_completo || '',
+        email: profile.email || '',
+        nome_barbearia: profile.nome_barbearia || ''
+      });
+    }
+  }, [profile]);
+
   const handleSave = () => {
-    console.log('Salvando configurações:', { profileData });
-    
-    toast({
-      title: "Configurações salvas",
-      description: "Suas preferências foram atualizadas com sucesso.",
-    });
+    updateProfileMutation.mutate(profileData);
   };
+
+  if (isLoading) {
+    return (
+      <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
+          <span className="text-orange-700">Carregando configurações...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-2">Erro ao carregar configurações</p>
+          <p className="text-sm text-orange-700">Por favor, faça login para acessar seus dados</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full max-w-full overflow-x-hidden">
@@ -39,9 +68,14 @@ export const ConfiguracoesPage: React.FC = () => {
         </div>
         <Button 
           onClick={handleSave} 
+          disabled={updateProfileMutation.isPending}
           className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-md hover:shadow-lg transition-all rounded-lg w-full lg:w-auto"
         >
-          <Save className="h-4 w-4 mr-2" />
+          {updateProfileMutation.isPending ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4 mr-2" />
+          )}
           Salvar Alterações
         </Button>
       </div>
@@ -83,11 +117,11 @@ export const ConfiguracoesPage: React.FC = () => {
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="nomeCompleto" className="text-orange-800 font-medium">Nome Completo</Label>
+                <Label htmlFor="nome_completo" className="text-orange-800 font-medium">Nome Completo</Label>
                 <Input
-                  id="nomeCompleto"
-                  value={profileData.nomeCompleto}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, nomeCompleto: e.target.value }))}
+                  id="nome_completo"
+                  value={profileData.nome_completo}
+                  onChange={(e) => setProfileData(prev => ({ ...prev, nome_completo: e.target.value }))}
                   className="mt-1 border-2 border-orange-200 focus:border-orange-400 bg-white text-orange-900 rounded-lg h-12"
                 />
               </div>
@@ -105,18 +139,18 @@ export const ConfiguracoesPage: React.FC = () => {
             </div>
 
             <div>
-              <Label htmlFor="nomeBarbearia" className="text-orange-800 font-medium">Nome da Barbearia</Label>
+              <Label htmlFor="nome_barbearia" className="text-orange-800 font-medium">Nome da Barbearia</Label>
               <Input
-                id="nomeBarbearia"
-                value={profileData.nomeBarbearia}
-                onChange={(e) => setProfileData(prev => ({ ...prev, nomeBarbearia: e.target.value }))}
+                id="nome_barbearia"
+                value={profileData.nome_barbearia}
+                onChange={(e) => setProfileData(prev => ({ ...prev, nome_barbearia: e.target.value }))}
                 className="mt-1 border-2 border-orange-200 focus:border-orange-400 bg-white text-orange-900 rounded-lg h-12"
               />
             </div>
 
             <div className="p-4 bg-orange-100 border border-orange-200 rounded-lg">
               <p className="text-sm text-orange-800">
-                <strong>Versão Demo:</strong> As configurações de perfil estão funcionais nesta demonstração. 
+                <strong>Dados do Supabase:</strong> As configurações de perfil estão conectadas ao banco de dados. 
                 Use o botão "Salvar Alterações" para aplicar as mudanças.
               </p>
             </div>

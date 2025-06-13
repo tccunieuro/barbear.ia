@@ -7,41 +7,41 @@ import {
   Search, 
   Phone, 
   Mail, 
-  MapPin
+  MapPin,
+  Loader2
 } from 'lucide-react';
+import { useClientes } from '@/hooks/useClientes';
 
 export const ClientesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Mock data para demonstração
-  const clientes = [
-    {
-      id: 1,
-      nome: 'João Silva',
-      telefone: '(11) 99999-9999',
-      email: 'joao@email.com',
-      endereco: 'Rua das Flores, 123'
-    },
-    {
-      id: 2,
-      nome: 'Maria Santos',
-      telefone: '(11) 88888-8888',
-      email: 'maria@email.com',
-      endereco: 'Av. Principal, 456'
-    },
-    {
-      id: 3,
-      nome: 'Pedro Oliveira',
-      telefone: '(11) 77777-7777',
-      email: 'pedro@email.com',
-      endereco: 'Rua Central, 789'
-    }
-  ];
+  const { data: clientes = [], isLoading, error } = useClientes();
 
   const filteredClientes = clientes.filter(cliente =>
     cliente.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cliente.telefone.includes(searchTerm)
+    (cliente.telefone && cliente.telefone.includes(searchTerm))
   );
+
+  if (isLoading) {
+    return (
+      <div className="p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
+          <span className="text-orange-700">Carregando clientes...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-2">Erro ao carregar clientes</p>
+          <p className="text-sm text-orange-700">Por favor, faça login para acessar seus dados</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6 bg-orange-50 min-h-full">
@@ -61,8 +61,8 @@ export const ClientesPage: React.FC = () => {
             <Users className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-900">1.247</div>
-            <p className="text-xs text-orange-600 mt-1">+12% este mês</p>
+            <div className="text-2xl font-bold text-orange-900">{clientes.length}</div>
+            <p className="text-xs text-orange-600 mt-1">Clientes cadastrados</p>
           </CardContent>
         </Card>
       </div>
@@ -88,36 +88,54 @@ export const ClientesPage: React.FC = () => {
           <CardTitle className="text-orange-900">Lista de Clientes</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {filteredClientes.map((cliente) => (
-              <div key={cliente.id} className="p-4 border border-orange-100 rounded-lg hover:bg-orange-50 transition-colors">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                      <Users className="h-6 w-6 text-orange-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-orange-900">{cliente.nome}</h3>
-                      <div className="flex items-center space-x-4 text-sm text-orange-700 mt-1">
-                        <div className="flex items-center">
-                          <Phone className="h-3 w-3 mr-1" />
-                          {cliente.telefone}
-                        </div>
-                        <div className="flex items-center">
-                          <Mail className="h-3 w-3 mr-1" />
-                          {cliente.email}
-                        </div>
+          {filteredClientes.length === 0 ? (
+            <div className="text-center py-8">
+              <Users className="h-12 w-12 text-orange-300 mx-auto mb-4" />
+              <p className="text-orange-600 text-lg">
+                {clientes.length === 0 ? 'Nenhum cliente cadastrado ainda' : 'Nenhum cliente encontrado'}
+              </p>
+              <p className="text-orange-500 text-sm mt-2">
+                {clientes.length === 0 ? 'Comece cadastrando seus primeiros clientes' : 'Tente uma busca diferente'}
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredClientes.map((cliente) => (
+                <div key={cliente.id} className="p-4 border border-orange-100 rounded-lg hover:bg-orange-50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                        <Users className="h-6 w-6 text-orange-600" />
                       </div>
-                      <div className="flex items-center text-sm text-orange-600 mt-1">
-                        <MapPin className="h-3 w-3 mr-1" />
-                        {cliente.endereco}
+                      <div>
+                        <h3 className="font-semibold text-orange-900">{cliente.nome}</h3>
+                        <div className="flex items-center space-x-4 text-sm text-orange-700 mt-1">
+                          {cliente.telefone && (
+                            <div className="flex items-center">
+                              <Phone className="h-3 w-3 mr-1" />
+                              {cliente.telefone}
+                            </div>
+                          )}
+                          {cliente.email && (
+                            <div className="flex items-center">
+                              <Mail className="h-3 w-3 mr-1" />
+                              {cliente.email}
+                            </div>
+                          )}
+                        </div>
+                        {cliente.endereco && (
+                          <div className="flex items-center text-sm text-orange-600 mt-1">
+                            <MapPin className="h-3 w-3 mr-1" />
+                            {cliente.endereco}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
