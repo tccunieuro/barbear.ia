@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -95,16 +96,16 @@ export const FinanceiroPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-orange-50 min-h-full">
+    <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full max-w-full overflow-x-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between bg-white rounded-xl p-6 shadow-sm border border-orange-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white rounded-xl p-4 md:p-6 shadow-sm border border-orange-200 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-orange-900">Financeiro</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-orange-900">Financeiro</h1>
           <p className="text-orange-700 mt-1">Controle completo das suas finanças</p>
         </div>
         <Button 
           onClick={() => setModalOpen(true)}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-md hover:shadow-lg transition-all rounded-lg"
+          className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-md hover:shadow-lg transition-all rounded-lg w-full sm:w-auto"
         >
           <Plus className="h-4 w-4 mr-2" />
           Adicionar Despesa
@@ -112,7 +113,7 @@ export const FinanceiroPage: React.FC = () => {
       </div>
 
       {/* Cards de Resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         <Card className="bg-white shadow-sm border border-orange-200 hover:shadow-md transition-shadow rounded-xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-orange-700">Receitas</CardTitle>
@@ -187,7 +188,7 @@ export const FinanceiroPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Lista de Transações */}
+      {/* Lista de Transações - Layout Mobile Otimizado */}
       <Card className="bg-white shadow-sm border border-orange-200 rounded-xl">
         <CardHeader>
           <CardTitle className="text-orange-900">Transações Recentes</CardTitle>
@@ -195,9 +196,9 @@ export const FinanceiroPage: React.FC = () => {
         <CardContent>
           <div className="space-y-4">
             {transacoes.map((transacao) => (
-              <div key={transacao.id} className="flex items-center justify-between p-4 border border-orange-100 rounded-lg hover:bg-orange-50 transition-colors">
+              <div key={transacao.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-orange-100 rounded-lg hover:bg-orange-50 transition-colors space-y-3 sm:space-y-0">
                 <div className="flex items-center space-x-4">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                     transacao.tipo === 'receita' ? 'bg-green-50' : 'bg-red-50'
                   }`}>
                     {transacao.tipo === 'receita' ? (
@@ -206,16 +207,18 @@ export const FinanceiroPage: React.FC = () => {
                       <ArrowDownRight className="h-5 w-5 text-red-600" />
                     )}
                   </div>
-                  <div>
-                    <p className="font-medium text-orange-900">{transacao.descricao}</p>
-                    <div className="flex items-center space-x-2 text-sm text-orange-700">
-                      <Calendar className="h-3 w-3" />
-                      <span>{transacao.data}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-orange-900 truncate">{transacao.descricao}</p>
+                    <div className="flex flex-wrap items-center gap-2 text-sm text-orange-700">
+                      <div className="flex items-center space-x-1">
+                        <Calendar className="h-3 w-3" />
+                        <span>{transacao.data}</span>
+                      </div>
                       <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-800">{transacao.categoria}</Badge>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center justify-between sm:justify-end space-x-3">
                   <div className={`text-lg font-semibold ${
                     transacao.tipo === 'receita' ? 'text-green-600' : 'text-red-600'
                   }`}>

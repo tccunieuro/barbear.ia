@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,10 +8,7 @@ import {
   Scissors,
   Crown,
   Medal,
-  Award,
-  ArrowUp,
-  ArrowDown,
-  Minus
+  Award
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -62,25 +60,19 @@ export const AtendimentosPage: React.FC = () => {
       posicao: 1, 
       servico: 'Corte Masculino', 
       quantidade: 156, 
-      percentual: 45.2, 
-      tendencia: 'up' as const,
-      variacao: '+12%'
+      percentual: 45.2
     },
     { 
       posicao: 2, 
       servico: 'Barba', 
       quantidade: 98, 
-      percentual: 28.4, 
-      tendencia: 'up' as const,
-      variacao: '+8%'
+      percentual: 28.4
     },
     { 
       posicao: 3, 
       servico: 'Corte + Barba', 
       quantidade: 67, 
-      percentual: 19.4, 
-      tendencia: 'stable' as const,
-      variacao: '0%'
+      percentual: 19.4
     },
   ];
 
@@ -125,19 +117,6 @@ export const AtendimentosPage: React.FC = () => {
 
   const metrics = getMetricsByPeriod(periodo);
 
-  const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
-    switch (trend) {
-      case 'up':
-        return <ArrowUp className="h-4 w-4 text-green-600" />;
-      case 'down':
-        return <ArrowDown className="h-4 w-4 text-red-500" />;
-      case 'stable':
-        return <Minus className="h-4 w-4 text-orange-500" />;
-      default:
-        return <Minus className="h-4 w-4 text-orange-500" />;
-    }
-  };
-
   const getRankIcon = (posicao: number) => {
     switch (posicao) {
       case 1:
@@ -152,17 +131,17 @@ export const AtendimentosPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-orange-50 min-h-full">
+    <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full max-w-full overflow-x-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between bg-white rounded-xl p-6 shadow-sm border border-orange-100">
+      <div className="flex items-center justify-between bg-white rounded-xl p-4 md:p-6 shadow-sm border border-orange-100">
         <div>
-          <h1 className="text-3xl font-bold text-orange-900">Atendimentos</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-orange-900">Atendimentos</h1>
           <p className="text-orange-700 mt-1">Análise de performance e serviços mais procurados</p>
         </div>
       </div>
 
       {/* Card de Métrica com Filtros */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <Card className="bg-white shadow-sm border border-orange-200 hover:shadow-md transition-shadow rounded-xl">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
@@ -234,7 +213,7 @@ export const AtendimentosPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Top 3 Serviços Mais Realizados */}
+      {/* Top 3 Serviços Mais Realizados - Sem estatísticas de variação */}
       <Card className="bg-white shadow-sm border border-orange-200 rounded-xl">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-orange-900">
@@ -264,12 +243,6 @@ export const AtendimentosPage: React.FC = () => {
                       {servico.quantidade} atendimentos • {servico.percentual}% do total
                     </p>
                   </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Badge variant={servico.tendencia === 'up' ? 'default' : 'secondary'} className="flex items-center space-x-1 bg-white border border-orange-200">
-                    {getTrendIcon(servico.tendencia)}
-                    <span>{servico.variacao}</span>
-                  </Badge>
                 </div>
               </div>
             ))}

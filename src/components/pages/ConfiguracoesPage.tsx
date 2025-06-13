@@ -30,16 +30,16 @@ export const ConfiguracoesPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-orange-50 min-h-full">
-      {/* Header */}
-      <div className="flex items-center justify-between bg-white rounded-xl p-6 shadow-sm border border-orange-200">
+    <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full max-w-full overflow-x-hidden">
+      {/* Header - Layout Mobile Otimizado */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between bg-white rounded-xl p-4 md:p-6 shadow-sm border border-orange-200 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-orange-900">Configurações</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-orange-900">Configurações</h1>
           <p className="text-orange-700 mt-1">Gerencie suas preferências e configurações da conta</p>
         </div>
         <Button 
           onClick={handleSave} 
-          className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-md hover:shadow-lg transition-all rounded-lg"
+          className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-md hover:shadow-lg transition-all rounded-lg w-full lg:w-auto"
         >
           <Save className="h-4 w-4 mr-2" />
           Salvar Alterações
@@ -58,12 +58,12 @@ export const ConfiguracoesPage: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex items-center justify-between p-4 border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors gap-4">
               <div>
                 <h3 className="font-medium text-orange-900">Alterar Senha</h3>
                 <p className="text-sm text-orange-700">Atualize sua senha regularmente</p>
               </div>
-              <Button className="bg-white hover:bg-orange-50 text-orange-700 hover:text-orange-900 border-2 border-orange-200 hover:border-orange-300 shadow-sm hover:shadow-md transition-all rounded-lg">
+              <Button className="bg-white hover:bg-orange-50 text-orange-700 hover:text-orange-900 border-2 border-orange-200 hover:border-orange-300 shadow-sm hover:shadow-md transition-all rounded-lg w-full sm:w-auto">
                 Alterar
               </Button>
             </div>
