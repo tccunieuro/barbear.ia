@@ -1,120 +1,53 @@
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Primary Orange Palette - Tons principais de laranja */
-    --primary-orange-50: 255 247 237;    /* Laranja muito claro para fundos sutis */
-    --primary-orange-100: 255 237 213;   /* Laranja claro para cards e seções */
-    --primary-orange-200: 254 215 170;   /* Laranja suave para elementos secundários */
-    --primary-orange-300: 253 186 116;   /* Laranja médio para destacar */
-    --primary-orange-400: 251 146 60;    /* Laranja vibrante para CTAs */
-    --primary-orange-500: 249 115 22;    /* Laranja principal da marca */
-    --primary-orange-600: 234 88 12;     /* Laranja escuro para hover */
-    --primary-orange-700: 194 65 12;     /* Laranja mais escuro */
-    --primary-orange-800: 154 52 18;     /* Laranja muito escuro */
-    --primary-orange-900: 124 45 18;     /* Laranja mais profundo */
-
-    /* Neutral Colors - Cores neutras que harmonizam com laranja */
-    --neutral-50: 250 250 249;           /* Branco quente */
-    --neutral-100: 245 245 244;          /* Cinza muito claro quente */
-    --neutral-200: 231 229 228;          /* Cinza claro quente */
-    --neutral-300: 214 211 209;          /* Cinza médio claro */
-    --neutral-400: 168 162 158;          /* Cinza médio */
-    --neutral-500: 120 113 108;          /* Cinza equilibrado */
-    --neutral-600: 87 83 78;             /* Cinza escuro */
-    --neutral-700: 68 64 60;             /* Cinza muito escuro */
-    --neutral-800: 41 37 36;             /* Cinza profundo */
-    --neutral-900: 28 25 23;             /* Quase preto quente */
-
-    /* Accent Colors - Cores de apoio */
-    --accent-blue: 59 130 246;           /* Azul para links e informações */
-    --accent-green: 34 197 94;           /* Verde para sucesso */
-    --accent-red: 239 68 68;             /* Vermelho para erros */
-    --accent-yellow: 245 158 11;         /* Amarelo para avisos */
-
-    /* Design System Variables */
-    --background: var(--neutral-50);
-    --foreground: var(--neutral-900);
-
-    --card: var(--neutral-50);
-    --card-foreground: var(--neutral-800);
-
-    --popover: var(--neutral-50);
-    --popover-foreground: var(--neutral-900);
-
-    --primary: var(--primary-orange-500);
-    --primary-foreground: var(--neutral-50);
-
-    --secondary: var(--primary-orange-100);
-    --secondary-foreground: var(--neutral-800);
-
-    --muted: var(--neutral-100);
-    --muted-foreground: var(--neutral-600);
-
-    --accent: var(--primary-orange-200);
-    --accent-foreground: var(--neutral-800);
-
-    --destructive: var(--accent-red);
-    --destructive-foreground: var(--neutral-50);
-
-    --border: var(--neutral-200);
-    --input: var(--neutral-50);
-    --ring: var(--primary-orange-400);
-
-    --radius: 0.75rem;
-
-    /* Sidebar specific colors */
-    --sidebar-background: var(--primary-orange-800);
-    --sidebar-foreground: var(--neutral-50);
-    --sidebar-primary: var(--neutral-50);
-    --sidebar-primary-foreground: var(--primary-orange-800);
-    --sidebar-accent: var(--primary-orange-700);
-    --sidebar-accent-foreground: var(--neutral-50);
-    --sidebar-border: var(--primary-orange-700);
-    --sidebar-ring: var(--primary-orange-300);
+    --background: 0 0% 100%;
+    --foreground: 14 70% 50%;
+    --card: 0 0% 100%;
+    --card-foreground: 14 70% 50%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 14 70% 50%;
+    --primary: 14 100% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 14 100% 96%;
+    --secondary-foreground: 14 70% 50%;
+    --muted: 14 100% 96%;
+    --muted-foreground: 14 70% 50%;
+    --accent: 14 100% 92%;
+    --accent-foreground: 14 70% 50%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 14 30% 90%;
+    --input: 14 30% 90%;
+    --ring: 14 100% 60%;
+    --radius: 0.5rem;
   }
 
   .dark {
-    /* Dark mode palette */
-    --background: var(--neutral-900);
-    --foreground: var(--neutral-100);
-
-    --card: var(--neutral-800);
-    --card-foreground: var(--neutral-100);
-
-    --popover: var(--neutral-800);
-    --popover-foreground: var(--neutral-100);
-
-    --primary: var(--primary-orange-400);
-    --primary-foreground: var(--neutral-900);
-
-    --secondary: var(--neutral-700);
-    --secondary-foreground: var(--neutral-100);
-
-    --muted: var(--neutral-800);
-    --muted-foreground: var(--neutral-400);
-
-    --accent: var(--primary-orange-600);
-    --accent-foreground: var(--neutral-100);
-
-    --destructive: var(--accent-red);
-    --destructive-foreground: var(--neutral-100);
-
-    --border: var(--neutral-700);
-    --input: var(--neutral-800);
-    --ring: var(--primary-orange-300);
-
-    --sidebar-background: var(--neutral-900);
-    --sidebar-foreground: var(--neutral-100);
-    --sidebar-primary: var(--primary-orange-400);
-    --sidebar-primary-foreground: var(--neutral-900);
-    --sidebar-accent: var(--neutral-800);
-    --sidebar-accent-foreground: var(--neutral-100);
-    --sidebar-border: var(--neutral-700);
-    --sidebar-ring: var(--primary-orange-300);
+    --background: 14 15% 8%;
+    --foreground: 0 0% 95%;
+    --card: 14 15% 8%;
+    --card-foreground: 0 0% 95%;
+    --popover: 14 15% 8%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 14 100% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 14 15% 15%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 14 15% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 14 15% 15%;
+    --accent-foreground: 0 0% 95%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 14 15% 15%;
+    --input: 14 15% 15%;
+    --ring: 14 100% 60%;
   }
 }
 
@@ -122,60 +55,34 @@
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-
-  /* Scrollbar styling */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: hsl(var(--muted));
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary) / 0.3);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--primary) / 0.5);
+    @apply bg-background text-foreground;
+    font-family: "Inter", sans-serif;
   }
 }
 
-@layer components {
-  /* Utility classes for orange variations */
-  .bg-orange-gradient {
-    background: linear-gradient(135deg, hsl(var(--primary-orange-400)), hsl(var(--primary-orange-600)));
-  }
+/* Remove yellow debug borders on mobile */
+* {
+  box-sizing: border-box;
+}
 
-  .text-orange-primary {
-    color: hsl(var(--primary-orange-500));
+/* Responsive fixes */
+@media (max-width: 768px) {
+  .sidebar-mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
   }
-
-  .border-orange-primary {
-    border-color: hsl(var(--primary-orange-300));
+  
+  .sidebar-mobile.open {
+    transform: translateX(0);
   }
-
-  /* Focus states with orange */
-  .focus-orange {
-    @apply focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:outline-none;
-  }
-
-  /* Button variants */
-  .btn-orange-primary {
-    @apply bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-lg transition-colors focus-orange;
-  }
-
-  .btn-orange-secondary {
-    @apply bg-orange-100 hover:bg-orange-200 text-orange-800 font-medium px-4 py-2 rounded-lg transition-colors focus-orange;
-  }
-
-  .btn-orange-outline {
-    @apply border-2 border-orange-300 hover:border-orange-400 hover:bg-orange-50 text-orange-700 font-medium px-4 py-2 rounded-lg transition-all focus-orange;
+  
+  .main-content-mobile {
+    margin-left: 0;
+    width: 100%;
   }
 }

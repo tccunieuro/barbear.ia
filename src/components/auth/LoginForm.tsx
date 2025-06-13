@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Logo } from '@/components/ui/logo';
 import { Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -55,22 +56,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary via-primary/90 to-primary p-4">
-      <Card className="w-full max-w-md bg-white shadow-2xl border border-primary/20 rounded-xl overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-primary-100 to-primary-200 p-4">
+      <Card className="w-full max-w-md bg-white shadow-2xl border border-primary-200 rounded-xl overflow-hidden">
         <CardHeader className="text-center pb-6 pt-8 bg-white">
           <div className="flex justify-center items-center mb-6">
-            <div className="bg-gradient-to-br from-primary/10 to-primary/20 p-4 rounded-xl shadow-lg">
-              <img 
-                src="/lovable-uploads/463a377e-e8e1-437a-9231-6185a4234daf.png" 
-                alt="Barbear.ia Logo" 
-                className="h-12 w-auto object-contain"
-              />
-            </div>
+            <Logo size="md" />
           </div>
           <CardTitle className="text-3xl font-light text-primary mb-2">
             Barbear.ia
           </CardTitle>
-          <p className="text-primary/70 font-light">Gestão completa para sua barbearia</p>
+          <p className="text-primary-600 font-light">Gestão completa para sua barbearia</p>
         </CardHeader>
         
         <CardContent className="space-y-6 px-8 pb-8 bg-white">
@@ -84,7 +79,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="border-2 border-primary/20 bg-white focus:bg-white focus:border-primary focus:ring-0 transition-all duration-200 text-primary placeholder:text-primary/40 rounded-lg h-12"
+                className="border-2 border-primary-200 bg-white focus:bg-white focus:border-primary focus:ring-0 transition-all duration-200 text-primary placeholder:text-primary-400 rounded-lg h-12"
               />
             </div>
             
@@ -98,13 +93,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="border-2 border-primary/20 bg-white focus:bg-white focus:border-primary focus:ring-0 transition-all duration-200 text-primary placeholder:text-primary/40 pr-12 rounded-lg h-12"
+                  className="border-2 border-primary-200 bg-white focus:bg-white focus:border-primary focus:ring-0 transition-all duration-200 text-primary placeholder:text-primary-400 pr-12 rounded-lg h-12"
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-primary/10 text-primary/60 hover:text-primary transition-colors rounded-r-lg"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-primary-50 text-primary-600 hover:text-primary transition-colors rounded-r-lg"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
@@ -122,9 +117,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
                   id="remember"
                   checked={remember}
                   onCheckedChange={(checked) => setRemember(checked as boolean)}
-                  className="border-2 border-primary/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                  className="border-2 border-primary-200 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                 />
-                <Label htmlFor="remember" className="text-sm text-primary/70 font-normal">
+                <Label htmlFor="remember" className="text-sm text-primary-700 font-normal">
                   Lembrar-me
                 </Label>
               </div>
@@ -133,7 +128,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
                 type="button"
                 variant="ghost"
                 onClick={onForgotPassword}
-                className="text-primary hover:text-primary/80 hover:bg-primary/10 p-2 h-auto font-normal text-sm transition-all duration-200 rounded-lg"
+                className="text-primary hover:text-primary-700 hover:bg-primary-50 p-2 h-auto font-normal text-sm transition-all duration-200 rounded-lg"
               >
                 Esqueci minha senha
               </Button>
@@ -142,7 +137,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onForgotPassword 
             <div className="space-y-3 pt-4">
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-medium py-3 h-12 transition-all duration-200 shadow-lg hover:shadow-xl rounded-lg border-0"
+                className="w-full bg-gradient-to-r from-primary to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium py-3 h-12 transition-all duration-200 shadow-lg hover:shadow-xl rounded-lg border-0"
                 disabled={isLoading}
               >
                 {isLoading ? 'Entrando...' : 'Entrar'}
