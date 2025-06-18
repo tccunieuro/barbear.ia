@@ -18,8 +18,15 @@ export const useServicos = () => {
   return useQuery({
     queryKey: ['servicos'],
     queryFn: async () => {
+      console.log('✂️ Buscando serviços...');
+      
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Usuário não autenticado');
+      console.log('👤 Usuário atual:', user?.id);
+      
+      if (!user) {
+        console.log('❌ Usuário não autenticado');
+        throw new Error('Usuário não autenticado');
+      }
 
       const { data, error } = await supabase
         .from('servicos')
@@ -28,7 +35,14 @@ export const useServicos = () => {
         .eq('ativo', true)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      console.log('✂️ Dados dos serviços:', data);
+      console.log('❗ Erro (se houver):', error);
+
+      if (error) {
+        console.error('Erro ao buscar serviços:', error);
+        throw error;
+      }
+      
       return data as Servico[];
     },
   });
