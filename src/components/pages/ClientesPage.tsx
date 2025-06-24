@@ -23,7 +23,7 @@ export const ClientesPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
+      <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
           <span className="text-orange-700">Carregando clientes...</span>
@@ -34,7 +34,7 @@ export const ClientesPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
+      <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-2">Erro ao carregar clientes</p>
           <p className="text-sm text-orange-700">Por favor, faça login para acessar seus dados</p>
@@ -44,11 +44,11 @@ export const ClientesPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6 space-y-6 bg-orange-50 min-h-full">
+    <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full">
       {/* Header */}
-      <div className="flex items-center justify-between bg-white rounded-xl p-6 shadow-sm border border-orange-200">
+      <div className="flex items-center justify-between bg-white rounded-xl p-4 md:p-6 shadow-sm border border-orange-200">
         <div>
-          <h1 className="text-3xl font-bold text-orange-900">Clientes</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-orange-900">Clientes</h1>
           <p className="text-orange-700 mt-1">Gerencie sua base de clientes</p>
         </div>
       </div>
@@ -69,7 +69,7 @@ export const ClientesPage: React.FC = () => {
 
       {/* Barra de Pesquisa */}
       <Card className="bg-white shadow-sm border border-orange-200 rounded-xl">
-        <CardContent className="p-6">
+        <CardContent className="p-4 md:p-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500 h-4 w-4" />
             <Input
@@ -102,33 +102,33 @@ export const ClientesPage: React.FC = () => {
             <div className="space-y-4">
               {filteredClientes.map((cliente) => (
                 <div key={cliente.id} className="p-4 border border-orange-100 rounded-lg hover:bg-orange-50 transition-colors">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                      <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
                         <Users className="h-6 w-6 text-orange-600" />
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-orange-900">{cliente.nome}</h3>
-                        <div className="flex items-center space-x-4 text-sm text-orange-700 mt-1">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-semibold text-lg text-orange-900 mb-2">{cliente.nome}</h3>
+                        <div className="space-y-1">
                           {cliente.telefone && (
-                            <div className="flex items-center">
-                              <Phone className="h-3 w-3 mr-1" />
-                              {cliente.telefone}
+                            <div className="flex items-center text-sm text-orange-700">
+                              <Phone className="h-3 w-3 mr-2 flex-shrink-0" />
+                              <span className="break-all">{cliente.telefone}</span>
                             </div>
                           )}
                           {cliente.email && (
-                            <div className="flex items-center">
-                              <Mail className="h-3 w-3 mr-1" />
-                              {cliente.email}
+                            <div className="flex items-center text-sm text-orange-700">
+                              <Mail className="h-3 w-3 mr-2 flex-shrink-0" />
+                              <span className="break-all">{cliente.email}</span>
+                            </div>
+                          )}
+                          {cliente.endereco && (
+                            <div className="flex items-start text-sm text-orange-600">
+                              <MapPin className="h-3 w-3 mr-2 mt-0.5 flex-shrink-0" />
+                              <span className="break-words">{cliente.endereco}</span>
                             </div>
                           )}
                         </div>
-                        {cliente.endereco && (
-                          <div className="flex items-center text-sm text-orange-600 mt-1">
-                            <MapPin className="h-3 w-3 mr-1" />
-                            {cliente.endereco}
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>

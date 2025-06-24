@@ -102,6 +102,36 @@ export type Database = {
         }
         Relationships: []
       }
+      Leads_Modelo: {
+        Row: {
+          AtendimentoFinalizado: boolean | null
+          conversation_history: Json | null
+          id: number
+          remoteJid: string
+          response_id: string | null
+          Timestamp: string | null
+          Tokens: number | null
+        }
+        Insert: {
+          AtendimentoFinalizado?: boolean | null
+          conversation_history?: Json | null
+          id?: number
+          remoteJid?: string
+          response_id?: string | null
+          Timestamp?: string | null
+          Tokens?: number | null
+        }
+        Update: {
+          AtendimentoFinalizado?: boolean | null
+          conversation_history?: Json | null
+          id?: number
+          remoteJid?: string
+          response_id?: string | null
+          Timestamp?: string | null
+          Tokens?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -159,6 +189,30 @@ export type Database = {
           preco?: number
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      Tools_Modelo: {
+        Row: {
+          descricao: string | null
+          id: number
+          nome: string | null
+          tool: Json | null
+          type: string | null
+        }
+        Insert: {
+          descricao?: string | null
+          id?: number
+          nome?: string | null
+          tool?: Json | null
+          type?: string | null
+        }
+        Update: {
+          descricao?: string | null
+          id?: number
+          nome?: string | null
+          tool?: Json | null
+          type?: string | null
         }
         Relationships: []
       }

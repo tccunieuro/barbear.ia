@@ -11,16 +11,27 @@ import {
   Loader2
 } from 'lucide-react';
 import { useProfile, useUpdateProfile } from '@/hooks/useProfiles';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 export const ConfiguracoesPage: React.FC = () => {
   const { data: profile, isLoading, error } = useProfile();
   const updateProfileMutation = useUpdateProfile();
+  const { toast } = useToast();
   
   const [profileData, setProfileData] = useState({
     nome_completo: '',
     email: '',
     nome_barbearia: ''
   });
+
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -34,6 +45,57 @@ export const ConfiguracoesPage: React.FC = () => {
 
   const handleSave = () => {
     updateProfileMutation.mutate(profileData);
+  };
+
+  const handlePasswordChange = async () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast({
+        title: "Erro",
+        description: "As senhas não coincidem.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      toast({
+        title: "Erro",
+        description: "A nova senha deve ter pelo menos 6 caracteres.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsUpdatingPassword(true);
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: passwordData.newPassword
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Sucesso",
+        description: "Senha alterada com sucesso!",
+      });
+
+      setPasswordData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: "Erro ao alterar senha: " + error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsUpdatingPassword(false);
+    }
   };
 
   if (isLoading) {
@@ -92,14 +154,45 @@ export const ConfiguracoesPage: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors gap-4">
-              <div>
-                <h3 className="font-medium text-orange-900">Alterar Senha</h3>
-                <p className="text-sm text-orange-700">Atualize sua senha regularmente</p>
+            <div className="space-y-4">
+              <h3 className="font-medium text-orange-900">Alterar Senha</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="newPassword" className="text-orange-800 font-medium">Nova Senha</Label>
+                  <Input
+                    id="newPassword"
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                    placeholder="Digite sua nova senha"
+                    className="mt-1 border-2 border-orange-200 focus:border-orange-400 bg-white text-orange-900 rounded-lg h-12"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="confirmPassword" className="text-orange-800 font-medium">Confirmar Nova Senha</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    placeholder="Confirme sua nova senha"
+                    className="mt-1 border-2 border-orange-200 focus:border-orange-400 bg-white text-orange-900 rounded-lg h-12"
+                  />
+                </div>
+
+                <Button 
+                  onClick={handlePasswordChange}
+                  disabled={isUpdatingPassword || !passwordData.newPassword || !passwordData.confirmPassword}
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all"
+                >
+                  {isUpdatingPassword ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : null}
+                  Alterar Senha
+                </Button>
               </div>
-              <Button className="bg-white hover:bg-orange-50 text-orange-700 hover:text-orange-900 border-2 border-orange-200 hover:border-orange-300 shadow-sm hover:shadow-md transition-all rounded-lg w-full sm:w-auto">
-                Alterar
-              </Button>
             </div>
           </CardContent>
         </Card>

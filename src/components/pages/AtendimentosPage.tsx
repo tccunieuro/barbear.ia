@@ -19,7 +19,7 @@ export const AtendimentosPage: React.FC = () => {
   const { data: atendimentos = [], isLoading: loadingAtendimentos } = useAtendimentos();
   const { data: servicos = [], isLoading: loadingServicos } = useServicos();
 
-  // Processar dados dos atendimentos para gráficos
+  // Processar dados dos atendimentos para gráficos com inteligência aprimorada
   const processarDadosGrafico = (period: string) => {
     if (!atendimentos.length) return [];
 
@@ -78,6 +78,44 @@ export const AtendimentosPage: React.FC = () => {
 
           dadosFiltrados.push({ 
             nome: `Sem ${4 - i}`, 
+            atendimentos: count 
+          });
+        }
+        break;
+
+      case 'trimestral':
+        // Últimos 3 meses
+        const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        for (let i = 2; i >= 0; i--) {
+          const mes = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+          const proximoMes = new Date(hoje.getFullYear(), hoje.getMonth() - i + 1, 0);
+
+          const count = atendimentos.filter(a => {
+            const dataAtendimento = new Date(a.data_atendimento);
+            return dataAtendimento >= mes && dataAtendimento <= proximoMes;
+          }).length;
+
+          dadosFiltrados.push({ 
+            nome: meses[mes.getMonth()], 
+            atendimentos: count 
+          });
+        }
+        break;
+
+      case 'anual':
+        // Últimos 3 anos
+        for (let i = 2; i >= 0; i--) {
+          const ano = hoje.getFullYear() - i;
+          const inicioAno = new Date(ano, 0, 1);
+          const fimAno = new Date(ano, 11, 31);
+
+          const count = atendimentos.filter(a => {
+            const dataAtendimento = new Date(a.data_atendimento);
+            return dataAtendimento >= inicioAno && dataAtendimento <= fimAno;
+          }).length;
+
+          dadosFiltrados.push({ 
+            nome: ano.toString(), 
             atendimentos: count 
           });
         }
@@ -213,26 +251,41 @@ export const AtendimentosPage: React.FC = () => {
       <Card className="bg-white shadow-sm border border-orange-200 rounded-xl">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-orange-900">
-            <span>Atendimentos por {periodo === 'diario' ? 'Hora' : periodo === 'semanal' ? 'Dia' : periodo === 'mensal' ? 'Semana' : periodo === 'trimestral' ? 'Mês' : 'Ano'}</span>
+            <span>Atendimentos por {
+              periodo === 'diario' ? 'Hora' : 
+              periodo === 'semanal' ? 'Dia' : 
+              periodo === 'mensal' ? 'Semana' : 
+              periodo === 'trimestral' ? 'Mês' : 
+              'Ano'
+            }</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           {dadosGrafico.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={dadosGrafico}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#fed7aa" />
-                <XAxis dataKey="nome" stroke="#ea580c" />
-                <YAxis stroke="#ea580c" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'white', 
-                    border: '1px solid #fed7aa',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Bar dataKey="atendimentos" fill="#ea580c" />
-              </BarChart>
-            </ResponsiveContainer>
+            <div className="w-full overflow-x-auto">
+              <div style={{ minWidth: '600px', width: '100%', height: '300px' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={dadosGrafico}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#fed7aa" />
+                    <XAxis 
+                      dataKey="nome" 
+                      stroke="#ea580c"
+                      fontSize={12}
+                      tick={{ fontSize: 12 }}
+                    />
+                    <YAxis stroke="#ea580c" fontSize={12} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'white', 
+                        border: '1px solid #fed7aa',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Bar dataKey="atendimentos" fill="#ea580c" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           ) : (
             <div className="h-300 flex items-center justify-center text-orange-600">
               Nenhum atendimento encontrado para este período

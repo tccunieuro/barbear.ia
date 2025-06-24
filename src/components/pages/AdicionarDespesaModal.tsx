@@ -25,6 +25,7 @@ export const AdicionarDespesaModal: React.FC<AdicionarDespesaModalProps> = ({
   const [descricao, setDescricao] = useState('');
   const [valor, setValor] = useState('');
   const [categoria, setCategoria] = useState('');
+  const [dataTransacao, setDataTransacao] = useState('');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -32,17 +33,19 @@ export const AdicionarDespesaModal: React.FC<AdicionarDespesaModalProps> = ({
       setDescricao(editingDespesa.descricao);
       setValor(editingDespesa.valor.toString());
       setCategoria(editingDespesa.categoria);
+      setDataTransacao(editingDespesa.data_transacao || '');
     } else {
       setDescricao('');
       setValor('');
       setCategoria('');
+      setDataTransacao(new Date().toISOString().split('T')[0]);
     }
-  }, [editingDespesa]);
+  }, [editingDespesa, isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!descricao || !valor || !categoria) {
+    if (!descricao || !valor || !categoria || !dataTransacao) {
       toast({
         title: "Erro",
         description: "Por favor, preencha todos os campos.",
@@ -56,7 +59,7 @@ export const AdicionarDespesaModal: React.FC<AdicionarDespesaModalProps> = ({
       tipo: 'despesa',
       descricao,
       valor: parseFloat(valor),
-      data: editingDespesa ? editingDespesa.data : new Date().toLocaleDateString('pt-BR'),
+      data_transacao: dataTransacao,
       categoria
     };
 
@@ -77,6 +80,7 @@ export const AdicionarDespesaModal: React.FC<AdicionarDespesaModalProps> = ({
     setDescricao('');
     setValor('');
     setCategoria('');
+    setDataTransacao('');
     onClose();
   };
 
@@ -123,6 +127,18 @@ export const AdicionarDespesaModal: React.FC<AdicionarDespesaModalProps> = ({
                 onChange={(e) => setValor(e.target.value)}
                 placeholder="0,00"
                 className="border-2 border-orange-200 focus:border-orange-400 focus:ring-orange-400 bg-white text-orange-900 placeholder:text-orange-400 rounded-lg h-12"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="dataTransacao" className="text-orange-800 font-medium">Data</Label>
+              <Input
+                id="dataTransacao"
+                type="date"
+                value={dataTransacao}
+                onChange={(e) => setDataTransacao(e.target.value)}
+                className="border-2 border-orange-200 focus:border-orange-400 focus:ring-orange-400 bg-white text-orange-900 rounded-lg h-12"
                 required
               />
             </div>
