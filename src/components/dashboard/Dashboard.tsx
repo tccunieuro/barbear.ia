@@ -14,7 +14,6 @@ import { useServicos } from '@/hooks/useServicos';
 
 export const Dashboard: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('semanal');
-  const [selectedWeek, setSelectedWeek] = useState('atual');
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedQuarter, setSelectedQuarter] = useState(Math.floor(new Date().getMonth() / 3));
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -45,20 +44,8 @@ export const Dashboard: React.FC = () => {
 
     switch (selectedPeriod) {
       case 'semanal':
-        let inicioSemana: Date;
-        
-        if (selectedWeek === 'atual') {
-          inicioSemana = getStartOfWeek(hoje);
-        } else {
-          // Para semanas específicas do mês
-          const weekOffset = parseInt(selectedWeek);
-          const primeiroDiaDoMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-          const primeiraSemanaDoMes = getStartOfWeek(primeiroDiaDoMes);
-          
-          inicioSemana = new Date(primeiraSemanaDoMes);
-          inicioSemana.setDate(primeiraSemanaDoMes.getDate() + (weekOffset * 7));
-        }
-        
+        // Apenas semana atual
+        const inicioSemana = getStartOfWeek(hoje);
         const fimSemana = getEndOfWeek(inicioSemana);
 
         dadosFiltrados.atendimentos = atendimentos.filter(a => {
@@ -188,68 +175,11 @@ export const Dashboard: React.FC = () => {
     return Array.from(anos).sort((a, b) => b - a);
   };
 
-  // Gerar semanas do mês atual - CORRIGIDO
-  const semanasDoMes = () => {
-    const hoje = new Date();
-    const ano = hoje.getFullYear();
-    const mes = hoje.getMonth();
-    const semanas = [];
-    
-    // Primeira semana do mês
-    const primeiroDia = new Date(ano, mes, 1);
-    let inicioSemana = getStartOfWeek(primeiroDia);
-    
-    // Se o início da semana for do mês anterior, começar da segunda-feira dentro do mês
-    if (inicioSemana.getMonth() !== mes) {
-      inicioSemana = new Date(ano, mes, 1);
-      // Encontrar a próxima segunda-feira se o dia 1 não for segunda
-      while (inicioSemana.getDay() !== 1) {
-        inicioSemana.setDate(inicioSemana.getDate() + 1);
-      }
-    }
-    
-    let semanaIndex = 0;
-    const ultimoDiaDoMes = new Date(ano, mes + 1, 0);
-    
-    while (inicioSemana <= ultimoDiaDoMes) {
-      const fimSemana = getEndOfWeek(inicioSemana);
-      const fimSemanaNoMes = fimSemana > ultimoDiaDoMes ? ultimoDiaDoMes : fimSemana;
-      
-      semanas.push({
-        value: semanaIndex.toString(),
-        label: `${inicioSemana.getDate()}/${mes + 1} - ${fimSemanaNoMes.getDate()}/${fimSemanaNoMes.getMonth() + 1}`
-      });
-      
-      // Próxima semana
-      inicioSemana = new Date(inicioSemana);
-      inicioSemana.setDate(inicioSemana.getDate() + 7);
-      semanaIndex++;
-      
-      // Evitar loop infinito
-      if (semanaIndex > 5) break;
-    }
-    
-    return semanas;
-  };
-
   const renderPeriodSelector = () => {
     switch (selectedPeriod) {
       case 'semanal':
-        return (
-          <Select value={selectedWeek} onValueChange={setSelectedWeek}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Selecione a semana" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="atual">Semana Atual</SelectItem>
-              {semanasDoMes().map(semana => (
-                <SelectItem key={semana.value} value={semana.value}>
-                  {semana.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        );
+        // Removido - não precisa de seletor para semana atual
+        return null;
 
       case 'mensal':
         return (

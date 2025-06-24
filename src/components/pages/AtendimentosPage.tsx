@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -181,45 +180,45 @@ export const AtendimentosPage: React.FC = () => {
 
   if (loadingAtendimentos || loadingServicos) {
     return (
-      <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
+      <div className="p-4 md:p-6 space-y-6 bg-orange-50 dark:bg-gray-900 min-h-full flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
-          <span className="text-orange-700">Carregando atendimentos...</span>
+          <span className="text-orange-700 dark:text-orange-300">Carregando atendimentos...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full max-w-full overflow-x-hidden">
+    <div className="p-4 md:p-6 space-y-6 bg-orange-50 dark:bg-gray-900 min-h-full max-w-full overflow-x-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between bg-white rounded-xl p-4 md:p-6 shadow-sm border border-orange-100">
+      <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm border border-orange-100 dark:border-gray-700">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-orange-900">Atendimentos</h1>
-          <p className="text-orange-700 mt-1">Análise de performance e serviços mais procurados</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-orange-900 dark:text-white">Atendimentos</h1>
+          <p className="text-orange-700 dark:text-orange-300 mt-1">Análise de performance e serviços mais procurados</p>
         </div>
       </div>
 
       {/* Card de Métrica com Filtros */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-        <Card className="bg-white shadow-sm border border-orange-200 hover:shadow-md transition-shadow rounded-xl">
+        <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium text-orange-700">Total de Atendimentos</CardTitle>
-              <div className="bg-orange-100 p-2 rounded-lg">
-                <Users className="h-4 w-4 text-orange-600" />
+              <CardTitle className="text-sm font-medium text-orange-700 dark:text-orange-400">Total de Atendimentos</CardTitle>
+              <div className="bg-orange-100 dark:bg-orange-900/20 p-2 rounded-lg">
+                <Users className="h-4 w-4 text-orange-600 dark:text-orange-400" />
               </div>
             </div>
           </CardHeader>
           <CardContent className="pt-0">
-            <div className="text-2xl font-bold text-orange-900">{atendimentos.length}</div>
-            <p className="text-xs text-orange-600">
+            <div className="text-2xl font-bold text-orange-900 dark:text-white">{atendimentos.length}</div>
+            <p className="text-xs text-orange-600 dark:text-orange-400">
               Total de atendimentos registrados
             </p>
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2 bg-white shadow-sm border border-orange-200 hover:shadow-md transition-shadow rounded-xl">
+        <Card className="lg:col-span-2 bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
           <CardContent className="pt-6">
             <div className="flex flex-wrap gap-2">
               {[
@@ -236,7 +235,7 @@ export const AtendimentosPage: React.FC = () => {
                   className={`transition-all rounded-lg ${
                     periodo === filter.key
                       ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
-                      : 'bg-white hover:bg-orange-50 text-orange-700 border border-orange-200 hover:border-orange-300 shadow-sm'
+                      : 'bg-white dark:bg-gray-700 hover:bg-orange-50 dark:hover:bg-gray-600 text-orange-700 dark:text-gray-300 border border-orange-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-gray-500 shadow-sm'
                   }`}
                 >
                   {filter.label}
@@ -248,9 +247,9 @@ export const AtendimentosPage: React.FC = () => {
       </div>
 
       {/* Gráfico de Atendimentos por Período */}
-      <Card className="bg-white shadow-sm border border-orange-200 rounded-xl">
+      <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 rounded-xl">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-orange-900">
+          <CardTitle className="flex items-center space-x-2 text-orange-900 dark:text-white">
             <span>Atendimentos por {
               periodo === 'diario' ? 'Hora' : 
               periodo === 'semanal' ? 'Dia' : 
@@ -287,7 +286,7 @@ export const AtendimentosPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="h-300 flex items-center justify-center text-orange-600">
+            <div className="h-300 flex items-center justify-center text-orange-600 dark:text-orange-400">
               Nenhum atendimento encontrado para este período
             </div>
           )}
@@ -295,10 +294,10 @@ export const AtendimentosPage: React.FC = () => {
       </Card>
 
       {/* Top 3 Serviços Mais Realizados */}
-      <Card className="bg-white shadow-sm border border-orange-200 rounded-xl">
+      <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 rounded-xl">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-orange-900">
-            <Scissors className="h-5 w-5 text-orange-600" />
+          <CardTitle className="flex items-center space-x-2 text-orange-900 dark:text-white">
+            <Scissors className="h-5 w-5 text-orange-600 dark:text-orange-400" />
             <span>Top 3 Serviços Mais Procurados</span>
           </CardTitle>
         </CardHeader>
@@ -309,19 +308,19 @@ export const AtendimentosPage: React.FC = () => {
                 <div 
                   key={servico.posicao}
                   className={`flex items-center justify-between p-4 rounded-lg border-2 transition-colors ${
-                    index === 0 ? 'border-yellow-200 bg-yellow-50 hover:bg-yellow-100' :
-                    index === 1 ? 'border-orange-200 bg-orange-50 hover:bg-orange-100' :
-                    'border-orange-300 bg-orange-100 hover:bg-orange-150'
+                    index === 0 ? 'border-yellow-200 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20 hover:bg-yellow-100 dark:hover:bg-yellow-900/30' :
+                    index === 1 ? 'border-orange-200 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30' :
+                    'border-orange-300 dark:border-orange-600 bg-orange-100 dark:bg-orange-800/20 hover:bg-orange-150 dark:hover:bg-orange-800/30'
                   }`}
                 >
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
                       {getRankIcon(servico.posicao)}
-                      <span className="text-2xl font-bold text-orange-800">#{servico.posicao}</span>
+                      <span className="text-2xl font-bold text-orange-800 dark:text-orange-200">#{servico.posicao}</span>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg text-orange-900">{servico.servico}</h3>
-                      <p className="text-sm text-orange-700">
+                      <h3 className="font-semibold text-lg text-orange-900 dark:text-white">{servico.servico}</h3>
+                      <p className="text-sm text-orange-700 dark:text-orange-300">
                         {servico.quantidade} atendimentos
                       </p>
                     </div>
@@ -331,9 +330,9 @@ export const AtendimentosPage: React.FC = () => {
             </div>
           ) : (
             <div className="text-center py-8">
-              <Scissors className="h-12 w-12 text-orange-300 mx-auto mb-4" />
-              <p className="text-orange-600 text-lg">Nenhum serviço encontrado</p>
-              <p className="text-orange-500 text-sm mt-2">
+              <Scissors className="h-12 w-12 text-orange-300 dark:text-orange-600 mx-auto mb-4" />
+              <p className="text-orange-600 dark:text-orange-400 text-lg">Nenhum serviço encontrado</p>
+              <p className="text-orange-500 dark:text-orange-500 text-sm mt-2">
                 Registre seus primeiros atendimentos para ver as estatísticas
               </p>
             </div>
