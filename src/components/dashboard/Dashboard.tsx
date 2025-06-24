@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -285,10 +284,10 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Period Tabs */}
+      {/* Period Tabs - Fixed structure */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-orange-100 dark:border-gray-700">
-        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between mb-6">
-          <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod}>
+        <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod}>
+          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between mb-6">
             <TabsList className="grid w-full grid-cols-4 bg-orange-100 dark:bg-gray-700 p-1 rounded-lg">
               <TabsTrigger 
                 value="semanal" 
@@ -315,143 +314,143 @@ export const Dashboard: React.FC = () => {
                 Anual
               </TabsTrigger>
             </TabsList>
-          </Tabs>
-          
-          {renderPeriodSelector()}
-        </div>
-
-        <TabsContent value={selectedPeriod} className="space-y-6 mt-6">
-          {/* Métricas Financeiras */}
-          <div>
-            <h2 className="text-xl font-bold text-orange-900 dark:text-white mb-4">Métricas Financeiras</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Faturamento</p>
-                      <p className="text-3xl font-bold text-orange-900 dark:text-white">{formatarMoeda(totalReceitas)}</p>
-                      <p className="text-sm text-orange-600 dark:text-orange-400">Total de receitas</p>
-                    </div>
-                    <div className="flex items-center text-green-600 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg">
-                      <TrendingUp className="h-4 w-4 mr-1" />
-                      <span className="text-sm font-medium">Total</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
-                <CardContent className="pt-6">
-                  <div>
-                    <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Despesas</p>
-                    <p className="text-3xl font-bold text-orange-900 dark:text-white">{formatarMoeda(totalDespesas)}</p>
-                    <p className="text-sm text-orange-600 dark:text-orange-400">Total do período</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
-                <CardContent className="pt-6">
-                  <div>
-                    <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Lucro Líquido</p>
-                    <p className={`text-3xl font-bold ${lucroLiquido >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {formatarMoeda(lucroLiquido)}
-                    </p>
-                    <p className="text-sm text-orange-600 dark:text-orange-400">Receitas - Despesas</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Atendimentos */}
-            <h2 className="text-xl font-bold text-orange-900 dark:text-white mb-4">Atendimentos</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Total de Atendimentos</p>
-                      <p className="text-3xl font-bold text-orange-900 dark:text-white">{dadosFiltrados.atendimentos.length}</p>
-                      <p className="text-sm text-orange-600 dark:text-orange-400">Atendimentos do período</p>
-                    </div>
-                    <div className="flex items-center text-orange-600 bg-orange-50 dark:bg-orange-900/20 p-2 rounded-lg">
-                      <TrendingUp className="h-4 w-4 mr-1" />
-                      <span className="text-sm font-medium">Total</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
-                <CardContent className="pt-6">
-                  <div>
-                    <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Média por Dia</p>
-                    <p className="text-3xl font-bold text-orange-900 dark:text-white">{calcularMediaPorDia()}</p>
-                    <p className="text-sm text-orange-600 dark:text-orange-400">Baseado no período</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
-                <CardContent className="pt-6">
-                  <div>
-                    <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Serviço Mais Popular</p>
-                    <p className="text-2xl font-bold text-orange-900 dark:text-white">
-                      {servicoMaisPopular ? servicoMaisPopular.nome : 'Nenhum'}
-                    </p>
-                    <p className="text-sm text-orange-600 dark:text-orange-400">
-                      {servicoMaisPopular ? `${servicoMaisPopular.count} atendimentos` : 'Registre atendimentos'}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            
+            {renderPeriodSelector()}
           </div>
 
-          {/* Top 3 Serviços Mais Realizados */}
-          <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-orange-900 dark:text-white">Top 3 Serviços Mais Realizados</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {topServicos.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-orange-600 dark:text-orange-400 text-lg">Nenhum serviço encontrado</p>
-                  <p className="text-orange-500 dark:text-orange-500 text-sm mt-2">
-                    Registre seus primeiros atendimentos para ver as estatísticas
-                  </p>
-                </div>
-              ) : (
-                topServicos.map((service, index) => (
-                  <div
-                    key={service.nome}
-                    className="flex items-center justify-between p-4 rounded-lg border border-orange-100 dark:border-gray-600 bg-orange-50 dark:bg-gray-700 hover:bg-orange-100 dark:hover:bg-gray-600 transition-colors"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
-                        index === 0 ? 'bg-yellow-500' : 
-                        index === 1 ? 'bg-orange-400' : 
-                        'bg-orange-500'
-                      }`}>
-                        {index + 1}
-                      </div>
+          <TabsContent value={selectedPeriod} className="space-y-6 mt-6">
+            {/* Métricas Financeiras */}
+            <div>
+              <h2 className="text-xl font-bold text-orange-900 dark:text-white mb-4">Métricas Financeiras</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-orange-900 dark:text-white">{service.nome}</p>
-                        <p className="text-sm text-orange-600 dark:text-orange-400">
-                          {service.count} atendimentos
-                        </p>
+                        <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Faturamento</p>
+                        <p className="text-3xl font-bold text-orange-900 dark:text-white">{formatarMoeda(totalReceitas)}</p>
+                        <p className="text-sm text-orange-600 dark:text-orange-400">Total de receitas</p>
+                      </div>
+                      <div className="flex items-center text-green-600 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg">
+                        <TrendingUp className="h-4 w-4 mr-1" />
+                        <span className="text-sm font-medium">Total</span>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <TrendingUp className="h-4 w-4 text-green-600" />
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
+                  <CardContent className="pt-6">
+                    <div>
+                      <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Despesas</p>
+                      <p className="text-3xl font-bold text-orange-900 dark:text-white">{formatarMoeda(totalDespesas)}</p>
+                      <p className="text-sm text-orange-600 dark:text-orange-400">Total do período</p>
                     </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
+                  <CardContent className="pt-6">
+                    <div>
+                      <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Lucro Líquido</p>
+                      <p className={`text-3xl font-bold ${lucroLiquido >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {formatarMoeda(lucroLiquido)}
+                      </p>
+                      <p className="text-sm text-orange-600 dark:text-orange-400">Receitas - Despesas</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Atendimentos */}
+              <h2 className="text-xl font-bold text-orange-900 dark:text-white mb-4">Atendimentos</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Total de Atendimentos</p>
+                        <p className="text-3xl font-bold text-orange-900 dark:text-white">{dadosFiltrados.atendimentos.length}</p>
+                        <p className="text-sm text-orange-600 dark:text-orange-400">Atendimentos do período</p>
+                      </div>
+                      <div className="flex items-center text-orange-600 bg-orange-50 dark:bg-orange-900/20 p-2 rounded-lg">
+                        <TrendingUp className="h-4 w-4 mr-1" />
+                        <span className="text-sm font-medium">Total</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
+                  <CardContent className="pt-6">
+                    <div>
+                      <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Média por Dia</p>
+                      <p className="text-3xl font-bold text-orange-900 dark:text-white">{calcularMediaPorDia()}</p>
+                      <p className="text-sm text-orange-600 dark:text-orange-400">Baseado no período</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
+                  <CardContent className="pt-6">
+                    <div>
+                      <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Serviço Mais Popular</p>
+                      <p className="text-2xl font-bold text-orange-900 dark:text-white">
+                        {servicoMaisPopular ? servicoMaisPopular.nome : 'Nenhum'}
+                      </p>
+                      <p className="text-sm text-orange-600 dark:text-orange-400">
+                        {servicoMaisPopular ? `${servicoMaisPopular.count} atendimentos` : 'Registre atendimentos'}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Top 3 Serviços Mais Realizados */}
+            <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-gray-700 rounded-xl">
+              <CardHeader>
+                <CardTitle className="text-orange-900 dark:text-white">Top 3 Serviços Mais Realizados</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {topServicos.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-orange-600 dark:text-orange-400 text-lg">Nenhum serviço encontrado</p>
+                    <p className="text-orange-500 dark:text-orange-500 text-sm mt-2">
+                      Registre seus primeiros atendimentos para ver as estatísticas
+                    </p>
                   </div>
-                ))
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+                ) : (
+                  topServicos.map((service, index) => (
+                    <div
+                      key={service.nome}
+                      className="flex items-center justify-between p-4 rounded-lg border border-orange-100 dark:border-gray-600 bg-orange-50 dark:bg-gray-700 hover:bg-orange-100 dark:hover:bg-gray-600 transition-colors"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
+                          index === 0 ? 'bg-yellow-500' : 
+                          index === 1 ? 'bg-orange-400' : 
+                          'bg-orange-500'
+                        }`}>
+                          {index + 1}
+                        </div>
+                        <div>
+                          <p className="font-medium text-orange-900 dark:text-white">{service.nome}</p>
+                          <p className="text-sm text-orange-600 dark:text-orange-400">
+                            {service.count} atendimentos
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <TrendingUp className="h-4 w-4 text-green-600" />
+                      </div>
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
