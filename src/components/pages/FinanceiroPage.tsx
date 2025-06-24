@@ -17,10 +17,12 @@ import {
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { AdicionarDespesaModal } from './AdicionarDespesaModal';
+import { AdicionarReceitaModal } from './AdicionarReceitaModal';
 import { useTransacoes, useCreateTransacao, useDeleteTransacao } from '@/hooks/useTransacoes';
 
 export const FinanceiroPage: React.FC = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalDespesaOpen, setModalDespesaOpen] = useState(false);
+  const [modalReceitaOpen, setModalReceitaOpen] = useState(false);
   const [editingDespesa, setEditingDespesa] = useState(null);
   
   const { data: transacoes = [], isLoading, error } = useTransacoes();
@@ -85,6 +87,18 @@ export const FinanceiroPage: React.FC = () => {
     createTransacaoMutation.mutate(transacaoData);
   };
 
+  const handleAddReceita = (novaReceita: any) => {
+    const transacaoData = {
+      tipo: 'receita' as const,
+      categoria: novaReceita.categoria,
+      descricao: novaReceita.descricao,
+      valor: Number(novaReceita.valor),
+      data_transacao: novaReceita.data || new Date().toISOString().split('T')[0]
+    };
+    
+    createTransacaoMutation.mutate(transacaoData);
+  };
+
   const handleDeleteTransacao = (id: string) => {
     deleteTransacaoMutation.mutate(id);
   };
@@ -102,10 +116,10 @@ export const FinanceiroPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
+      <div className="p-4 md:p-6 space-y-6 bg-orange-50 dark:bg-gray-900 min-h-full flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
-          <span className="text-orange-700">Carregando dados financeiros...</span>
+          <span className="text-orange-700 dark:text-orange-300">Carregando dados financeiros...</span>
         </div>
       </div>
     );
@@ -113,43 +127,52 @@ export const FinanceiroPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full flex items-center justify-center">
+      <div className="p-4 md:p-6 space-y-6 bg-orange-50 dark:bg-gray-900 min-h-full flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-2">Erro ao carregar dados financeiros</p>
-          <p className="text-sm text-orange-700">Por favor, faça login para acessar seus dados</p>
+          <p className="text-sm text-orange-700 dark:text-orange-300">Por favor, faça login para acessar seus dados</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6 bg-orange-50 min-h-full max-w-full overflow-x-hidden">
+    <div className="p-4 md:p-6 space-y-6 bg-orange-50 dark:bg-gray-900 min-h-full max-w-full overflow-x-hidden">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white rounded-xl p-4 md:p-6 shadow-sm border border-orange-200 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm border border-orange-200 dark:border-gray-700 gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-orange-900">Financeiro</h1>
-          <p className="text-orange-700 mt-1">Controle completo das suas finanças</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-orange-900 dark:text-white">Financeiro</h1>
+          <p className="text-orange-700 dark:text-gray-300 mt-1">Controle completo das suas finanças</p>
         </div>
-        <Button 
-          onClick={() => setModalOpen(true)}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-md hover:shadow-lg transition-all rounded-lg w-full sm:w-auto"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Adicionar Despesa
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button 
+            onClick={() => setModalReceitaOpen(true)}
+            className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-md hover:shadow-lg transition-all rounded-lg w-full sm:w-auto"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Adicionar Receita
+          </Button>
+          <Button 
+            onClick={() => setModalDespesaOpen(true)}
+            className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-md hover:shadow-lg transition-all rounded-lg w-full sm:w-auto"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Adicionar Despesa
+          </Button>
+        </div>
       </div>
 
       {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-        <Card className="bg-white shadow-sm border border-orange-200 hover:shadow-md transition-shadow rounded-xl">
+        <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-orange-700">Receitas</CardTitle>
-            <div className="bg-green-50 p-2 rounded-lg">
+            <CardTitle className="text-sm font-medium text-orange-700 dark:text-orange-400">Receitas</CardTitle>
+            <div className="bg-green-50 dark:bg-green-900/20 p-2 rounded-lg">
               <ArrowUpRight className="h-4 w-4 text-green-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-900">{formatarMoeda(totalReceitas)}</div>
+            <div className="text-2xl font-bold text-orange-900 dark:text-white">{formatarMoeda(totalReceitas)}</div>
             <p className="text-xs text-green-600 flex items-center mt-1">
               <TrendingUp className="h-3 w-3 mr-1" />
               Total acumulado
@@ -157,15 +180,15 @@ export const FinanceiroPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white shadow-sm border border-orange-200 hover:shadow-md transition-shadow rounded-xl">
+        <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-orange-700">Despesas</CardTitle>
-            <div className="bg-red-50 p-2 rounded-lg">
+            <CardTitle className="text-sm font-medium text-orange-700 dark:text-orange-400">Despesas</CardTitle>
+            <div className="bg-red-50 dark:bg-red-900/20 p-2 rounded-lg">
               <ArrowDownRight className="h-4 w-4 text-red-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-900">{formatarMoeda(totalDespesas)}</div>
+            <div className="text-2xl font-bold text-orange-900 dark:text-white">{formatarMoeda(totalDespesas)}</div>
             <p className="text-xs text-red-600 flex items-center mt-1">
               <TrendingDown className="h-3 w-3 mr-1" />
               Total acumulado
@@ -173,18 +196,18 @@ export const FinanceiroPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white shadow-sm border border-orange-200 hover:shadow-md transition-shadow rounded-xl">
+        <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-orange-700">Lucro</CardTitle>
-            <div className="bg-orange-100 p-2 rounded-lg">
-              <DollarSign className="h-4 w-4 text-orange-600" />
+            <CardTitle className="text-sm font-medium text-orange-700 dark:text-orange-400">Lucro</CardTitle>
+            <div className="bg-orange-100 dark:bg-orange-900/20 p-2 rounded-lg">
+              <DollarSign className="h-4 w-4 text-orange-600 dark:text-orange-400" />
             </div>
           </CardHeader>
           <CardContent>
             <div className={`text-2xl font-bold ${lucroLiquido >= 0 ? 'text-green-600' : 'text-red-600'}`}>
               {formatarMoeda(lucroLiquido)}
             </div>
-            <p className="text-xs text-orange-600 flex items-center mt-1">
+            <p className="text-xs text-orange-600 dark:text-orange-400 flex items-center mt-1">
               {lucroLiquido >= 0 ? (
                 <TrendingUp className="h-3 w-3 mr-1" />
               ) : (
@@ -197,9 +220,9 @@ export const FinanceiroPage: React.FC = () => {
       </div>
 
       {/* Gráfico de Receitas vs Despesas */}
-      <Card className="bg-white shadow-sm border border-orange-200 rounded-xl">
+      <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 rounded-xl">
         <CardHeader>
-          <CardTitle className="text-orange-900">Receitas vs Despesas</CardTitle>
+          <CardTitle className="text-orange-900 dark:text-white">Receitas vs Despesas</CardTitle>
         </CardHeader>
         <CardContent>
           {dadosGrafico.length > 0 ? (
@@ -221,7 +244,7 @@ export const FinanceiroPage: React.FC = () => {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-300 flex items-center justify-center text-orange-600">
+            <div className="h-300 flex items-center justify-center text-orange-600 dark:text-orange-400">
               Nenhuma transação encontrada para gerar o gráfico
             </div>
           )}
@@ -229,26 +252,26 @@ export const FinanceiroPage: React.FC = () => {
       </Card>
 
       {/* Lista de Transações - Layout Mobile Otimizado */}
-      <Card className="bg-white shadow-sm border border-orange-200 rounded-xl">
+      <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 rounded-xl">
         <CardHeader>
-          <CardTitle className="text-orange-900">Transações Recentes</CardTitle>
+          <CardTitle className="text-orange-900 dark:text-white">Transações Recentes</CardTitle>
         </CardHeader>
         <CardContent>
           {transacoes.length === 0 ? (
             <div className="text-center py-8">
-              <DollarSign className="h-12 w-12 text-orange-300 mx-auto mb-4" />
-              <p className="text-orange-600 text-lg">Nenhuma transação registrada</p>
-              <p className="text-orange-500 text-sm mt-2">
+              <DollarSign className="h-12 w-12 text-orange-300 dark:text-orange-600 mx-auto mb-4" />
+              <p className="text-orange-600 dark:text-orange-400 text-lg">Nenhuma transação registrada</p>
+              <p className="text-orange-500 dark:text-orange-500 text-sm mt-2">
                 Comece adicionando suas primeiras receitas e despesas
               </p>
             </div>
           ) : (
             <div className="space-y-4">
               {transacoes.slice(0, 10).map((transacao) => (
-                <div key={transacao.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-orange-100 rounded-lg hover:bg-orange-50 transition-colors space-y-3 sm:space-y-0">
+                <div key={transacao.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-orange-100 dark:border-gray-600 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors space-y-3 sm:space-y-0">
                   <div className="flex items-center space-x-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      transacao.tipo === 'receita' ? 'bg-green-50' : 'bg-red-50'
+                      transacao.tipo === 'receita' ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'
                     }`}>
                       {transacao.tipo === 'receita' ? (
                         <ArrowUpRight className="h-5 w-5 text-green-600" />
@@ -257,13 +280,13 @@ export const FinanceiroPage: React.FC = () => {
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-orange-900 truncate">{transacao.descricao}</p>
-                      <div className="flex flex-wrap items-center gap-2 text-sm text-orange-700">
+                      <p className="font-medium text-orange-900 dark:text-white truncate">{transacao.descricao}</p>
+                      <div className="flex flex-wrap items-center gap-2 text-sm text-orange-700 dark:text-gray-300">
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-3 w-3" />
                           <span>{formatarData(transacao.data_transacao)}</span>
                         </div>
-                        <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-800">
+                        <Badge variant="secondary" className="text-xs bg-orange-100 dark:bg-gray-700 text-orange-800 dark:text-orange-300">
                           {transacao.categoria}
                         </Badge>
                       </div>
@@ -275,19 +298,17 @@ export const FinanceiroPage: React.FC = () => {
                     }`}>
                       {transacao.tipo === 'receita' ? '+' : '-'}{formatarMoeda(Number(transacao.valor))}
                     </div>
-                    {transacao.tipo === 'despesa' && (
-                      <div className="flex space-x-1">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleDeleteTransacao(transacao.id)}
-                          className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2"
-                          disabled={deleteTransacaoMutation.isPending}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
+                    <div className="flex space-x-1">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDeleteTransacao(transacao.id)}
+                        className="text-red-600 hover:text-red-800 hover:bg-red-50 dark:hover:bg-red-900/20 p-2"
+                        disabled={deleteTransacaoMutation.isPending}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -297,11 +318,17 @@ export const FinanceiroPage: React.FC = () => {
       </Card>
 
       <AdicionarDespesaModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        isOpen={modalDespesaOpen}
+        onClose={() => setModalDespesaOpen(false)}
         onAddDespesa={handleAddDespesa}
         onEditDespesa={() => {}}
         editingDespesa={editingDespesa}
+      />
+
+      <AdicionarReceitaModal
+        isOpen={modalReceitaOpen}
+        onClose={() => setModalReceitaOpen(false)}
+        onAddReceita={handleAddReceita}
       />
     </div>
   );

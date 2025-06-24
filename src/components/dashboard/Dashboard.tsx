@@ -23,6 +23,21 @@ export const Dashboard: React.FC = () => {
   const { data: transacoes = [], isLoading: loadingTransacoes } = useTransacoes();
   const { data: servicos = [], isLoading: loadingServicos } = useServicos();
 
+  // Função para obter início da semana (segunda-feira)
+  const getStartOfWeek = (date: Date) => {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Segunda-feira
+    return new Date(d.setDate(diff));
+  };
+
+  // Função para obter fim da semana (domingo)
+  const getEndOfWeek = (startOfWeek: Date) => {
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    return endOfWeek;
+  };
+
   // Filtrar dados por período
   const filtrarDados = () => {
     const hoje = new Date();
@@ -30,17 +45,21 @@ export const Dashboard: React.FC = () => {
 
     switch (selectedPeriod) {
       case 'semanal':
-        const inicioSemana = new Date(hoje);
-        const diasParaSegunda = hoje.getDay() === 0 ? -6 : 1 - hoje.getDay();
-        inicioSemana.setDate(hoje.getDate() + diasParaSegunda);
+        let inicioSemana: Date;
         
-        if (selectedWeek !== 'atual') {
+        if (selectedWeek === 'atual') {
+          inicioSemana = getStartOfWeek(hoje);
+        } else {
+          // Para semanas específicas do mês
           const weekOffset = parseInt(selectedWeek);
-          inicioSemana.setDate(inicioSemana.getDate() + (weekOffset * 7));
+          const primeiroDiaDoMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+          const primeiraSemanaDoMes = getStartOfWeek(primeiroDiaDoMes);
+          
+          inicioSemana = new Date(primeiraSemanaDoMes);
+          inicioSemana.setDate(primeiraSemanaDoMes.getDate() + (weekOffset * 7));
         }
         
-        const fimSemana = new Date(inicioSemana);
-        fimSemana.setDate(inicioSemana.getDate() + 6);
+        const fimSemana = getEndOfWeek(inicioSemana);
 
         dadosFiltrados.atendimentos = atendimentos.filter(a => {
           const dataAtendimento = new Date(a.data_atendimento);
@@ -169,24 +188,45 @@ export const Dashboard: React.FC = () => {
     return Array.from(anos).sort((a, b) => b - a);
   };
 
-  // Gerar semanas do mês atual
+  // Gerar semanas do mês atual - CORRIGIDO
   const semanasDoMes = () => {
     const hoje = new Date();
-    const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-    const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
-    
+    const ano = hoje.getFullYear();
+    const mes = hoje.getMonth();
     const semanas = [];
-    let semanaAtual = 0;
     
-    for (let dia = primeiroDia.getDate(); dia <= ultimoDia.getDate(); dia += 7) {
-      const inicioSemana = new Date(hoje.getFullYear(), hoje.getMonth(), dia);
-      const fimSemana = new Date(Math.min(inicioSemana.getTime() + 6 * 24 * 60 * 60 * 1000, ultimoDia.getTime()));
+    // Primeira semana do mês
+    const primeiroDia = new Date(ano, mes, 1);
+    let inicioSemana = getStartOfWeek(primeiroDia);
+    
+    // Se o início da semana for do mês anterior, começar da segunda-feira dentro do mês
+    if (inicioSemana.getMonth() !== mes) {
+      inicioSemana = new Date(ano, mes, 1);
+      // Encontrar a próxima segunda-feira se o dia 1 não for segunda
+      while (inicioSemana.getDay() !== 1) {
+        inicioSemana.setDate(inicioSemana.getDate() + 1);
+      }
+    }
+    
+    let semanaIndex = 0;
+    const ultimoDiaDoMes = new Date(ano, mes + 1, 0);
+    
+    while (inicioSemana <= ultimoDiaDoMes) {
+      const fimSemana = getEndOfWeek(inicioSemana);
+      const fimSemanaNoMes = fimSemana > ultimoDiaDoMes ? ultimoDiaDoMes : fimSemana;
       
       semanas.push({
-        value: semanaAtual.toString(),
-        label: `${inicioSemana.getDate()}/${inicioSemana.getMonth() + 1} - ${fimSemana.getDate()}/${fimSemana.getMonth() + 1}`
+        value: semanaIndex.toString(),
+        label: `${inicioSemana.getDate()}/${mes + 1} - ${fimSemanaNoMes.getDate()}/${fimSemanaNoMes.getMonth() + 1}`
       });
-      semanaAtual++;
+      
+      // Próxima semana
+      inicioSemana = new Date(inicioSemana);
+      inicioSemana.setDate(inicioSemana.getDate() + 7);
+      semanaIndex++;
+      
+      // Evitar loop infinito
+      if (semanaIndex > 5) break;
     }
     
     return semanas;
