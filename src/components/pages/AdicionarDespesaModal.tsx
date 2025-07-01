@@ -59,7 +59,7 @@ export const AdicionarDespesaModal: React.FC<AdicionarDespesaModalProps> = ({
       tipo: 'despesa',
       descricao,
       valor: parseFloat(valor),
-      data_transacao: dataTransacao,
+      data_transacao: dataTransacao, // Correção: usar a data selecionada corretamente
       categoria
     };
 

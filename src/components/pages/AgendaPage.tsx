@@ -22,10 +22,11 @@ export const AgendaPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const { data: atendimentos = [], isLoading } = useAtendimentos();
 
-  // Filtrar atendimentos por data selecionada
+  // Filtrar atendimentos por data selecionada - correção do problema de timezone
   const atendimentosDoDia = atendimentos.filter(atendimento => {
-    const dataAtendimento = new Date(atendimento.data_atendimento);
-    return dataAtendimento.toDateString() === selectedDate.toDateString();
+    const dataAtendimento = new Date(atendimento.data_atendimento + 'T00:00:00');
+    const dataSelecionada = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+    return dataAtendimento.toDateString() === dataSelecionada.toDateString();
   }).sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio));
 
   if (isLoading) {

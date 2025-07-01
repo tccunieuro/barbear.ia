@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -58,8 +59,10 @@ export const AtendimentosPage: React.FC = () => {
           data.setDate(inicioSemana.getDate() + i);
           
           const count = atendimentos.filter(a => {
-            const dataAtendimento = new Date(a.data_atendimento);
-            return dataAtendimento.toDateString() === data.toDateString();
+            // Correção: usar data_atendimento corretamente com timezone
+            const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
+            const dataComparacao = new Date(data.getFullYear(), data.getMonth(), data.getDate());
+            return dataAtendimento.toDateString() === dataComparacao.toDateString();
           }).length;
 
           dadosFiltrados.push({ 
@@ -77,7 +80,7 @@ export const AtendimentosPage: React.FC = () => {
           const proximoMes = new Date(hoje.getFullYear(), hoje.getMonth() - i + 1, 0);
 
           const count = atendimentos.filter(a => {
-            const dataAtendimento = new Date(a.data_atendimento);
+            const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
             return dataAtendimento >= mes && dataAtendimento <= proximoMes;
           }).length;
 
@@ -114,7 +117,7 @@ export const AtendimentosPage: React.FC = () => {
           const fimTrimestre = new Date(ano, trimestres[trimestre].meses[2] + 1, 0);
 
           const count = atendimentos.filter(a => {
-            const dataAtendimento = new Date(a.data_atendimento);
+            const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
             return dataAtendimento >= inicioTrimestre && dataAtendimento <= fimTrimestre;
           }).length;
 
@@ -133,7 +136,7 @@ export const AtendimentosPage: React.FC = () => {
           const fimAno = new Date(ano, 11, 31);
 
           const count = atendimentos.filter(a => {
-            const dataAtendimento = new Date(a.data_atendimento);
+            const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
             return dataAtendimento >= inicioAno && dataAtendimento <= fimAno;
           }).length;
 
