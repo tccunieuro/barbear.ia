@@ -2,26 +2,58 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { 
   Users, 
   Search, 
   Phone, 
   Mail, 
   MapPin,
-  Loader2
+  Loader2,
+  ArrowUp,
+  ArrowDown,
+  Trophy
 } from 'lucide-react';
 import { useClientes } from '@/hooks/useClientes';
+import { useAtendimentos } from '@/hooks/useAtendimentos';
 
 export const ClientesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { data: clientes = [], isLoading, error } = useClientes();
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc'); // desc = mais atendimentos primeiro
+  const { data: clientes = [], isLoading: loadingClientes, error } = useClientes();
+  const { data: atendimentos = [], isLoading: loadingAtendimentos } = useAtendimentos();
 
-  const filteredClientes = clientes.filter(cliente =>
-    cliente.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (cliente.telefone && cliente.telefone.includes(searchTerm))
-  );
+  // Calcular número de atendimentos por cliente
+  const clientesComAtendimentos = clientes.map(cliente => {
+    const numeroAtendimentos = atendimentos.filter(atendimento => 
+      atendimento.cliente_id === cliente.id
+    ).length;
+    
+    return {
+      ...cliente,
+      numeroAtendimentos
+    };
+  });
 
-  if (isLoading) {
+  // Filtrar e ordenar clientes
+  const clientesFiltradosEOrdenados = clientesComAtendimentos
+    .filter(cliente =>
+      cliente.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (cliente.telefone && cliente.telefone.includes(searchTerm))
+    )
+    .sort((a, b) => {
+      if (sortOrder === 'desc') {
+        return b.numeroAtendimentos - a.numeroAtendimentos;
+      } else {
+        return a.numeroAtendimentos - b.numeroAtendimentos;
+      }
+    });
+
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc');
+  };
+
+  if (loadingClientes || loadingAtendimentos) {
     return (
       <div className="p-4 md:p-6 space-y-6 bg-orange-50 dark:bg-gray-900 min-h-full flex items-center justify-center">
         <div className="flex items-center space-x-2">
@@ -67,17 +99,36 @@ export const ClientesPage: React.FC = () => {
         </Card>
       </div>
 
-      {/* Barra de Pesquisa */}
+      {/* Barra de Pesquisa e Ordenação */}
       <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 rounded-xl">
         <CardContent className="p-4 md:p-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500 dark:text-orange-400 h-4 w-4" />
-            <Input
-              placeholder="Buscar por nome ou telefone..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 border-orange-200 dark:border-gray-600 focus:border-orange-400 focus:ring-orange-400 bg-white dark:bg-gray-700 text-orange-900 dark:text-white placeholder:text-orange-400 dark:placeholder:text-gray-400"
-            />
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500 dark:text-orange-400 h-4 w-4" />
+              <Input
+                placeholder="Buscar por nome ou telefone..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 border-orange-200 dark:border-gray-600 focus:border-orange-400 focus:ring-orange-400 bg-white dark:bg-gray-700 text-orange-900 dark:text-white placeholder:text-orange-400 dark:placeholder:text-gray-400"
+              />
+            </div>
+            <Button
+              onClick={toggleSortOrder}
+              variant="outline"
+              className="border-orange-200 dark:border-gray-600 text-orange-700 dark:text-orange-300 hover:bg-orange-50 dark:hover:bg-gray-700 flex items-center space-x-2"
+            >
+              {sortOrder === 'desc' ? (
+                <>
+                  <ArrowDown className="h-4 w-4" />
+                  <span>Mais Fiéis</span>
+                </>
+              ) : (
+                <>
+                  <ArrowUp className="h-4 w-4" />
+                  <span>Menos Fiéis</span>
+                </>
+              )}
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -85,10 +136,10 @@ export const ClientesPage: React.FC = () => {
       {/* Lista de Clientes */}
       <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 rounded-xl">
         <CardHeader>
-          <CardTitle className="text-orange-900 dark:text-white">Lista de Clientes</CardTitle>
+          <CardTitle className="text-orange-900 dark:text-white">Ranking de Clientes</CardTitle>
         </CardHeader>
         <CardContent>
-          {filteredClientes.length === 0 ? (
+          {clientesFiltradosEOrdenados.length === 0 ? (
             <div className="text-center py-8">
               <Users className="h-12 w-12 text-orange-300 dark:text-orange-600 mx-auto mb-4" />
               <p className="text-orange-600 dark:text-orange-400 text-lg">
@@ -100,15 +151,32 @@ export const ClientesPage: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredClientes.map((cliente) => (
+              {clientesFiltradosEOrdenados.map((cliente, index) => (
                 <div key={cliente.id} className="p-4 border border-orange-100 dark:border-gray-600 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center flex-shrink-0 relative">
+                        {cliente.numeroAtendimentos > 0 && index < 3 && (
+                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center">
+                            <Trophy className="h-3 w-3 text-white" />
+                          </div>
+                        )}
                         <Users className="h-6 w-6 text-orange-600 dark:text-orange-400" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-semibold text-lg text-orange-900 dark:text-white mb-2">{cliente.nome}</h3>
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h3 className="font-semibold text-lg text-orange-900 dark:text-white">{cliente.nome}</h3>
+                          <div className="flex items-center space-x-2">
+                            <span className="bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 px-2 py-1 rounded-full text-sm font-medium">
+                              {cliente.numeroAtendimentos} atendimento{cliente.numeroAtendimentos !== 1 ? 's' : ''}
+                            </span>
+                            {index < 3 && cliente.numeroAtendimentos > 0 && (
+                              <span className="text-yellow-500 text-sm font-bold">
+                                #{index + 1}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                         <div className="space-y-1">
                           {cliente.telefone && (
                             <div className="flex items-center text-sm text-orange-700 dark:text-orange-300">

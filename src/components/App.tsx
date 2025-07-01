@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { LoginForm } from './auth/LoginForm';
 import { ForgotPasswordForm } from './auth/ForgotPasswordForm';
 import { Sidebar } from './layout/Sidebar';
 import { Dashboard } from './dashboard/Dashboard';
 import { FinanceiroPage } from './pages/FinanceiroPage';
+import { AgendaPage } from './pages/AgendaPage';
 import { AtendimentosPage } from './pages/AtendimentosPage';
 import { ClientesPage } from './pages/ClientesPage';
 import { ConfiguracoesPage } from './pages/ConfiguracoesPage';
@@ -13,7 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 
 type AuthState = 'login' | 'forgot-password' | 'authenticated' | 'loading';
-type PageState = 'dashboard' | 'financeiro' | 'atendimentos' | 'clientes' | 'configuracoes';
+type PageState = 'dashboard' | 'financeiro' | 'agenda' | 'atendimentos' | 'clientes' | 'configuracoes';
 
 export const App: React.FC = () => {
   const [authState, setAuthState] = useState<AuthState>('loading');
@@ -101,6 +101,8 @@ export const App: React.FC = () => {
         return <Dashboard />;
       case 'financeiro':
         return <FinanceiroPage />;
+      case 'agenda':
+        return <AgendaPage />;
       case 'atendimentos':
         return <AtendimentosPage />;
       case 'clientes':

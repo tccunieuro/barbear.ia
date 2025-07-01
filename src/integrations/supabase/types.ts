@@ -27,7 +27,7 @@ export type Database = {
         Insert: {
           cliente_id?: string | null
           created_at?: string | null
-          data_atendimento: string
+          data_atendimento?: string
           hora_fim?: string | null
           hora_inicio: string
           id?: string
@@ -234,7 +234,7 @@ export type Database = {
           categoria: string
           created_at?: string | null
           data_transacao: string
-          descricao: string
+          descricao?: string
           id?: string
           tipo: string
           updated_at?: string | null

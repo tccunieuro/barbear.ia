@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -13,7 +12,8 @@ import {
   ChevronRight,
   Users,
   Menu,
-  X
+  X,
+  CalendarDays
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -35,6 +35,7 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: Home },
   { id: 'financeiro', label: 'Financeiro', icon: DollarSign },
+  { id: 'agenda', label: 'Agenda', icon: CalendarDays },
   { id: 'atendimentos', label: 'Atendimentos', icon: Calendar },
   { id: 'clientes', label: 'Clientes', icon: Users },
   { id: 'configuracoes', label: 'Configurações', icon: Settings },

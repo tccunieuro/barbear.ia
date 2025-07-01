@@ -30,7 +30,7 @@ export const AtendimentosPage: React.FC = () => {
         // Últimas 8 horas do dia atual
         for (let i = 7; i >= 0; i--) {
           const hora = new Date(hoje);
-          hora.setHours(hora.getHours() - i);
+          hora.setHours(hoje.getHours() - i);
           const horaStr = hora.getHours().toString().padStart(2, '0') + 'h';
           
           const count = atendimentos.filter(a => {
@@ -44,11 +44,18 @@ export const AtendimentosPage: React.FC = () => {
         break;
 
       case 'semanal':
-        // Últimos 7 dias
-        const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-        for (let i = 6; i >= 0; i--) {
-          const data = new Date(hoje);
-          data.setDate(data.getDate() - i);
+        // Últimos 7 dias organizados: Segunda, Terça, Quarta, Quinta, Sexta, Sábado, Domingo
+        const diasSemana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+        
+        // Calcular segunda-feira da semana atual
+        const inicioSemana = new Date(hoje);
+        const diaSemana = hoje.getDay();
+        const diasParaSegunda = diaSemana === 0 ? -6 : 1 - diaSemana; // Se domingo (0), volta 6 dias
+        inicioSemana.setDate(hoje.getDate() + diasParaSegunda);
+        
+        for (let i = 0; i < 7; i++) {
+          const data = new Date(inicioSemana);
+          data.setDate(inicioSemana.getDate() + i);
           
           const count = atendimentos.filter(a => {
             const dataAtendimento = new Date(a.data_atendimento);
@@ -56,36 +63,16 @@ export const AtendimentosPage: React.FC = () => {
           }).length;
 
           dadosFiltrados.push({ 
-            nome: diasSemana[data.getDay()], 
+            nome: diasSemana[i], 
             atendimentos: count 
           });
         }
         break;
 
       case 'mensal':
-        // Últimas 4 semanas
-        for (let i = 3; i >= 0; i--) {
-          const inicioSemana = new Date(hoje);
-          inicioSemana.setDate(hoje.getDate() - (i * 7) - 6);
-          const fimSemana = new Date(hoje);
-          fimSemana.setDate(hoje.getDate() - (i * 7));
-
-          const count = atendimentos.filter(a => {
-            const dataAtendimento = new Date(a.data_atendimento);
-            return dataAtendimento >= inicioSemana && dataAtendimento <= fimSemana;
-          }).length;
-
-          dadosFiltrados.push({ 
-            nome: `Sem ${4 - i}`, 
-            atendimentos: count 
-          });
-        }
-        break;
-
-      case 'trimestral':
-        // Últimos 3 meses
+        // Últimos 12 meses
         const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-        for (let i = 2; i >= 0; i--) {
+        for (let i = 11; i >= 0; i--) {
           const mes = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
           const proximoMes = new Date(hoje.getFullYear(), hoje.getMonth() - i + 1, 0);
 
@@ -95,7 +82,44 @@ export const AtendimentosPage: React.FC = () => {
           }).length;
 
           dadosFiltrados.push({ 
-            nome: meses[mes.getMonth()], 
+            nome: `${meses[mes.getMonth()]} ${mes.getFullYear()}`, 
+            atendimentos: count 
+          });
+        }
+        break;
+
+      case 'trimestral':
+        // Últimos 4 trimestres
+        const trimestres = [
+          { nome: 'Jan-Mar', meses: [0, 1, 2] },
+          { nome: 'Abr-Jun', meses: [3, 4, 5] },
+          { nome: 'Jul-Set', meses: [6, 7, 8] },
+          { nome: 'Out-Dez', meses: [9, 10, 11] }
+        ];
+
+        const anoAtual = hoje.getFullYear();
+        const mesAtual = hoje.getMonth();
+        const trimestreAtual = Math.floor(mesAtual / 3);
+
+        for (let i = 3; i >= 0; i--) {
+          let ano = anoAtual;
+          let trimestre = trimestreAtual - i;
+          
+          if (trimestre < 0) {
+            ano--;
+            trimestre += 4;
+          }
+
+          const inicioTrimestre = new Date(ano, trimestres[trimestre].meses[0], 1);
+          const fimTrimestre = new Date(ano, trimestres[trimestre].meses[2] + 1, 0);
+
+          const count = atendimentos.filter(a => {
+            const dataAtendimento = new Date(a.data_atendimento);
+            return dataAtendimento >= inicioTrimestre && dataAtendimento <= fimTrimestre;
+          }).length;
+
+          dadosFiltrados.push({ 
+            nome: `${trimestres[trimestre].nome} ${ano}`, 
             atendimentos: count 
           });
         }
@@ -253,8 +277,8 @@ export const AtendimentosPage: React.FC = () => {
             <span>Atendimentos por {
               periodo === 'diario' ? 'Hora' : 
               periodo === 'semanal' ? 'Dia' : 
-              periodo === 'mensal' ? 'Semana' : 
-              periodo === 'trimestral' ? 'Mês' : 
+              periodo === 'mensal' ? 'Mês' : 
+              periodo === 'trimestral' ? 'Trimestre' : 
               'Ano'
             }</span>
           </CardTitle>
