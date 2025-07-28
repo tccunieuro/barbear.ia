@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 
 const App = () => (
   <TooltipProvider>
@@ -12,6 +13,7 @@ const App = () => (
     <Sonner />
     <Routes>
       <Route path="/" element={<Index />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
