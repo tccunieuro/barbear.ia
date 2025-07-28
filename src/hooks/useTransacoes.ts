@@ -20,13 +20,9 @@ export const useTransacoes = () => {
   return useQuery({
     queryKey: ['transacoes'],
     queryFn: async () => {
-      console.log('💰 Buscando transações...');
-      
       const { data: { user } } = await supabase.auth.getUser();
-      console.log('👤 Usuário atual:', user?.id);
       
       if (!user) {
-        console.log('❌ Usuário não autenticado');
         throw new Error('Usuário não autenticado');
       }
 
@@ -36,11 +32,7 @@ export const useTransacoes = () => {
         .eq('user_id', user.id)
         .order('data_transacao', { ascending: false });
 
-      console.log('💰 Dados das transações:', data);
-      console.log('❗ Erro (se houver):', error);
-
       if (error) {
-        console.error('Erro ao buscar transações:', error);
         throw error;
       }
       

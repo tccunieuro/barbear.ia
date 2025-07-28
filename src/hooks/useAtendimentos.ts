@@ -24,13 +24,9 @@ export const useAtendimentos = () => {
   return useQuery({
     queryKey: ['atendimentos'],
     queryFn: async () => {
-      console.log('🔍 Buscando atendimentos...');
-      
       const { data: { user } } = await supabase.auth.getUser();
-      console.log('👤 Usuário atual:', user?.id);
       
       if (!user) {
-        console.log('❌ Usuário não autenticado');
         throw new Error('Usuário não autenticado');
       }
 
@@ -44,11 +40,7 @@ export const useAtendimentos = () => {
         .eq('user_id', user.id)
         .order('data_atendimento', { ascending: false });
 
-      console.log('📊 Dados dos atendimentos:', data);
-      console.log('❗ Erro (se houver):', error);
-
       if (error) {
-        console.error('Erro ao buscar atendimentos:', error);
         throw error;
       }
       
