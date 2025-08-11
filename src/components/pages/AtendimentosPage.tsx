@@ -41,50 +41,63 @@ export const AtendimentosPage: React.FC = () => {
     return endOfWeek;
   };
 
-  // Filtrar atendimentos por período
-  const filtrarAtendimentos = () => {
-    const hoje = new Date();
-    
-    switch (periodo) {
-      case 'semanal':
-        const inicioSemana = getStartOfWeek(hoje);
-        const fimSemana = getEndOfWeek(inicioSemana);
-        return atendimentos.filter(a => {
-          const dataAtendimento = new Date(a.data_atendimento);
-          return dataAtendimento >= inicioSemana && dataAtendimento <= fimSemana;
-        });
+// Função para normalizar data (zerar hora, minuto, segundo e milissegundo no fuso local)
+const normalizarData = (date: Date) => {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+};
 
-      case 'mensal':
-        return atendimentos.filter(a => {
-          const dataAtendimento = new Date(a.data_atendimento);
-          return dataAtendimento.getMonth() === selectedMonth && 
-                 dataAtendimento.getFullYear() === new Date().getFullYear();
-        });
+// Filtrar atendimentos por período (corrigido para fuso horário)
+const filtrarAtendimentos = () => {
+  const hoje = normalizarData(new Date());
 
-      case 'trimestral':
-        const mesInicio = selectedQuarter * 3;
-        const mesFim = mesInicio + 2;
-        return atendimentos.filter(a => {
-          const dataAtendimento = new Date(a.data_atendimento);
-          const mes = dataAtendimento.getMonth();
-          return mes >= mesInicio && mes <= mesFim && 
-                 dataAtendimento.getFullYear() === new Date().getFullYear();
-        });
-
-      case 'anual':
-        return atendimentos.filter(a => {
-          const dataAtendimento = new Date(a.data_atendimento);
-          return dataAtendimento.getFullYear() === selectedYear;
-        });
-
-      case 'diario':
-      default:
-        return atendimentos.filter(a => {
-          const dataAtendimento = new Date(a.data_atendimento);
-          return dataAtendimento.toDateString() === hoje.toDateString();
-        });
+  switch (periodo) {
+    case 'semanal': {
+      const inicioSemana = getStartOfWeek(hoje);
+      const fimSemana = getEndOfWeek(inicioSemana);
+      return atendimentos.filter(a => {
+        const dataAtendimento = normalizarData(new Date(a.data_atendimento));
+        return dataAtendimento >= inicioSemana && dataAtendimento <= fimSemana;
+      });
     }
-  };
+
+    case 'mensal':
+      return atendimentos.filter(a => {
+        const dataAtendimento = normalizarData(new Date(a.data_atendimento));
+        return (
+          dataAtendimento.getMonth() === selectedMonth &&
+          dataAtendimento.getFullYear() === hoje.getFullYear()
+        );
+      });
+
+    case 'trimestral': {
+      const mesInicio = selectedQuarter * 3;
+      const mesFim = mesInicio + 2;
+      return atendimentos.filter(a => {
+        const dataAtendimento = normalizarData(new Date(a.data_atendimento));
+        const mes = dataAtendimento.getMonth();
+        return (
+          mes >= mesInicio &&
+          mes <= mesFim &&
+          dataAtendimento.getFullYear() === hoje.getFullYear()
+        );
+      });
+    }
+
+    case 'anual':
+      return atendimentos.filter(a => {
+        const dataAtendimento = normalizarData(new Date(a.data_atendimento));
+        return dataAtendimento.getFullYear() === selectedYear;
+      });
+
+    case 'diario':
+    default:
+      return atendimentos.filter(a => {
+        const dataAtendimento = normalizarData(new Date(a.data_atendimento));
+        return dataAtendimento.getTime() === hoje.getTime();
+      });
+  }
+};
+
 
   // Processar dados dos atendimentos para gráficos
   const processarDadosGrafico = (period: string) => {
