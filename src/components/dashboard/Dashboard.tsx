@@ -52,12 +52,12 @@ export const Dashboard: React.FC = () => {
         const fimSemana = getEndOfWeek(inicioSemana);
 
         dadosFiltrados.atendimentos = atendimentos.filter(a => {
-          const dataAtendimento = new Date(a.data_atendimento);
+          const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
           return dataAtendimento >= inicioSemana && dataAtendimento <= fimSemana;
         });
 
         dadosFiltrados.transacoes = transacoes.filter(t => {
-          const dataTransacao = new Date(t.data_transacao);
+          const dataTransacao = new Date(t.data_transacao + 'T00:00:00');
           return dataTransacao >= inicioSemana && dataTransacao <= fimSemana;
         });
         break;

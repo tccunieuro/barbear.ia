@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Users, 
   Scissors,
@@ -16,12 +17,79 @@ import { useServicos } from '@/hooks/useServicos';
 
 export const AtendimentosPage: React.FC = () => {
   const [periodo, setPeriodo] = useState('semanal');
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedQuarter, setSelectedQuarter] = useState(Math.floor(new Date().getMonth() / 3));
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const { data: atendimentos = [], isLoading: loadingAtendimentos } = useAtendimentos();
   const { data: servicos = [], isLoading: loadingServicos } = useServicos();
 
-  // Processar dados dos atendimentos para gráficos com inteligência aprimorada
+  // Função para obter início da semana (segunda-feira)
+  const getStartOfWeek = (date: Date) => {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Segunda-feira
+    d.setDate(diff);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  };
+
+  // Função para obter fim da semana (domingo)
+  const getEndOfWeek = (startOfWeek: Date) => {
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999);
+    return endOfWeek;
+  };
+
+  // Filtrar atendimentos por período
+  const filtrarAtendimentos = () => {
+    const hoje = new Date();
+    
+    switch (periodo) {
+      case 'semanal':
+        const inicioSemana = getStartOfWeek(hoje);
+        const fimSemana = getEndOfWeek(inicioSemana);
+        return atendimentos.filter(a => {
+          const dataAtendimento = new Date(a.data_atendimento);
+          return dataAtendimento >= inicioSemana && dataAtendimento <= fimSemana;
+        });
+
+      case 'mensal':
+        return atendimentos.filter(a => {
+          const dataAtendimento = new Date(a.data_atendimento);
+          return dataAtendimento.getMonth() === selectedMonth && 
+                 dataAtendimento.getFullYear() === new Date().getFullYear();
+        });
+
+      case 'trimestral':
+        const mesInicio = selectedQuarter * 3;
+        const mesFim = mesInicio + 2;
+        return atendimentos.filter(a => {
+          const dataAtendimento = new Date(a.data_atendimento);
+          const mes = dataAtendimento.getMonth();
+          return mes >= mesInicio && mes <= mesFim && 
+                 dataAtendimento.getFullYear() === new Date().getFullYear();
+        });
+
+      case 'anual':
+        return atendimentos.filter(a => {
+          const dataAtendimento = new Date(a.data_atendimento);
+          return dataAtendimento.getFullYear() === selectedYear;
+        });
+
+      case 'diario':
+      default:
+        return atendimentos.filter(a => {
+          const dataAtendimento = new Date(a.data_atendimento);
+          return dataAtendimento.toDateString() === hoje.toDateString();
+        });
+    }
+  };
+
+  // Processar dados dos atendimentos para gráficos
   const processarDadosGrafico = (period: string) => {
-    if (!atendimentos.length) return [];
+    const atendimentosFiltrados = filtrarAtendimentos();
+    if (!atendimentosFiltrados.length) return [];
 
     const hoje = new Date();
     let dadosFiltrados: any[] = [];
@@ -34,7 +102,7 @@ export const AtendimentosPage: React.FC = () => {
           hora.setHours(hoje.getHours() - i);
           const horaStr = hora.getHours().toString().padStart(2, '0') + 'h';
           
-          const count = atendimentos.filter(a => {
+          const count = atendimentosFiltrados.filter(a => {
             const dataAtendimento = new Date(a.data_atendimento + 'T' + a.hora_inicio);
             return dataAtendimento.getHours() === hora.getHours() && 
                    dataAtendimento.toDateString() === hoje.toDateString();
@@ -45,24 +113,16 @@ export const AtendimentosPage: React.FC = () => {
         break;
 
       case 'semanal':
-        // Últimos 7 dias organizados: Segunda, Terça, Quarta, Quinta, Sexta, Sábado, Domingo
         const diasSemana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-        
-        // Calcular segunda-feira da semana atual
-        const inicioSemana = new Date(hoje);
-        const diaSemana = hoje.getDay();
-        const diasParaSegunda = diaSemana === 0 ? -6 : 1 - diaSemana; // Se domingo (0), volta 6 dias
-        inicioSemana.setDate(hoje.getDate() + diasParaSegunda);
+        const inicioSemana = getStartOfWeek(hoje);
         
         for (let i = 0; i < 7; i++) {
           const data = new Date(inicioSemana);
           data.setDate(inicioSemana.getDate() + i);
           
-          const count = atendimentos.filter(a => {
-            // Correção: usar data_atendimento corretamente com timezone
-            const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
-            const dataComparacao = new Date(data.getFullYear(), data.getMonth(), data.getDate());
-            return dataAtendimento.toDateString() === dataComparacao.toDateString();
+          const count = atendimentosFiltrados.filter(a => {
+            const dataAtendimento = new Date(a.data_atendimento);
+            return dataAtendimento.toDateString() === data.toDateString();
           }).length;
 
           dadosFiltrados.push({ 
@@ -73,102 +133,72 @@ export const AtendimentosPage: React.FC = () => {
         break;
 
       case 'mensal':
-        // Últimos 12 meses
-        const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-        for (let i = 11; i >= 0; i--) {
-          const mes = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
-          const proximoMes = new Date(hoje.getFullYear(), hoje.getMonth() - i + 1, 0);
-
-          const count = atendimentos.filter(a => {
-            const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
-            return dataAtendimento >= mes && dataAtendimento <= proximoMes;
+        // Dias do mês selecionado
+        const diasNoMes = new Date(new Date().getFullYear(), selectedMonth + 1, 0).getDate();
+        for (let dia = 1; dia <= Math.min(diasNoMes, 30); dia += Math.ceil(diasNoMes / 15)) {
+          const data = new Date(new Date().getFullYear(), selectedMonth, dia);
+          const count = atendimentosFiltrados.filter(a => {
+            const dataAtendimento = new Date(a.data_atendimento);
+            return dataAtendimento.getDate() === dia;
           }).length;
-
+          
           dadosFiltrados.push({ 
-            nome: `${meses[mes.getMonth()]} ${mes.getFullYear()}`, 
+            nome: `${dia}/${selectedMonth + 1}`, 
             atendimentos: count 
           });
         }
         break;
 
       case 'trimestral':
-        // Últimos 4 trimestres
-        const trimestres = [
-          { nome: 'Jan-Mar', meses: [0, 1, 2] },
-          { nome: 'Abr-Jun', meses: [3, 4, 5] },
-          { nome: 'Jul-Set', meses: [6, 7, 8] },
-          { nome: 'Out-Dez', meses: [9, 10, 11] }
-        ];
-
-        const anoAtual = hoje.getFullYear();
-        const mesAtual = hoje.getMonth();
-        const trimestreAtual = Math.floor(mesAtual / 3);
-
-        for (let i = 3; i >= 0; i--) {
-          let ano = anoAtual;
-          let trimestre = trimestreAtual - i;
-          
-          if (trimestre < 0) {
-            ano--;
-            trimestre += 4;
-          }
-
-          const inicioTrimestre = new Date(ano, trimestres[trimestre].meses[0], 1);
-          const fimTrimestre = new Date(ano, trimestres[trimestre].meses[2] + 1, 0);
-
-          const count = atendimentos.filter(a => {
-            const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
-            return dataAtendimento >= inicioTrimestre && dataAtendimento <= fimTrimestre;
+        // Meses do trimestre selecionado
+        const mesesTrimestre = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        const mesInicioTrim = selectedQuarter * 3;
+        
+        for (let i = 0; i < 3; i++) {
+          const mesAtual = mesInicioTrim + i;
+          const count = atendimentosFiltrados.filter(a => {
+            const dataAtendimento = new Date(a.data_atendimento);
+            return dataAtendimento.getMonth() === mesAtual;
           }).length;
-
+          
           dadosFiltrados.push({ 
-            nome: `${trimestres[trimestre].nome} ${ano}`, 
+            nome: mesesTrimestre[mesAtual], 
             atendimentos: count 
           });
         }
         break;
 
       case 'anual':
-        // Últimos 3 anos
-        for (let i = 2; i >= 0; i--) {
-          const ano = hoje.getFullYear() - i;
-          const inicioAno = new Date(ano, 0, 1);
-          const fimAno = new Date(ano, 11, 31);
-
-          const count = atendimentos.filter(a => {
-            const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
-            return dataAtendimento >= inicioAno && dataAtendimento <= fimAno;
+        // Meses do ano selecionado
+        const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        for (let mes = 0; mes < 12; mes++) {
+          const count = atendimentosFiltrados.filter(a => {
+            const dataAtendimento = new Date(a.data_atendimento);
+            return dataAtendimento.getMonth() === mes;
           }).length;
-
+          
           dadosFiltrados.push({ 
-            nome: ano.toString(), 
+            nome: meses[mes], 
             atendimentos: count 
           });
         }
         break;
 
       default:
-        dadosFiltrados = [
-          { nome: 'Seg', atendimentos: 0 },
-          { nome: 'Ter', atendimentos: 0 },
-          { nome: 'Qua', atendimentos: 0 },
-          { nome: 'Qui', atendimentos: 0 },
-          { nome: 'Sex', atendimentos: 0 },
-          { nome: 'Sáb', atendimentos: 0 },
-          { nome: 'Dom', atendimentos: 0 },
-        ];
+        dadosFiltrados = [];
     }
 
     return dadosFiltrados;
   };
 
-  // Calcular top 3 serviços
+  // Calcular top 3 serviços baseado no período filtrado
   const calcularTopServicos = () => {
-    if (!atendimentos.length || !servicos.length) return [];
+    const atendimentosFiltrados = filtrarAtendimentos();
+    if (!atendimentosFiltrados.length || !servicos.length) return [];
 
     const servicoCount: { [key: string]: { nome: string; count: number } } = {};
     
-    atendimentos.forEach(atendimento => {
+    atendimentosFiltrados.forEach(atendimento => {
       if (atendimento.servico_id && atendimento.servicos?.nome) {
         const nomeServico = atendimento.servicos.nome;
         if (servicoCount[nomeServico]) {
@@ -187,6 +217,73 @@ export const AtendimentosPage: React.FC = () => {
         servico: servico.nome,
         quantidade: servico.count
       }));
+  };
+
+  // Gerar anos disponíveis
+  const anosDisponiveis = () => {
+    const anos = new Set<number>();
+    atendimentos.forEach(a => {
+      anos.add(new Date(a.data_atendimento).getFullYear());
+    });
+    return Array.from(anos).sort((a, b) => b - a);
+  };
+
+  // Renderizar seletor de período específico
+  const renderPeriodSelector = () => {
+    switch (periodo) {
+      case 'semanal':
+        return null;
+
+      case 'mensal':
+        return (
+          <Select value={selectedMonth.toString()} onValueChange={(value) => setSelectedMonth(parseInt(value))}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Selecione o mês" />
+            </SelectTrigger>
+            <SelectContent>
+              {Array.from({ length: 12 }, (_, i) => (
+                <SelectItem key={i} value={i.toString()}>
+                  {new Date(2024, i, 1).toLocaleDateString('pt-BR', { month: 'long' })}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+
+      case 'trimestral':
+        return (
+          <Select value={selectedQuarter.toString()} onValueChange={(value) => setSelectedQuarter(parseInt(value))}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Selecione o trimestre" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="0">1º Trimestre (Jan-Mar)</SelectItem>
+              <SelectItem value="1">2º Trimestre (Abr-Jun)</SelectItem>
+              <SelectItem value="2">3º Trimestre (Jul-Set)</SelectItem>
+              <SelectItem value="3">4º Trimestre (Out-Dez)</SelectItem>
+            </SelectContent>
+          </Select>
+        );
+
+      case 'anual':
+        return (
+          <Select value={selectedYear.toString()} onValueChange={(value) => setSelectedYear(parseInt(value))}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Selecione o ano" />
+            </SelectTrigger>
+            <SelectContent>
+              {anosDisponiveis().map(ano => (
+                <SelectItem key={ano} value={ano.toString()}>
+                  {ano}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+
+      default:
+        return null;
+    }
   };
 
   const dadosGrafico = processarDadosGrafico(periodo);
@@ -253,27 +350,30 @@ export const AtendimentosPage: React.FC = () => {
 
         <Card className="lg:col-span-2 bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 hover:shadow-md transition-shadow rounded-xl">
           <CardContent className="pt-6">
-            <div className="flex flex-wrap gap-2">
-              {[
-                { key: 'diario', label: 'Hoje' },
-                { key: 'semanal', label: 'Semanal' },
-                { key: 'mensal', label: 'Mensal' },
-                { key: 'trimestral', label: 'Trimestral' },
-                { key: 'anual', label: 'Anual' }
-              ].map((filter) => (
-                <Button
-                  key={filter.key}
-                  onClick={() => setPeriodo(filter.key)}
-                  size="sm"
-                  className={`transition-all rounded-lg ${
-                    periodo === filter.key
-                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
-                      : 'bg-white dark:bg-gray-700 hover:bg-orange-50 dark:hover:bg-gray-600 text-orange-700 dark:text-gray-300 border border-orange-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-gray-500 shadow-sm'
-                  }`}
-                >
-                  {filter.label}
-                </Button>
-              ))}
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { key: 'diario', label: 'Hoje' },
+                  { key: 'semanal', label: 'Semanal' },
+                  { key: 'mensal', label: 'Mensal' },
+                  { key: 'trimestral', label: 'Trimestral' },
+                  { key: 'anual', label: 'Anual' }
+                ].map((filter) => (
+                  <Button
+                    key={filter.key}
+                    onClick={() => setPeriodo(filter.key)}
+                    size="sm"
+                    className={`transition-all rounded-lg ${
+                      periodo === filter.key
+                        ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
+                        : 'bg-white dark:bg-gray-700 hover:bg-orange-50 dark:hover:bg-gray-600 text-orange-700 dark:text-gray-300 border border-orange-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-gray-500 shadow-sm'
+                    }`}
+                  >
+                    {filter.label}
+                  </Button>
+                ))}
+              </div>
+              {renderPeriodSelector()}
             </div>
           </CardContent>
         </Card>
