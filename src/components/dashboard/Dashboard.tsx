@@ -27,13 +27,16 @@ export const Dashboard: React.FC = () => {
     const d = new Date(date);
     const day = d.getDay();
     const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Segunda-feira
-    return new Date(d.setDate(diff));
+    d.setDate(diff);
+    d.setHours(0, 0, 0, 0); // Início do dia
+    return d;
   };
 
   // Função para obter fim da semana (domingo)
   const getEndOfWeek = (startOfWeek: Date) => {
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999); // Final do dia
     return endOfWeek;
   };
 

@@ -151,7 +151,7 @@ export const ClientesPage: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {clientesFiltradosEOrdenados.map((cliente, index) => (
+              {clientesFiltradosEOrdenados.slice(0, 5).map((cliente, index) => (
                 <div key={cliente.id} className="p-4 border border-orange-100 dark:border-gray-600 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center space-x-4">

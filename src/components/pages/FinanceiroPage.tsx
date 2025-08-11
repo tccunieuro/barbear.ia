@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -10,11 +12,14 @@ import {
   Plus,
   ArrowUpRight,
   ArrowDownRight,
-  Calendar,
+  Calendar as CalendarIcon,
   Edit,
   Trash2,
-  Loader2
+  Loader2,
+  X
 } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { AdicionarDespesaModal } from './AdicionarDespesaModal';
 import { AdicionarReceitaModal } from './AdicionarReceitaModal';
@@ -29,6 +34,8 @@ export const FinanceiroPage: React.FC = () => {
   const createTransacaoMutation = useCreateTransacao();
   const deleteTransacaoMutation = useDeleteTransacao();
 
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  
   // Calcular totais
   const totalReceitas = transacoes
     .filter(t => t.tipo === 'receita')
@@ -39,6 +46,15 @@ export const FinanceiroPage: React.FC = () => {
     .reduce((sum, t) => sum + Number(t.valor), 0);
   
   const lucroLiquido = totalReceitas - totalDespesas;
+
+  // Filtrar transações por data selecionada ou mostrar apenas as últimas 5
+  const transacoesFiltradas = selectedDate 
+    ? transacoes.filter(t => {
+        const dataTransacao = new Date(t.data_transacao);
+        const dataSelecionada = new Date(selectedDate);
+        return dataTransacao.toDateString() === dataSelecionada.toDateString();
+      })
+    : transacoes.slice(0, 5);
 
   // Processar dados para o gráfico (últimos 6 meses)
   const processarDadosGrafico = () => {
@@ -254,20 +270,62 @@ export const FinanceiroPage: React.FC = () => {
       {/* Lista de Transações - Layout Mobile Otimizado */}
       <Card className="bg-white dark:bg-gray-800 shadow-sm border border-orange-200 dark:border-gray-700 rounded-xl">
         <CardHeader>
-          <CardTitle className="text-orange-900 dark:text-white">Transações Recentes</CardTitle>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <CardTitle className="text-orange-900 dark:text-white">
+              {selectedDate ? 'Transações do Dia Selecionado' : 'Últimas 5 Transações'}
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              {selectedDate && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedDate(undefined)}
+                  className="text-orange-700 border-orange-200 hover:bg-orange-50"
+                >
+                  <X className="h-4 w-4 mr-1" />
+                  Limpar Filtro
+                </Button>
+              )}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "justify-start text-left font-normal border-orange-200 text-orange-700 hover:bg-orange-50",
+                      !selectedDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {selectedDate ? format(selectedDate, "dd/MM/yyyy") : "Filtrar por data"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={setSelectedDate}
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          {transacoes.length === 0 ? (
+          {transacoesFiltradas.length === 0 ? (
             <div className="text-center py-8">
               <DollarSign className="h-12 w-12 text-orange-300 dark:text-orange-600 mx-auto mb-4" />
-              <p className="text-orange-600 dark:text-orange-400 text-lg">Nenhuma transação registrada</p>
+              <p className="text-orange-600 dark:text-orange-400 text-lg">
+                {selectedDate ? 'Nenhuma transação encontrada para esta data' : 'Nenhuma transação registrada'}
+              </p>
               <p className="text-orange-500 dark:text-orange-500 text-sm mt-2">
-                Comece adicionando suas primeiras receitas e despesas
+                {selectedDate ? 'Tente selecionar uma data diferente' : 'Comece adicionando suas primeiras receitas e despesas'}
               </p>
             </div>
           ) : (
             <div className="space-y-4">
-              {transacoes.slice(0, 10).map((transacao) => (
+              {transacoesFiltradas.map((transacao) => (
                 <div key={transacao.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-orange-100 dark:border-gray-600 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors space-y-3 sm:space-y-0">
                   <div className="flex items-center space-x-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
@@ -283,7 +341,7 @@ export const FinanceiroPage: React.FC = () => {
                       <p className="font-medium text-orange-900 dark:text-white truncate">{transacao.descricao}</p>
                       <div className="flex flex-wrap items-center gap-2 text-sm text-orange-700 dark:text-gray-300">
                         <div className="flex items-center space-x-1">
-                          <Calendar className="h-3 w-3" />
+                          <CalendarIcon className="h-3 w-3" />
                           <span>{formatarData(transacao.data_transacao)}</span>
                         </div>
                         <Badge variant="secondary" className="text-xs bg-orange-100 dark:bg-gray-700 text-orange-800 dark:text-orange-300">

@@ -84,10 +84,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="p-4 border-b border-primary-300/20">
           <div className="flex items-center justify-between">
             {!isCollapsed && (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 cursor-pointer" onClick={() => onPageChange('dashboard')}>
                 <Logo size="sm" />
                 <div>
-                  <h1 className="text-white font-bold text-lg">Barbear.ia</h1>
+                  <h1 className="text-white font-bold text-lg">Barber.IA</h1>
                   <p className="text-primary-100 text-xs">Gestão Completa</p>
                 </div>
               </div>

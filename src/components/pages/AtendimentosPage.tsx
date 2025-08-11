@@ -238,9 +238,15 @@ export const AtendimentosPage: React.FC = () => {
             </div>
           </CardHeader>
           <CardContent className="pt-0">
-            <div className="text-2xl font-bold text-orange-900 dark:text-white">{atendimentos.length}</div>
+            <div className="text-2xl font-bold text-orange-900 dark:text-white">
+              {dadosGrafico.reduce((sum, item) => sum + item.atendimentos, 0)}
+            </div>
             <p className="text-xs text-orange-600 dark:text-orange-400">
-              Total de atendimentos registrados
+              {periodo === 'diario' ? 'Atendimentos de hoje' :
+               periodo === 'semanal' ? 'Atendimentos desta semana' :
+               periodo === 'mensal' ? 'Atendimentos do período mensal' :
+               periodo === 'trimestral' ? 'Atendimentos do período trimestral' :
+               'Atendimentos do período anual'}
             </p>
           </CardContent>
         </Card>
