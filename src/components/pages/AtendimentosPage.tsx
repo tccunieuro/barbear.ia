@@ -114,10 +114,8 @@ export const AtendimentosPage: React.FC = () => {
           const horaStr = hora.toString().padStart(2, '0') + 'h';
           
           const count = atendimentosFiltrados.filter(a => {
-            const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
             const horaInicio = parseInt(a.hora_inicio.split(':')[0]);
-            return horaInicio === hora && 
-                   dataAtendimento.toDateString() === hoje.toDateString();
+            return horaInicio === hora;
           }).length;
 
           dadosFiltrados.push({ nome: horaStr, atendimentos: count });
