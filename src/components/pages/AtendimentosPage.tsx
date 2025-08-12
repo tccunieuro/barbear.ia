@@ -114,8 +114,9 @@ export const AtendimentosPage: React.FC = () => {
           const horaStr = hora.toString().padStart(2, '0') + 'h';
           
           const count = atendimentosFiltrados.filter(a => {
-            const dataAtendimento = new Date(a.data_atendimento + 'T' + a.hora_inicio);
-            return dataAtendimento.getHours() === hora && 
+            const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
+            const horaInicio = parseInt(a.hora_inicio.split(':')[0]);
+            return horaInicio === hora && 
                    dataAtendimento.toDateString() === hoje.toDateString();
           }).length;
 
@@ -148,7 +149,7 @@ export const AtendimentosPage: React.FC = () => {
         const diasNoMes = new Date(new Date().getFullYear(), selectedMonth + 1, 0).getDate();
         for (let dia = 1; dia <= diasNoMes; dia++) {
           const count = atendimentosFiltrados.filter(a => {
-            const dataAtendimento = new Date(a.data_atendimento);
+            const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
             return dataAtendimento.getDate() === dia && dataAtendimento.getMonth() === selectedMonth;
           }).length;
           
