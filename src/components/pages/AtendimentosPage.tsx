@@ -109,15 +109,13 @@ export const AtendimentosPage: React.FC = () => {
 
     switch (period) {
       case 'diario':
-        // Últimas 8 horas do dia atual
-        for (let i = 7; i >= 0; i--) {
-          const hora = new Date(hoje);
-          hora.setHours(hoje.getHours() - i);
-          const horaStr = hora.getHours().toString().padStart(2, '0') + 'h';
+        // Horário de funcionamento da barbearia: 9:00 às 20:00
+        for (let hora = 9; hora <= 20; hora++) {
+          const horaStr = hora.toString().padStart(2, '0') + 'h';
           
           const count = atendimentosFiltrados.filter(a => {
             const dataAtendimento = new Date(a.data_atendimento + 'T' + a.hora_inicio);
-            return dataAtendimento.getHours() === hora.getHours() && 
+            return dataAtendimento.getHours() === hora && 
                    dataAtendimento.toDateString() === hoje.toDateString();
           }).length;
 
@@ -134,7 +132,7 @@ export const AtendimentosPage: React.FC = () => {
           data.setDate(inicioSemana.getDate() + i);
           
           const count = atendimentosFiltrados.filter(a => {
-            const dataAtendimento = new Date(a.data_atendimento);
+            const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
             return dataAtendimento.toDateString() === data.toDateString();
           }).length;
 
@@ -146,13 +144,12 @@ export const AtendimentosPage: React.FC = () => {
         break;
 
       case 'mensal':
-        // Dias do mês selecionado
+        // Todos os dias do mês selecionado
         const diasNoMes = new Date(new Date().getFullYear(), selectedMonth + 1, 0).getDate();
-        for (let dia = 1; dia <= Math.min(diasNoMes, 30); dia += Math.ceil(diasNoMes / 15)) {
-          const data = new Date(new Date().getFullYear(), selectedMonth, dia);
+        for (let dia = 1; dia <= diasNoMes; dia++) {
           const count = atendimentosFiltrados.filter(a => {
             const dataAtendimento = new Date(a.data_atendimento);
-            return dataAtendimento.getDate() === dia;
+            return dataAtendimento.getDate() === dia && dataAtendimento.getMonth() === selectedMonth;
           }).length;
           
           dadosFiltrados.push({ 
