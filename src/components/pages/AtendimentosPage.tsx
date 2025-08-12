@@ -87,13 +87,12 @@ export const AtendimentosPage: React.FC = () => {
       case 'diario':
       default:
         return atendimentos.filter(a => {
-          const dataAtendimento = new Date(a.data_atendimento + 'T00:00:00');
           const hoje = new Date();
-          return (
-            dataAtendimento.getDate() === hoje.getDate() &&
-            dataAtendimento.getMonth() === hoje.getMonth() &&
-            dataAtendimento.getFullYear() === hoje.getFullYear()
-          );
+          const dataHoje = hoje.getFullYear() + '-' + 
+                          String(hoje.getMonth() + 1).padStart(2, '0') + '-' + 
+                          String(hoje.getDate()).padStart(2, '0');
+          
+          return a.data_atendimento === dataHoje;
         });
     }
   };
